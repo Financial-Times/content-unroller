@@ -18,6 +18,5 @@ require (
 	github.com/sirupsen/logrus v1.0.2-0.20170713114250-a3f95b5c4235
 	github.com/stretchr/testify v1.2.2
 	github.com/willf/bitset v1.1.2 // indirect
-	golang.org/x/net v0.0.0-20180826012351-8a410e7b638d
-	golang.org/x/sys v0.0.0-20180903190138-2b024373dcd9 // indirect
+	golang.org/x/net v0.0.0-20211201190559-0a0e4e1bb54c
 )

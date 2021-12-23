@@ -35,7 +35,7 @@ func parse(n *html.Node, acceptedTypes []string, embedsResult *[]string, tid str
 		if isEmbedded && isTypeMatching {
 			u, err := extractUUIDFromString(id)
 			if err != nil {
-				logger.Infof(tid, uuid, "Cannot extract UUID: %v", err.Error())
+				logger.Errorf(tid, uuid, "Cannot extract UUID: %v", err.Error())
 			} else {
 				*embedsResult = append(*embedsResult, u)
 			}

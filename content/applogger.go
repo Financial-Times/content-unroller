@@ -37,6 +37,14 @@ func (appLogger *appLogger) TransactionFinishedEvent(requestURL string, transact
 	}
 }
 
+func (appLogger *appLogger) Debugf(tid string, uuid string, format string, args ...interface{}) {
+	appLogger.log.WithFields(logrus.Fields{"tid": tid, "uuid": uuid}).Debugf(format, args...)
+}
+
+func (appLogger *appLogger) Debug(tid string, uuid string, message string) {
+	appLogger.log.WithFields(logrus.Fields{"tid": tid, "uuid": uuid}).Debug(message)
+}
+
 func (appLogger *appLogger) Infof(tid string, uuid string, format string, args ...interface{}) {
 	appLogger.log.WithFields(logrus.Fields{"tid": tid, "uuid": uuid}).Infof(format, args...)
 }

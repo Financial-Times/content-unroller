@@ -99,13 +99,13 @@ func (u *ContentUnroller) createContentSchema(cc Content, acceptedTypes []string
 	if foundMainImg {
 		u, err := extractUUIDFromString(mi[id].(string))
 		if err != nil {
-			logger.Infof(tid, uuid, "Cannot find main image: %v. Skipping expanding main image", err.Error())
+			logger.Errorf(tid, uuid, "Cannot find main image: %v. Skipping expanding main image", err.Error())
 			foundMainImg = false
 		} else {
 			schema.put(mainImage, u)
 		}
 	} else {
-		logger.Info(tid, uuid, "Cannot find main image. Skipping expanding main image")
+		logger.Debug(tid, uuid, "Cannot find main image. Skipping expanding main image")
 	}
 
 	//embedded - images and dynamic content
@@ -124,22 +124,22 @@ func (u *ContentUnroller) createContentSchema(cc Content, acceptedTypes []string
 			if id, ok := promImg[id].(string); ok {
 				u, err := extractUUIDFromString(id)
 				if err != nil {
-					logger.Infof(tid, uuid, "Cannot find promotional image: %v. Skipping expanding promotional image", err.Error())
+					logger.Errorf(tid, uuid, "Cannot find promotional image: %v. Skipping expanding promotional image", err.Error())
 					foundPromImg = false
 				} else {
 					schema.put(promotionalImage, u)
 				}
 			} else {
-				logger.Info(tid, uuid, "Promotional image is missing the id field. Skipping expanding promotional image")
+				logger.Debug(tid, uuid, "Promotional image is missing the id field. Skipping expanding promotional image")
 				foundPromImg = false
 			}
 		} else {
-			logger.Info(tid, uuid, "Cannot find promotional image. Skipping expanding promotional image")
+			logger.Debug(tid, uuid, "Cannot find promotional image. Skipping expanding promotional image")
 		}
 	}
 
 	if !foundMainImg && !foundEmbedded && !foundPromImg {
-		logger.Infof(tid, uuid, "No main image or promotional image or embedded content to expand for supplied content %s", uuid)
+		logger.Debugf(tid, uuid, "No main image or promotional image or embedded content to expand for supplied content %s", uuid)
 		return nil
 	}
 
@@ -149,12 +149,12 @@ func (u *ContentUnroller) createContentSchema(cc Content, acceptedTypes []string
 func (u *ContentUnroller) unrollLeadImages(cc Content, tid string, uuid string) ([]Content, bool) {
 	images, foundLeadImages := cc[leadImages].([]interface{})
 	if !foundLeadImages {
-		logger.Info(tid, uuid, "No lead images to expand for supplied content")
+		logger.Debug(tid, uuid, "No lead images to expand for supplied content")
 		return nil, false
 	}
 
 	if len(images) == 0 {
-		logger.Info(tid, uuid, "No lead images to expand for supplied content")
+		logger.Debug(tid, uuid, "No lead images to expand for supplied content")
 		return nil, false
 	}
 	schema := make(ContentSchema)
@@ -162,7 +162,7 @@ func (u *ContentUnroller) unrollLeadImages(cc Content, tid string, uuid string) 
 		li := item.(map[string]interface{})
 		uuid, err := extractUUIDFromString(li[id].(string))
 		if err != nil {
-			logger.Infof(tid, uuid, "Error while getting UUID for %s: %v", li[id].(string), err.Error())
+			logger.Errorf(tid, uuid, "Error while getting UUID for %s: %v", li[id].(string), err.Error())
 			continue
 		}
 		li[image] = uuid
@@ -189,7 +189,7 @@ func (u *ContentUnroller) unrollLeadImages(cc Content, tid string, uuid string) 
 		liContent := fromMap(rawLi)
 		imageData, found := u.resolveContent(rawLiUUID, imgMap)
 		if !found {
-			logger.Infof(tid, uuid, "Missing image model %s. Returning only the id.", rawLiUUID)
+			logger.Debugf(tid, uuid, "Missing image model %s. Returning only the id.", rawLiUUID)
 			delete(liContent, image)
 			expLeadImages = append(expLeadImages, liContent)
 			continue
@@ -250,7 +250,7 @@ func (u *ContentUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 			mID := mData[id].(string)
 			mUUID, err := extractUUIDFromString(mID)
 			if err != nil {
-				logger.Infof(tid, uuid, "Error while extracting UUID from %s: %v", mID, err.Error())
+				logger.Errorf(tid, uuid, "Error while extracting UUID from %s: %v", mID, err.Error())
 				continue
 			}
 			mContent, found := u.resolveContent(mUUID, imgMap)
@@ -277,7 +277,7 @@ func (u *ContentUnroller) resolveContent(uuid string, imgMap map[string]Content)
 func (u *ContentUnroller) extractEmbeddedContentByType(cc Content, acceptedTypes []string, tid string, uuid string) ([]string, bool) {
 	body, foundBody := cc[bodyXML]
 	if !foundBody {
-		logger.Info(tid, uuid, "Missing body. Skipping expanding embedded content and images.")
+		logger.Debug(tid, uuid, "Missing body. Skipping expanding embedded content and images.")
 		return nil, false
 	}
 

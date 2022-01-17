@@ -1,0 +1,255 @@
+[
+  {
+    "id": "http://www.ft.com/thing/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
+    "type": "http://www.ft.com/ontology/content/ImageSet",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T19:39:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "639cd952-149f-11e7-2ea7-a07ecd9ac73f"
+      }
+    ],
+    "members": [
+      {
+        "id": "http://api.ft.com/content/639cd952-149f-11e7-b0c1-37e417ee6c76"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
+    "alternativeImages": {},
+    "publishReference": "tid_5ypvntzcpu",
+    "lastModified": "2017-03-29T19:39:31.361Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/639cd952-149f-11e7-b0c1-37e417ee6c76",
+    "type": "http://www.ft.com/ontology/content/MediaResource",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T19:39:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "639cd952-149f-11e7-b0c1-37e417ee6c76"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/639cd952-149f-11e7-b0c1-37e417ee6c76",
+    "binaryUrl": "http://image-storage-location",
+    "pixelWidth": 2048,
+    "pixelHeight": 1152,
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© Bloomberg"
+    },
+    "publishReference": "tid_5ypvntzcpu",
+    "lastModified": "2017-03-29T19:39:31.361Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/71231d3a-13c7-11e7-2ea7-a07ecd9ac73f",
+    "type": "http://www.ft.com/ontology/content/ImageSet",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T18:28:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "71231d3a-13c7-11e7-2ea7-a07ecd9ac73f"
+      }
+    ],
+    "members": [
+      {
+        "id": "http://api.ft.com/content/71231d3a-13c7-11e7-b0c1-37e417ee6c76"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/71231d3a-13c7-11e7-2ea7-a07ecd9ac73f",
+    "alternativeImages": {},
+    "publishReference": "tid_fsdgcbtcih",
+    "lastModified": "2017-03-29T18:28:38.571Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/71231d3a-13c7-11e7-b0c1-37e417ee6c76",
+    "type": "http://www.ft.com/ontology/content/MediaResource",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T18:28:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "71231d3a-13c7-11e7-b0c1-37e417ee6c76"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/71231d3a-13c7-11e7-b0c1-37e417ee6c76",
+    "binaryUrl": "http://image-storage-location",
+    "pixelWidth": 2048,
+    "pixelHeight": 1152,
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© FT montage; Getty Images"
+    },
+    "publishReference": "tid_fsdgcbtcih",
+    "lastModified": "2017-03-29T18:28:38.571Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/0261ea4a-1474-11e7-1e92-847abda1ac65",
+    "type": "http://www.ft.com/ontology/content/ImageSet",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T18:28:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "0261ea4a-1474-11e7-1e92-847abda1ac65"
+      }
+    ],
+    "members": [
+      {
+        "id": "http://api.ft.com/content/0261ea4a-1474-11e7-80f4-13e067d5072c"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/0261ea4a-1474-11e7-1e92-847abda1ac65",
+    "alternativeImages": {},
+    "publishReference": "tid_4tjlxfiynp",
+    "lastModified": "2017-03-29T18:28:38.623Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/0261ea4a-1474-11e7-80f4-13e067d5072c",
+    "type": "http://www.ft.com/ontology/content/MediaResource",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T18:28:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "0261ea4a-1474-11e7-80f4-13e067d5072c"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/0261ea4a-1474-11e7-80f4-13e067d5072c",
+    "binaryUrl": "http://image-storage-location",
+    "pixelWidth": 2048,
+    "pixelHeight": 1152,
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© AFP"
+    },
+    "publishReference": "tid_4tjlxfiynp",
+    "lastModified": "2017-03-29T18:28:38.623Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "id": "http://www.ft.com/thing/4723cb4e-027c-11e7-ace0-1ce02ef0def9",
+    "type": "http://www.ft.com/ontology/content/MediaResource",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "publishedDate": "2017-03-06T14:50:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "4723cb4e-027c-11e7-ace0-1ce02ef0def9"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/4723cb4e-027c-11e7-ace0-1ce02ef0def9",
+    "binaryUrl": "http://image-storage-location",
+    "alternativeImages": {},
+    "publishReference": "tid_axufgrmrhm",
+    "lastModified": "2017-03-06T14:50:50.298Z"
+  },
+  {
+    "accessLevel": "subscribed",
+    "alternativeImages": {},
+    "alternativeStandfirsts": {},
+    "alternativeTitles": {},
+    "bodyXML": "<body><p>”Fallback content” for this IG story will be contained within the body.</p>\n</body>",
+    "brands": [
+      "http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "byline": "",
+    "canBeDistributed": "verify",
+    "canBeSyndicated": "verify",
+    "comments": {
+      "enabled": true
+    },
+    "editorialDesk": "/FT/WorldNews",
+    "firstPublishedDate": "2018-05-16T16:23:06.000Z",
+    "id": "http://www.ft.com/thing/d02886fc-58ff-11e8-9859-6668838a4c10",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-IG",
+        "identifierValue": "ccac6b68-d688-41f8-9209-31e4b4900b1b"
+      },
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "d02886fc-58ff-11e8-9859-6668838a4c10"
+      }
+    ],
+    "lastModified": "2018-06-19T12:55:14.074Z",
+    "publishReference": "tid_w3vmoogotb",
+    "publishedDate": "2018-05-16T16:23:06.000Z",
+    "requestUrl": "http://test.api.ft.com/content/d02886fc-58ff-11e8-9859-6668838a4c10",
+    "standout": {
+      "editorsChoice": false,
+      "exclusive": false,
+      "scoop": false
+    },
+    "title": "Test IG Story (optional headline)",
+    "type": "http://www.ft.com/ontology/content/DynamicContent",
+    "webUrl": "https://www.ft.com/content/d02886fc-58ff-11e8-9859-6668838a4c10"
+  },
+  {
+    "accessLevel": "subscribed",
+    "alternativeImages": {},
+    "alternativeStandfirsts": {},
+    "alternativeTitles": {},
+    "bodyXML": "<body><p>”Fallback content” for this IG story will be contained within the body.</p>\n</body>",
+    "brands": [
+      "http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "byline": "",
+    "canBeDistributed": "verify",
+    "canBeSyndicated": "verify",
+    "comments": {
+      "enabled": true
+    },
+    "editorialDesk": "/FT/WorldNews",
+    "firstPublishedDate": "2018-05-16T16:23:06.000Z",
+    "id": "http://www.ft.com/thing/d02886fc-58ff-11e8-9859-6668838a4c10",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-IG",
+        "identifierValue": "ccac6b68-d688-41f8-9209-31e4b4900b1b"
+      },
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "d02886fc-58ff-11e8-9859-6668838a4c10"
+      }
+    ],
+    "lastModified": "2018-06-19T12:55:14.074Z",
+    "publishReference": "tid_w3vmoogotb",
+    "publishedDate": "2018-05-16T16:23:06.000Z",
+    "requestUrl": "http://test.api.ft.com/content/d02886fc-58ff-11e8-9859-6668838a4c10",
+    "standout": {
+      "editorsChoice": false,
+      "exclusive": false,
+      "scoop": false
+    },
+    "title": "Test IG Story (optional headline)",
+    "type": "http://www.ft.com/ontology/content/DynamicContent",
+    "webUrl": "https://www.ft.com/content/d02886fc-58ff-11e8-9859-6668838a4c10"
+  }
+]

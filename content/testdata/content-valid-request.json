@@ -1,0 +1,44 @@
+{
+    "id": "http://www.ft.com/thing/22c0d426-1466-11e7-b0c1-37e417ee6c76",
+    "type": "http://www.ft.com/ontology/content/Article",
+    "bodyXML": "<body><ft-content type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api.ft.com/content/639cd952-149f-11e7-2ea7-a07ecd9ac73f\" data-embedded=\"true\"></ft-content><p>But the government’s approach drew some criticism at home. Nick Macpherson, the former Treasury permanent secretary, tweeted: “Crime and terrorism don’t respect borders. It is not a credible threat to link co-operation to a trade deal.”</p>\n<ft-related type=\"http://www.ft.com/ontology/content/Article\" url=\"http://api.ft.com/content/1888b166-13b9-11e7-80f4-13e067d5072c\"><title>Read more</title><headline>Brexit Article 50 letter — annotated transcript\n</headline><media><ft-content type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api.ft.com/content/71231d3a-13c7-11e7-2ea7-a07ecd9ac73f\" data-embedded=\"true\"></ft-content></media><intro><p>FT journalists explain the key passages of the UK government’s letter triggering the exit process</p></intro></ft-related>\n<p>Germany said the negotiations would not be easy for either side. Chancellor Angela Merkel took a<ft-content type=\"http://www.ft.com/ontology/content/Article\" url=\"http://api.ft.com/content/4855afce-10a4-11e7-b030-768954394623\">hard line</ft-content> on the sequencing of the talks, saying Britain’s future relationship with the EU could be discussed only after a divorce settlement is reached on the terms of Britain’s exit, which is expected to include the €60bn Brussels believes the UK still owes the EU.</p>\n<ft-content type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api.ft.com/content/0261ea4a-1474-11e7-1e92-847abda1ac65\" data-embedded=\"true\"></ft-content>\n<p>The prime minister of Croatia — the last country to join the EU, in 2013 — said Brexit was a “big, huge mistake” with negative consequences that will be felt primarily in Britain. Andrej Plenkovic said “no one can tell at this moment” when the negotiation would end, and what kind of agreement it would produce.</p>\n<ft-content type=\"http://www.ft.com/ontology/content/MediaResource\" url=\"http://api.ft.com/content/da0e3d5d-ccf0-3b40-b865-f648189fb849\" data-embedded=\"true\"></ft-content><ft-content data-embedded=\"true\" type=\"http://www.ft.com/ontology/content/DynamicContent\" url=\"http://test.api.ft.com/content/d02886fc-58ff-11e8-9859-6668838a4c10\"></ft-content>\n\n\n</body>",
+    "title": "",
+    "alternativeTitles": {
+      "promotionalTitle": "Brexit begins as Theresa May triggers Article 50"
+    },
+    "standfirst": "sample standfirst",
+    "alternativeStandfirsts": {},
+    "byline": "George Parker and Kate Allen in London and Arthur Beesley in Brussels",
+    "publishedDate": "2017-03-30T06:54:02.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "22c0d426-1466-11e7-b0c1-37e417ee6c76"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/22c0d426-1466-11e7-b0c1-37e417ee6c76",
+    "brands": [
+      "http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "mainImage": {
+      "id": "http://api.ft.com/content/639cd952-149f-11e7-2ea7-a07ecd9ac73f"
+    },
+    "alternativeImages": {
+      "promotionalImage": {
+        "id": "http://api.ft.com/content/4723cb4e-027c-11e7-ace0-1ce02ef0def9"
+      }
+    },
+    "comments": {
+      "enabled": true
+    },
+    "standout": {
+      "editorsChoice": false,
+      "exclusive": true,
+      "scoop": true
+    },
+    "publishReference": "tid_ra4srof3qc",
+    "lastModified": "2017-03-31T15:42:28.504Z",
+    "canBeSyndicated": "yes",
+    "accessLevel": "subscribed",
+    "canBeDistributed": "yes"
+  }

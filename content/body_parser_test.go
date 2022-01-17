@@ -23,6 +23,26 @@ func TestShouldReturnImages(t *testing.T) {
 	if err != nil {
 		assert.Fail(t, err.Error())
 	}
+
+	assert.Equal(t, expectedOutput, emImagesUUIDs, "Response image ids should be equal to expected images")
+}
+
+func TestShouldReturnScrollyImages(t *testing.T) {
+	var expectedOutput = []string{
+		"37449625-c70b-4c22-8409-d3facb840df4",
+		"05d93a7b-4fac-46e3-9ffd-d9ce70b73083",
+	}
+
+	fileBytes, err := ioutil.ReadFile("../test-resources/scrollyBodyXml.xml")
+	if err != nil {
+		assert.Fail(t, "Cannot read test file")
+	}
+	str := string(fileBytes)
+	emImagesUUIDs, err := getEmbedded(str, []string{ImageSetType}, "", "")
+	if err != nil {
+		assert.Fail(t, err.Error())
+	}
+
 	assert.Equal(t, expectedOutput, emImagesUUIDs, "Response image ids should be equal to expected images")
 }
 

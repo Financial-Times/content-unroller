@@ -14,7 +14,7 @@ func TestShouldReturnImages(t *testing.T) {
 		"0261ea4a-1474-11e7-1e92-847abda1ac65",
 	}
 
-	fileBytes, err := ioutil.ReadFile("../test-resources/bodyXml.xml")
+	fileBytes, err := ioutil.ReadFile("../testdata/bodyXml.xml")
 	if err != nil {
 		assert.Fail(t, "Cannot read test file")
 	}
@@ -33,7 +33,7 @@ func TestShouldReturnScrollyImages(t *testing.T) {
 		"05d93a7b-4fac-46e3-9ffd-d9ce70b73083",
 	}
 
-	fileBytes, err := ioutil.ReadFile("../test-resources/scrollyBodyXml.xml")
+	fileBytes, err := ioutil.ReadFile("../testdata/scrollyBodyXml.xml")
 	if err != nil {
 		assert.Fail(t, "Cannot read test file")
 	}
@@ -68,7 +68,7 @@ func TestShouldReturnDynamicContent(t *testing.T) {
 		"d02886fc-58ff-11e8-9859-6668838a4c10",
 	}
 
-	fileBytes, err := ioutil.ReadFile("../test-resources/bodyXml.xml")
+	fileBytes, err := ioutil.ReadFile("../testdata/bodyXml.xml")
 	if err != nil {
 		assert.Fail(t, "Cannot read test file")
 	}
@@ -94,7 +94,7 @@ func TestShouldReturnImagesAndDynamicContent(t *testing.T) {
 		"d02886fc-58ff-11e8-9859-6668838a4c10",
 	}
 
-	fileBytes, err := ioutil.ReadFile("../test-resources/bodyXml.xml")
+	fileBytes, err := ioutil.ReadFile("../testdata/bodyXml.xml")
 	if err != nil {
 		assert.Fail(t, "Cannot read test file")
 	}

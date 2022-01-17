@@ -25,15 +25,15 @@ var (
 )
 
 func TestContent_ShouldReturn200(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/source-content-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
 
-	expected, err := ioutil.ReadFile("test-resources/content-valid-response.json")
+	expected, err := ioutil.ReadFile("testdata/content-valid-response.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("test-resources/content-valid-request.json")
+	body, err := ioutil.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
 	resp, err := http.Post(unrollerService.URL+"/content", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
@@ -46,7 +46,7 @@ func TestContent_ShouldReturn200(t *testing.T) {
 }
 
 func TestContent_ShouldReturn400WhenInvalidJson(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/source-content-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
@@ -60,7 +60,7 @@ func TestContent_ShouldReturn400WhenInvalidJson(t *testing.T) {
 }
 
 func TestContent_ShouldReturn400WhenInvalidContentRequest(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/source-content-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
@@ -74,15 +74,15 @@ func TestContent_ShouldReturn400WhenInvalidContentRequest(t *testing.T) {
 }
 
 func TestInternalContent_ShouldReturn200(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/internalcontent-source-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
 
-	expected, err := ioutil.ReadFile("test-resources/internalcontent-valid-response-no-lead-images.json")
+	expected, err := ioutil.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("test-resources/internalcontent-valid-request.json")
+	body, err := ioutil.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
 	resp, err := http.Post(unrollerService.URL+"/internalcontent", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
@@ -95,7 +95,7 @@ func TestInternalContent_ShouldReturn200(t *testing.T) {
 }
 
 func TestInternalContent_ShouldReturn400InvalidJson(t *testing.T) {
-	internalContentStoreServiceMock := startContentServerMock("test-resources/internalcontent-source-valid-response.json")
+	internalContentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
 	startUnrollerService(internalContentStoreServiceMock.URL)
 	defer internalContentStoreServiceMock.Close()
 	defer unrollerService.Close()
@@ -109,7 +109,7 @@ func TestInternalContent_ShouldReturn400InvalidJson(t *testing.T) {
 }
 
 func TestInternalContent_ShouldReturn400InvalidArticle(t *testing.T) {
-	internalContentStoreServiceMock := startContentServerMock("test-resources/internalcontent-source-valid-response.json")
+	internalContentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
 	startUnrollerService(internalContentStoreServiceMock.URL)
 	defer internalContentStoreServiceMock.Close()
 	defer unrollerService.Close()
@@ -123,7 +123,7 @@ func TestInternalContent_ShouldReturn400InvalidArticle(t *testing.T) {
 }
 
 func TestShouldBeHealthy(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/source-content-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 
 	defer contentStoreServiceMock.Close()
@@ -139,7 +139,7 @@ func TestShouldBeHealthy(t *testing.T) {
 }
 
 func TestShouldBeGoodToGo(t *testing.T) {
-	contentStoreServiceMock := startContentServerMock("test-resources/source-content-valid-response.json")
+	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
 	startUnrollerService(contentStoreServiceMock.URL)
 
 	defer contentStoreServiceMock.Close()

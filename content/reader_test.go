@@ -53,11 +53,11 @@ func readerForTest(contentStoreHost string) *ContentReader {
 }
 
 func TestGet(t *testing.T) {
-	ts := successfulContentServerMock(t, "../test-resources/source-content-valid-response.json")
+	ts := successfulContentServerMock(t, "testdata/source-content-valid-response.json")
 	defer ts.Close()
 
 	cr := readerForTest(ts.URL)
-	body, err := ioutil.ReadFile("../test-resources/reader-content-valid-response.json")
+	body, err := ioutil.ReadFile("testdata/reader-content-valid-response.json")
 	assert.NoError(t, err, "Cannot read file necessary for running test case.")
 
 	var expected map[string]Content
@@ -100,11 +100,11 @@ func TestGet_ContentSourceHasInvalidURL(t *testing.T) {
 }
 
 func TestGetInternal(t *testing.T) {
-	ts := successfulContentServerMock(t, "../test-resources/internalcontent-source-valid-response.json")
+	ts := successfulContentServerMock(t, "testdata/internalcontent-source-valid-response.json")
 	defer ts.Close()
 
 	cr := readerForTest(ts.URL)
-	body, err := ioutil.ReadFile("../test-resources/reader-internalcontent-dynamic-valid-response.json")
+	body, err := ioutil.ReadFile("testdata/reader-internalcontent-dynamic-valid-response.json")
 	assert.NoError(t, err, "Cannot read file necessary for running test case.")
 
 	var expected map[string]Content

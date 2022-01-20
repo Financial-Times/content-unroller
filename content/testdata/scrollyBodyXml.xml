@@ -1,0 +1,16 @@
+<body>
+    <scrollable-block>
+        <scrollable-section>
+            <ft-content type="http://www.ft.com/ontology/content/ImageSet" url="http://api.ft.com/content/37449625-c70b-4c22-8409-d3facb840df4" data-embedded="true" id="37449625-c70b-4c22-8409-d3facb840df4" />
+        </scrollable-section>
+        <scrollable-section>
+            <ft-content type="http://www.ft.com/ontology/content/ImageSet" id="05d93a7b-4fac-46e3-9ffd-d9ce70b73083" data-embedded="true" url="http://api.ft.com/content/05d93a7b-4fac-46e3-9ffd-d9ce70b73083" />
+            <scrollable-text>
+                <p>Some sample text..</p>
+                <p>
+                    <u>Some other text..</u>
+                </p>
+            </scrollable-text>
+        </scrollable-section>
+    </scrollable-block>
+</body>

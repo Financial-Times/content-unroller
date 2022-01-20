@@ -1,0 +1,26 @@
+[
+    {
+        "alternativeStandfirsts": {
+            "promotionalStandfirstVariant": ""
+        },
+        "alternativeTitles": {
+            "promotionalTitleVariant": "",
+            "shortTeaser": ""
+        },
+        "blocks": [
+            {
+                "key": "HTML block name",
+                "type": "html-block",
+                "valueXML": "<podcast-promo id=\"16ec6a72-d5db-4322-96c6-314b051eb978\"><h2>Both title and description fields populated</h2><p>Description here</p></podcast-promo>\n"
+            }
+        ],
+        "design": {
+            "layout": "default",
+            "theme": "basic"
+        },
+        "id": "http://www.ft.com/thing/d02886fc-58ff-11e8-9859-6668838a4c10",
+        "lastModified": "2018-06-19T14:06:53.936Z",
+        "publishReference": "tid_7e6t38njyg",
+        "requestUrl": "http://test.api.ft.com/internalcontent/d02886fc-58ff-11e8-9859-6668838a4c10"
+    }
+]

@@ -1,0 +1,22 @@
+# Values used for the deployed application.
+replicaCount: 2
+service:
+  name: content-unroller
+
+content_store:
+  app_name: content-public-read
+  host: http://content-public-read:8080
+
+content_path: /content
+internal_content_path: /internalcontent
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+              - us-east-1a
+

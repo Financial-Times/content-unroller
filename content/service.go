@@ -7,6 +7,7 @@ import (
 const (
 	ImageSetType       = "http://www.ft.com/ontology/content/ImageSet"
 	DynamicContentType = "http://www.ft.com/ontology/content/DynamicContent"
+	ClipSetType        = "http://www.ft.com/ontology/content/ClipSet"
 	mainImage          = "mainImage"
 	id                 = "id"
 	embeds             = "embeds"
@@ -43,7 +44,7 @@ func (u *ContentUnroller) UnrollContent(req UnrollEvent) UnrollResult {
 	//make a copy of the content
 	cc := req.c.clone()
 
-	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType}, req.tid, req.uuid)
+	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
 	if schema != nil {
 		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 		if err != nil {
@@ -230,6 +231,21 @@ func (u *ContentUnroller) resolveModelsForSetsMembers(b ContentSchema, imgMap ma
 	}
 }
 
+func (u *ContentUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
+	posterData := fromMap(poster.(map[string]interface{}))
+	pApiUrl := posterData["apiUrl"].(string)
+	pUUID, err := extractUUIDFromString(pApiUrl)
+	if err != nil {
+		return Content{}, err
+	}
+	posterContent, err := u.reader.Get([]string{pUUID}, tid)
+	if err != nil {
+		return Content{}, err
+	}
+	u.resolveImageSet(pUUID, posterContent, tid, uuid)
+	return posterContent[pUUID], nil
+}
+
 func (u *ContentUnroller) resolveImageSet(imageSetUUID string, imgMap map[string]Content, tid string, uuid string) {
 	imageSet, found := u.resolveContent(imageSetUUID, imgMap)
 	if !found {
@@ -258,12 +274,19 @@ func (u *ContentUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 				expMembers = append(expMembers, mData)
 				continue
 			}
+			if _, isPoster := mContent["poster"]; isPoster {
+				resolvedPoster, err := u.resolvePoster(mContent["poster"], tid, uuid)
+				if err != nil {
+					logger.Errorf(tid, uuid, "Error while getting expanded content for uuid: %s: %v", uuid, err.Error())
+				} else {
+					mContent["poster"] = resolvedPoster
+				}
+			}
 			mData.merge(mContent)
 			expMembers = append(expMembers, mData)
 		}
 		imageSet[members] = expMembers
 	}
-
 }
 
 func (u *ContentUnroller) resolveContent(uuid string, imgMap map[string]Content) (Content, bool) {

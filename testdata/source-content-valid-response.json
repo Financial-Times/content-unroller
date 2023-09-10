@@ -1,5 +1,166 @@
 [
   {
+    "annotations": [],
+    "apiUrl": "https://api-t.ft.com/internalcontent/83899207-d698-4e3b-9edb-0258e2aceb55",
+    "binaryUrl": "https://next-video-editor-images.s3.ap-northeast-1.amazonaws.com/83899207-d698-4e3b-9edb-0258e2aceb55",
+    "brands": ["http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
+    "canBeSyndicated": "verify",
+    "curatedRelatedContent": [],
+    "firstPublishedDate": "2023-06-15T20:09:40.882Z",
+    "id": "http://www.ft.com/thing/83899207-d698-4e3b-9edb-0258e2aceb55",
+    "publishedDate": "2023-06-15T20:09:40.882Z",
+    "requestUrl": "https://api-t.ft.com/internalcontent/83899207-d698-4e3b-9edb-0258e2aceb55",
+    "types": ["http://www.ft.com/ontology/content/Image"]
+  },
+  {
+    "apiUrl": "https://api-t.ft.com/internalcontent/2f730c3c-1fb2-4131-9697-c534fe1ee488",
+    "brands": ["http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
+    "canBeSyndicated": "verify",
+    "curatedRelatedContent": [],
+    "id": "http://www.ft.com/thing/2f730c3c-1fb2-4131-9697-c534fe1ee488",
+    "members": [
+      {
+        "id": "https://api-t.ft.com/content/83899207-d698-4e3b-9edb-0258e2aceb55"
+      }
+    ],
+    "publishedDate": "2023-06-15T20:09:40.904Z",
+    "requestUrl": "https://api-t.ft.com/internalcontent/2f730c3c-1fb2-4131-9697-c534fe1ee488",
+    "types": ["http://www.ft.com/ontology/content/ImageSet"]
+  },
+  {
+    "id": "http://www.ft.com/thing/06d6cd8d-f45d-4b6a-85a6-2929bc1f2c22",
+    "type": "http://www.ft.com/ontology/content/ClipSet",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T19:39:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "06d6cd8d-f45d-4b6a-85a6-2929bc1f2c22"
+      }
+    ],
+    "members": [
+      {
+        "id": "http://api.ft.com/content/f0e1aa40-190c-4079-b947-8780a168a1db"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/06d6cd8d-f45d-4b6a-85a6-2929bc1f2c22",
+    "alternativeImages": {},
+    "publishReference": "tid_112",
+    "lastModified": "2017-03-29T19:39:31.361Z",
+    "canBeDistributed": "verify"
+  },
+  {
+    "accessibility": {
+      "captions": [
+        {
+          "mediaType": "text/vtt",
+          "url": "https://next-media-api.ft.com/captions/16862228218010.vtt"
+        }
+      ],
+      "transcript": "<p>Hydrogen is this magic molecule which is the lightest, the most energetic and the most abundant in the universe. ... </p>"
+    },
+    "apiUrl": "https://api.ft.com/internalcontent/f17fe25b-cdea-4d5f-a6af-40e56e33e888",
+    "brands": ["http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
+    "canBeDistributed": "yes",
+    "canBeSyndicated": "yes",
+    "caption": "Satellite animation of Europe",
+    "dataCopyright": "Reuters",
+    "description": "The global push for net zero carbon emissions is one of humanity's greatest challenges. ...",
+    "displayTitle": "Ukranians fight back",
+    "contentWarning": ["graphic violence", "animal cruelty"],
+    "firstPublishedDate": "2023-06-14T03:59:47.543Z",
+    "id": "http://www.ft.com/thing/f17fe25b-cdea-4d5f-a6af-40e56e33e888",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/spark-clips",
+        "identifierValue": "f17fe25b-cdea-4d5f-a6af-40e56e33e888"
+      }
+    ],
+    "lastModified": "2023-06-15T20:09:40.000Z",
+    "members": [
+      {
+        "format": "mobile",
+        "id": "http://api.ft.com/content/b529ba2b-d424-4f85-a93f-8413636dac82"
+      }
+    ],
+    "noAudio": false,
+    "publishedDate": "2023-06-14T03:59:47.543Z",
+    "publishReference": "tid_cct_clipSet_f17fe25b-cdea-4d5f-a6af-40e56e33e888_1690992035851",
+    "requestUrl": "http://api.ft.com/internalcontent/f17fe25b-cdea-4d5f-a6af-40e56e33e888",
+    "source": "YouGov",
+    "subtitle": "Drone hits Moscow tower block",
+    "systemTitle": "UkraineClip20230801",
+    "types": ["http://www.ft.com/ontology/content/ClipSet"]
+  },
+  {
+    "apiUrl": "https://api.ft.com/internalcontent/b529ba2b-d424-4f85-a93f-8413636dac82",
+    "brands": ["http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
+    "canBeDistributed": "yes",
+    "canBeSyndicated": "yes",
+    "dataCopyright": "Eumetsat",
+    "dataSource": [
+      {
+        "audioCodec": "mp3",
+        "binaryUrl": "https://next-media-api.ft.com/renditions/16868569859480/0x0.mp3",
+        "duration": 1057,
+        "mediaType": "audio/mpeg",
+        "pixelHeight": 720,
+        "pixelWidth": 1280,
+        "videoCodec": "h264"
+      }
+    ],
+    "firstPublishedDate": "2023-06-14T03:59:47.543Z",
+    "id": "http://www.ft.com/thing/b529ba2b-d424-4f85-a93f-8413636dac82",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/spark-clips",
+        "identifierValue": "b529ba2b-d424-4f85-a93f-8413636dac82"
+      }
+    ],
+    "lastModified": "2023-06-15T20:09:40.000Z",
+    "poster": {
+      "apiUrl": "https://api.ft.com/content/2f730c3c-1fb2-4131-9697-c534fe1ee488",
+      "type": "http://www.ft.com/ontology/content/ImageSet"
+    },
+    "publishedDate": "2023-06-14T03:59:47.543Z",
+    "publishReference": "tid_cct_clip_b529ba2b-d424-4f85-a93f-8413636dac82_1690992035851",
+    "requestUrl": "https://api.ft.com/internalcontent/b529ba2b-d424-4f85-a93f-8413636dac82",
+    "types": ["http://www.ft.com/ontology/content/Clip"]
+  },
+  {
+    "id": "http://www.ft.com/thing/f0e1aa40-190c-4079-b947-8780a168a1db",
+    "type": "http://www.ft.com/ontology/content/Clip",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "sample description",
+    "publishedDate": "2017-03-29T19:39:00.000Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/FTCOM-METHODE",
+        "identifierValue": "f0e1aa40-190c-4079-b947-8780a168a1db"
+      }
+    ],
+    "requestUrl": "http://api.ft.com/content/f0e1aa40-190c-4079-b947-8780a168a1db",
+    "binaryUrl": "http://image-storage-location",
+    "pixelWidth": 2048,
+    "pixelHeight": 1152,
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© Bloomberg"
+    },
+    "publishReference": "tid_113",
+    "lastModified": "2017-03-29T19:39:31.361Z",
+    "poster": {
+      "apiUrl": "https://api.ft.com/content/2f730c3c-1fb2-4131-9697-c534fe1ee488",
+      "type": "http://www.ft.com/ontology/content/ImageSet"
+    },
+    "canBeDistributed": "verify"
+  },
+  {
     "id": "http://www.ft.com/thing/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
     "type": "http://www.ft.com/ontology/content/ImageSet",
     "title": "",
@@ -176,9 +337,7 @@
     "alternativeStandfirsts": {},
     "alternativeTitles": {},
     "bodyXML": "<body><p>”Fallback content” for this IG story will be contained within the body.</p>\n</body>",
-    "brands": [
-      "http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
-    ],
+    "brands": ["http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
     "byline": "",
     "canBeDistributed": "verify",
     "canBeSyndicated": "verify",
@@ -217,9 +376,7 @@
     "alternativeStandfirsts": {},
     "alternativeTitles": {},
     "bodyXML": "<body><p>”Fallback content” for this IG story will be contained within the body.</p>\n</body>",
-    "brands": [
-      "http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
-    ],
+    "brands": ["http://api.ft.com/things/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"],
     "byline": "",
     "canBeDistributed": "verify",
     "canBeSyndicated": "verify",

@@ -232,10 +232,10 @@ func (u *ContentUnroller) resolveModelsForSetsMembers(b ContentSchema, imgMap ma
 }
 
 func (u *ContentUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
-        posterData, found := poster.(map[string]interface{})
-        if found {
-	   posterMap := fromMap(posterData)
-	...
+	posterData, found := poster.(map[string]interface{})
+	if !found {
+		return Content{}, errors.New("Problem in poster field")
+	}
 	papiurl := posterData["apiUrl"].(string)
 	pUUID, err := extractUUIDFromString(papiurl)
 	if err != nil {

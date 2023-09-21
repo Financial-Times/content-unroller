@@ -17,6 +17,22 @@ func TestGetEmbedded(t *testing.T) {
 		expectedErr    error
 	}{
 		{
+			name:          "body with embedded clips should return slice of those clips uuids",
+			body:          loadBodyFromFile(t, "testdata/bodyXml.xml"),
+			acceptedTypes: []string{ClipSetType},
+			expectedOutput: []string{
+				"f6074f3c-b331-4a89-963c-f72eaf3895ae",
+				"f5e1294c-7a47-4107-a5c4-9b6bfeb9efed",
+			},
+		},
+		{
+			name:           "body with no embedded clips should return empty slice",
+			body:           "<body><p>Sample body</p></body>",
+			acceptedTypes:  []string{ClipSetType},
+			expectedOutput: []string{},
+		},
+
+		{
 			name:          "body with embedded images should return slice of those image uuids",
 			body:          loadBodyFromFile(t, "testdata/bodyXml.xml"),
 			acceptedTypes: []string{ImageSetType},

@@ -31,6 +31,7 @@ type ContentUnroller struct {
 
 type Content map[string]interface{}
 
+// ContentSchema is a map containing UUIDs of related content and the name of the field they are used in.
 type ContentSchema map[string][]string
 
 func NewContentUnroller(r Reader, apiHost string) *ContentUnroller {
@@ -41,7 +42,6 @@ func NewContentUnroller(r Reader, apiHost string) *ContentUnroller {
 }
 
 func (u *ContentUnroller) UnrollContent(req UnrollEvent) UnrollResult {
-	//make a copy of the content
 	cc := req.c.clone()
 
 	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)

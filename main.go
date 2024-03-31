@@ -136,17 +136,16 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Make handler
-//type Unroller interface {
-//	Validate(*http.Request) bool
-//	Unroll(*http.Request) UnrollResult
-//}
-//TODO: Split service into separate unrollers
 //TODO: Move tests is service_test to corresponding unroller_test
 //TODO: Make handler work with array of unrollers
 //TODO: Implement clipset unroller
 //TODO: Create tests for clipset unroller
 //Optional todos:
+//TODO: Make handler
+//type Unroller interface {
+//	Validate(*http.Request) bool
+//	Unroll(*http.Request) UnrollResult
+//}
 //TODO: Fix logger
 //TODO: Remove mow.cli
 //Very Optional todos:

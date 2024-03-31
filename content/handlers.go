@@ -2,12 +2,12 @@ package content
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 
 	transactionidutils "github.com/Financial-Times/transactionid-utils-go"
-	"github.com/pkg/errors"
 )
 
 var logger = NewAppLogger()
@@ -38,11 +38,14 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
 	res, err := hh.ContentUnroller.Unroll(event)
-	if errors.Is(err, ValidationError) {
+	if errors.Is(err, APIConnectivityError) {
+		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		return
+	} else if errors.Is(err, ValidationError) {
 		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -67,11 +70,14 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
 	res, err := hh.InternalContentUnroller.Unroll(event)
-	if errors.Is(err, ValidationError) {
+	if errors.Is(err, APIConnectivityError) {
+		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		return
+	} else if errors.Is(err, ValidationError) {
 		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -125,3 +131,15 @@ func handleError(r *http.Request, tid string, uuid string, w http.ResponseWriter
 	w.WriteHeader(statusCode)
 	w.Write([]byte(errMsg))
 }
+
+//func tryAllUnrollers(unrollers []Unroller, event UnrollEvent) (Content, error) {
+//	var finalError error
+//	for _, unroller := range unrollers {
+//		res, err := unroller.Unroll(event)
+//		if err != nil {
+//			finalError = errors.Join(err)
+//		}
+//		return res, nil
+//	}
+//	return nil, finalError
+//}

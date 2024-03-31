@@ -6,7 +6,6 @@ import (
 
 	fthealth "github.com/Financial-Times/go-fthealth/v1_1"
 	"github.com/Financial-Times/service-status-go/gtg"
-	"github.com/pkg/errors"
 )
 
 type ServiceConfig struct {
@@ -46,10 +45,10 @@ func (sc *ServiceConfig) checkServiceAvailability(serviceName string, healthURI 
 	req, err := http.NewRequest(http.MethodGet, healthURI, nil)
 	resp, err := sc.HTTPClient.Do(req)
 	if err != nil {
-		return "Error", errors.Errorf("%s service is unreachable: %v", serviceName, err)
+		return "Error", fmt.Errorf("%s service is unreachable: %v", serviceName, err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return "Error", errors.Errorf("%s service is not responding with OK. Status=%d", serviceName, resp.StatusCode)
+		return "Error", fmt.Errorf("%s service is not responding with OK. Status=%d", serviceName, resp.StatusCode)
 	}
 	return "Ok", nil
 }

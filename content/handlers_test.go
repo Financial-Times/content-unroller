@@ -3,13 +3,15 @@ package content
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/pkg/errors"
+	"errors"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -108,7 +110,7 @@ func TestGetContent_ValidationError(t *testing.T) {
 func TestGetContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
 		mockUnrollContent: func(req UnrollEvent) (Content, error) {
-			return nil, errors.New("Error while unrolling content")
+			return nil, errors.Join(APIConnectivityError, fmt.Errorf("error while unrolling content"))
 		},
 	}
 
@@ -125,7 +127,7 @@ func TestGetContent_UnrollingError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Error while unrolling content")
+	assert.Contains(t, string(rr.Body.Bytes()), "error while unrolling content")
 }
 
 func TestGetInternalContentReturns200(t *testing.T) {
@@ -207,7 +209,7 @@ func TestGetInternalContent_ValidationError(t *testing.T) {
 func TestGetInternalContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
 		mockUnrollContent: func(req UnrollEvent) (Content, error) {
-			return nil, errors.New("Error while unrolling content")
+			return nil, errors.Join(APIConnectivityError, fmt.Errorf("error while unrolling content"))
 		},
 	}
 
@@ -224,5 +226,5 @@ func TestGetInternalContent_UnrollingError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Error while unrolling content")
+	assert.Contains(t, string(rr.Body.Bytes()), "error while unrolling content")
 }

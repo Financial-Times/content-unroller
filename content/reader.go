@@ -2,19 +2,21 @@ package content
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	transactionidutils "github.com/Financial-Times/transactionid-utils-go"
 	uuidutils "github.com/Financial-Times/uuid-utils-go"
-	"github.com/pkg/errors"
 )
 
 const (
 	userAgent      = "User-Agent"
 	userAgentValue = "UPP_content-unroller"
 )
+
+var APIConnectivityError = errors.New("error connecting to API")
 
 type Reader interface {
 	Get([]string, string) (map[string]Content, error)
@@ -98,7 +100,7 @@ func (cr *ContentReader) doGet(uuids []string, tid string, reqURL string, appNam
 
 	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
 	if err != nil {
-		return cb, errors.Wrapf(err, "Error creating request to %v", appName)
+		return cb, errors.Join(err, APIConnectivityError, fmt.Errorf("error creating request to %v", appName))
 	}
 
 	req.Header.Add(transactionidutils.TransactionIDHeader, tid)
@@ -112,22 +114,22 @@ func (cr *ContentReader) doGet(uuids []string, tid string, reqURL string, appNam
 	req.URL.RawQuery = q.Encode()
 	res, err := cr.client.Do(req)
 	if err != nil {
-		return cb, errors.Wrapf(err, "Request to %v failed.", appName)
+		return cb, errors.Join(err, APIConnectivityError, fmt.Errorf("request to %v failed", appName))
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return cb, errors.Errorf("Request to %v failed with status code %d", appName, res.StatusCode)
+		return cb, errors.Join(APIConnectivityError, fmt.Errorf("request to %v failed with status code %d", appName, res.StatusCode))
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return cb, errors.Wrapf(err, "Error reading response received from %v", appName)
+		return cb, errors.Join(err, APIConnectivityError, fmt.Errorf("error reading response received from %v", appName))
 	}
 
 	err = json.Unmarshal(body, &cb)
 	if err != nil {
-		return cb, errors.Wrapf(err, "Error unmarshalling response from %v", appName)
+		return cb, errors.Join(err, APIConnectivityError, fmt.Errorf("error unmarshalling response from %v", appName))
 	}
 	return cb, nil
 }

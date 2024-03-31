@@ -1,6 +1,9 @@
 package content
 
-import "github.com/pkg/errors"
+import (
+	"errors"
+	"fmt"
+)
 
 var ValidationError = errors.New("Invalid content")
 
@@ -27,7 +30,7 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	if schema != nil {
 		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 		if err != nil {
-			return req.c, errors.Wrapf(err, "Error while getting expanded content for uuid: %v", req.uuid)
+			return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
 		}
 		u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
 

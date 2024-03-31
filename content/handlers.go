@@ -3,7 +3,7 @@ package content
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	transactionidutils "github.com/Financial-Times/transactionid-utils-go"
@@ -16,8 +16,14 @@ type ErrorMessage struct {
 
 var logger = NewAppLogger()
 
+type Unroller interface {
+	Validate(Content) bool
+	Unroll(UnrollEvent) UnrollResult
+}
+
 type Handler struct {
-	Service Unroller
+	ContentUnroller         Unroller
+	InternalContentUnroller Unroller
 }
 
 type UnrollEvent struct {
@@ -39,14 +45,14 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !validateContent(event.c) {
+	if !hh.ContentUnroller.Validate(event.c) {
 		handleError(r, tid, event.uuid, w, errors.New("Invalid content"), http.StatusBadRequest)
 		return
 	}
 
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res := hh.Service.UnrollContent(event)
+	res := hh.ContentUnroller.Unroll(event)
 	if res.err != nil {
 		handleError(r, tid, event.uuid, w, res.err, http.StatusInternalServerError)
 		return
@@ -70,14 +76,14 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 		handleError(r, tid, "", w, err, http.StatusBadRequest)
 	}
 
-	if !validateInternalContent(event.c) {
+	if !hh.InternalContentUnroller.Validate(event.c) {
 		handleError(r, tid, event.uuid, w, errors.New("Invalid content"), http.StatusBadRequest)
 		return
 	}
 
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res := hh.Service.UnrollInternalContent(event)
+	res := hh.InternalContentUnroller.Unroll(event)
 	if res.err != nil {
 		handleError(r, tid, event.uuid, w, res.err, http.StatusInternalServerError)
 		return
@@ -96,7 +102,7 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 
 func createUnrollEvent(r *http.Request, tid string) (UnrollEvent, error) {
 	var unrollEvent UnrollEvent
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := io.ReadAll(r.Body)
 	if err != nil {
 		return unrollEvent, err
 	}
@@ -131,19 +137,4 @@ func handleError(r *http.Request, tid string, uuid string, w http.ResponseWriter
 	}
 	w.WriteHeader(statusCode)
 	w.Write([]byte(errMsg))
-}
-
-func validateContent(article Content) bool {
-	_, hasMainImage := article[mainImage]
-	_, hasBody := article[bodyXML]
-	_, hasAltImg := article[altImages].(map[string]interface{})
-
-	return hasMainImage || hasBody || hasAltImg
-}
-
-func validateInternalContent(article Content) bool {
-	_, hasLeadImages := article[leadImages]
-	_, hasBody := article[bodyXML]
-
-	return hasLeadImages || hasBody
 }

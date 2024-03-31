@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -30,15 +29,15 @@ func TestContent_ShouldReturn200(t *testing.T) {
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
 
-	expected, err := ioutil.ReadFile("testdata/content-valid-response.json")
+	expected, err := os.ReadFile("testdata/content-valid-response.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("testdata/content-valid-request.json")
+	body, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
 	resp, err := http.Post(unrollerService.URL+"/content", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
 	defer resp.Body.Close()
-	actualResponse, err := ioutil.ReadAll(resp.Body)
+	actualResponse, err := io.ReadAll(resp.Body)
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NoError(t, err, "")
@@ -79,17 +78,17 @@ func TestInternalContent_ShouldReturn200(t *testing.T) {
 	defer contentStoreServiceMock.Close()
 	defer unrollerService.Close()
 
-	expected, err := ioutil.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
+	expected, err := os.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("testdata/internalcontent-valid-request.json")
+	body, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
 	resp, err := http.Post(unrollerService.URL+"/internalcontent", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
 	defer resp.Body.Close()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	actualResponse, err := ioutil.ReadAll(resp.Body)
+	actualResponse, err := io.ReadAll(resp.Body)
 	assert.NoError(t, err, "")
 	assert.JSONEq(t, string(expected), string(actualResponse))
 }
@@ -221,8 +220,9 @@ func startUnrollerService(contentStoreURL string) {
 	}
 
 	reader := content.NewContentReader(rc, http.DefaultClient)
-	unroller := content.NewContentUnroller(reader, "test.api.ft.com")
+	unroller := content.NewArticleUnroller(reader, "test.api.ft.com")
+	internalUnroller := content.NewInternalArticleUnroller(reader, "test.api.ft.com")
 
-	h := setupServiceHandler(unroller, sc)
+	h := setupServiceHandler(unroller, internalUnroller, sc)
 	unrollerService = httptest.NewServer(h)
 }

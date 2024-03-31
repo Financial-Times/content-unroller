@@ -9,7 +9,6 @@ import (
 
 	"github.com/Financial-Times/content-unroller/content"
 	fthealth "github.com/Financial-Times/go-fthealth/v1_1"
-	"github.com/Financial-Times/service-status-go/gtg"
 	"github.com/Financial-Times/service-status-go/httphandlers"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -87,9 +86,10 @@ func main() {
 		}
 
 		reader := content.NewContentReader(readerConfig, httpClient)
-		unroller := content.NewContentUnroller(reader, *apiHost)
+		unroller := content.NewArticleUnroller(reader, *apiHost)
+		internalUnroller := content.NewInternalArticleUnroller(reader, *apiHost)
 
-		h := setupServiceHandler(unroller, sc)
+		h := setupServiceHandler(unroller, internalUnroller, sc)
 		err := http.ListenAndServe(":"+*port, h)
 		if err != nil {
 			log.Fatalf("Unable to start server: %v", err)
@@ -98,12 +98,18 @@ func main() {
 
 	log.SetLevel(log.InfoLevel)
 	log.Infof("Application started with args %s", os.Args)
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatalf("Unable to start application: %v", err)
+		return
+	}
 }
 
-func setupServiceHandler(s content.Unroller, sc content.ServiceConfig) *mux.Router {
+func setupServiceHandler(contentUnroller, internalContentUnroller content.Unroller, sc content.ServiceConfig) *mux.Router {
 	r := mux.NewRouter()
-	ch := &content.Handler{Service: s}
+	ch := &content.Handler{
+		ContentUnroller:         contentUnroller,
+		InternalContentUnroller: internalContentUnroller,
+	}
 
 	var checks []fthealth.Check
 	var gtgHandler func(http.ResponseWriter, *http.Request)
@@ -111,7 +117,7 @@ func setupServiceHandler(s content.Unroller, sc content.ServiceConfig) *mux.Rout
 	r.HandleFunc("/content", ch.GetContent).Methods("POST")
 	r.HandleFunc("/internalcontent", ch.GetInternalContent).Methods("POST")
 	checks = []fthealth.Check{sc.ContentStoreCheck()}
-	gtgHandler = httphandlers.NewGoodToGoHandler(gtg.StatusChecker(sc.GtgCheck))
+	gtgHandler = httphandlers.NewGoodToGoHandler(sc.GtgCheck)
 
 	r.Path(httphandlers.BuildInfoPath).HandlerFunc(httphandlers.BuildInfoHandler)
 	r.Path(httphandlers.PingPath).HandlerFunc(httphandlers.PingHandler)
@@ -129,3 +135,19 @@ func setupServiceHandler(s content.Unroller, sc content.ServiceConfig) *mux.Rout
 func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
+
+//TODO: Make handler
+//type Unroller interface {
+//	Validate(*http.Request) bool
+//	Unroll(*http.Request) UnrollResult
+//}
+//TODO: Split service into separate unrollers
+//TODO: Move tests is service_test to corresponding unroller_test
+//TODO: Make handler work with array of unrollers
+//TODO: Implement clipset unroller
+//TODO: Create tests for clipset unroller
+//Optional todos:
+//TODO: Fix logger
+//TODO: Remove mow.cli
+//Very Optional todos:
+//TODO: Rework healthcheck to get checks directly from structures

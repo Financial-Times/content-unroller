@@ -107,8 +107,8 @@ func main() {
 func setupServiceHandler(contentUnroller, internalContentUnroller content.Unroller, sc content.ServiceConfig) *mux.Router {
 	r := mux.NewRouter()
 	ch := &content.Handler{
-		ContentUnroller:         contentUnroller,
-		InternalContentUnroller: internalContentUnroller,
+		ContentUnroller:         []content.Unroller{contentUnroller},
+		InternalContentUnroller: []content.Unroller{internalContentUnroller},
 	}
 
 	var checks []fthealth.Check
@@ -136,7 +136,6 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Make handler work with array of unrollers
 //TODO: Implement clipset unroller
 //TODO: Create tests for clipset unroller
 //TODO: Move tests is service_test to corresponding unroller_test

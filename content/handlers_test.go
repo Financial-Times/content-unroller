@@ -19,36 +19,22 @@ const (
 )
 
 type ContentUnrollerMock struct {
-	mockValidate      func(Content) bool
-	mockUnrollContent func(UnrollEvent) UnrollResult
+	mockUnrollContent func(UnrollEvent) (Content, error)
 }
 
-func (cu *ContentUnrollerMock) Validate(content Content) bool {
-	if cu.mockValidate != nil {
-		return cu.mockValidate(content)
-	}
-
-	_, hasMainImage := content[mainImage]
-	_, hasBody := content[bodyXML]
-	_, hasAltImg := content[altImages].(map[string]interface{})
-
-	return hasMainImage || hasBody || hasAltImg
-
-}
-
-func (cu *ContentUnrollerMock) Unroll(req UnrollEvent) UnrollResult {
+func (cu *ContentUnrollerMock) Unroll(req UnrollEvent) (Content, error) {
 	return cu.mockUnrollContent(req)
 }
 
 func TestGetContentReturns200(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) UnrollResult {
+		mockUnrollContent: func(req UnrollEvent) (Content, error) {
 			var r Content
 			fileBytes, err := os.ReadFile("testdata/content-valid-response.json")
 			assert.NoError(t, err, "Cannot read resources test file")
 			err = json.Unmarshal(fileBytes, &r)
 			assert.NoError(t, err, "Cannot build json body")
-			return UnrollResult{r, nil}
+			return r, nil
 		},
 	}
 
@@ -121,8 +107,8 @@ func TestGetContent_ValidationError(t *testing.T) {
 
 func TestGetContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) UnrollResult {
-			return UnrollResult{nil, errors.New("Error while unrolling content")}
+		mockUnrollContent: func(req UnrollEvent) (Content, error) {
+			return nil, errors.New("Error while unrolling content")
 		},
 	}
 
@@ -144,13 +130,13 @@ func TestGetContent_UnrollingError(t *testing.T) {
 
 func TestGetInternalContentReturns200(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) UnrollResult {
+		mockUnrollContent: func(req UnrollEvent) (Content, error) {
 			var r Content
 			fileBytes, err := os.ReadFile("testdata/internalcontent-valid-response.json")
 			assert.NoError(t, err, "Cannot read test file")
 			err = json.Unmarshal(fileBytes, &r)
 			assert.NoError(t, err, "Cannot build json body")
-			return UnrollResult{r, nil}
+			return r, nil
 		},
 	}
 
@@ -220,8 +206,8 @@ func TestGetInternalContent_ValidationError(t *testing.T) {
 
 func TestGetInternalContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) UnrollResult {
-			return UnrollResult{nil, errors.New("Error while unrolling content")}
+		mockUnrollContent: func(req UnrollEvent) (Content, error) {
+			return nil, errors.New("Error while unrolling content")
 		},
 	}
 

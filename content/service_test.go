@@ -51,10 +51,10 @@ func TestUnrollContent(t *testing.T) {
 	err = json.Unmarshal(fileBytes, &c)
 	assert.NoError(t, err, "Cannot build json body")
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
-	assert.NoError(t, actual.err, "Should not get an error when expanding images")
+	actual, actualErr := cu.Unroll(req)
+	assert.NoError(t, actualErr, "Should not get an error when expanding images")
 
-	actualJSON, err := json.Marshal(actual.uc)
+	actualJSON, err := json.Marshal(actual)
 	assert.JSONEq(t, string(expected), string(actualJSON))
 }
 
@@ -65,8 +65,8 @@ func TestUnrollContent_NilSchema(t *testing.T) {
 	assert.NoError(t, err, "Cannot build json body")
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
-	actualJSON, err := json.Marshal(actual.uc)
+	actual, _ := cu.Unroll(req)
+	actualJSON, err := json.Marshal(actual)
 
 	assert.JSONEq(t, InvalidBodyRequest, string(actualJSON))
 }
@@ -87,11 +87,11 @@ func TestUnrollContent_ErrorExpandingFromContentStore(t *testing.T) {
 	err = json.Unmarshal(fileBytes, &c)
 	assert.NoError(t, err, "Cannot build json body")
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
+	actual, actualErr := cu.Unroll(req)
 
-	actualJSON, err := json.Marshal(actual.uc)
+	actualJSON, err := json.Marshal(actual)
 	assert.JSONEq(t, string(fileBytes), string(actualJSON))
-	assert.Error(t, actual.err, "Expected to return error when cannot read from content store")
+	assert.Error(t, actualErr, "Expected to return error when cannot read from content store")
 }
 
 func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
@@ -121,10 +121,10 @@ func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
 	err = json.Unmarshal(fileBytes, &c)
 	assert.NoError(t, err, "Cannot build json body")
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
+	actual, actualErr := cu.Unroll(req)
 
-	assert.NoError(t, actual.err, "Should not get an error when expanding images")
-	assert.Equal(t, expectedAltImages, actual.uc[altImages])
+	assert.NoError(t, actualErr, "Should not get an error when expanding images")
+	assert.Equal(t, expectedAltImages, actual[altImages])
 }
 
 func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
@@ -154,10 +154,10 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 	err = json.Unmarshal(fileBytes, &c)
 	assert.NoError(t, err, "Cannot build json body")
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
+	actual, actualErr := cu.Unroll(req)
 
-	assert.NoError(t, actual.err, "Should not get an error when expanding images")
-	assert.Equal(t, expectedAltImages, actual.uc[altImages])
+	assert.NoError(t, actualErr, "Should not get an error when expanding images")
+	assert.Equal(t, expectedAltImages, actual[altImages])
 }
 
 func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
@@ -182,9 +182,9 @@ func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 	c[bodyXML] = "invalid body"
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	res := cu.Unroll(req)
-	assert.NoError(t, res.err, "Should not receive error when body cannot be parsed.")
-	assert.Nil(t, res.uc["embeds"], "Response should not contain embeds field")
+	res, resErr := cu.Unroll(req)
+	assert.NoError(t, resErr, "Should not receive error when body cannot be parsed.")
+	assert.Nil(t, res["embeds"], "Response should not contain embeds field")
 }
 
 //func TestUnrollContent_ClipSet(t *testing.T) {
@@ -250,10 +250,10 @@ func TestUnrollInternalContent(t *testing.T) {
 	assert.NoError(t, err, "Cannot read necessary test file")
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
-	assert.NoError(t, actual.err, "Should not receive error for expanding internal content")
+	actual, actualErr := cu.Unroll(req)
+	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
-	actualJSON, err := json.Marshal(actual.uc)
+	actualJSON, err := json.Marshal(actual)
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }
 
@@ -284,10 +284,10 @@ func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 	assert.NoError(t, err, "Cannot read necessary test file")
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
-	assert.NoError(t, actual.err, "Should not receive error for expanding internal content")
+	actual, actualErr := cu.Unroll(req)
+	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
-	actualJSON, err := json.Marshal(actual.uc)
+	actualJSON, err := json.Marshal(actual)
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }
 
@@ -318,10 +318,10 @@ func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.
 	assert.NoError(t, err, "Cannot read necessary test file")
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual := cu.Unroll(req)
-	assert.NoError(t, actual.err, "Should not receive error for expanding internal content")
+	actual, actualErr := cu.Unroll(req)
+	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
-	actualJSON, err := json.Marshal(actual.uc)
+	actualJSON, err := json.Marshal(actual)
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }
 

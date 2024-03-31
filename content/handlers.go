@@ -10,15 +10,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-type ErrorMessage struct {
-	Message string `json:"message"`
-}
-
 var logger = NewAppLogger()
 
 type Unroller interface {
-	Validate(Content) bool
-	Unroll(UnrollEvent) UnrollResult
+	Unroll(UnrollEvent) (Content, error)
 }
 
 type Handler struct {
@@ -32,11 +27,6 @@ type UnrollEvent struct {
 	uuid string
 }
 
-type UnrollResult struct {
-	uc  Content
-	err error
-}
-
 func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 	tid := transactionidutils.GetTransactionIDFromRequest(r)
 	event, err := createUnrollEvent(r, tid)
@@ -45,20 +35,18 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !hh.ContentUnroller.Validate(event.c) {
-		handleError(r, tid, event.uuid, w, errors.New("Invalid content"), http.StatusBadRequest)
-		return
-	}
-
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res := hh.ContentUnroller.Unroll(event)
-	if res.err != nil {
-		handleError(r, tid, event.uuid, w, res.err, http.StatusInternalServerError)
+	res, err := hh.ContentUnroller.Unroll(event)
+	if errors.Is(err, ValidationError) {
+		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		return
+	} else if err != nil {
+		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	jsonRes, err := json.Marshal(res.uc)
+	jsonRes, err := json.Marshal(res)
 	if err != nil {
 		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
@@ -76,20 +64,18 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 		handleError(r, tid, "", w, err, http.StatusBadRequest)
 	}
 
-	if !hh.InternalContentUnroller.Validate(event.c) {
-		handleError(r, tid, event.uuid, w, errors.New("Invalid content"), http.StatusBadRequest)
-		return
-	}
-
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res := hh.InternalContentUnroller.Unroll(event)
-	if res.err != nil {
-		handleError(r, tid, event.uuid, w, res.err, http.StatusInternalServerError)
+	res, err := hh.InternalContentUnroller.Unroll(event)
+	if errors.Is(err, ValidationError) {
+		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		return
+	} else if err != nil {
+		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	jsonRes, err := json.Marshal(res.uc)
+	jsonRes, err := json.Marshal(res)
 	if err != nil {
 		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
@@ -107,13 +93,14 @@ func createUnrollEvent(r *http.Request, tid string) (UnrollEvent, error) {
 		return unrollEvent, err
 	}
 
-	var article Content
-	err = json.Unmarshal(b, &article)
+	var content Content
+	err = json.Unmarshal(b, &content)
 	if err != nil {
 		return unrollEvent, err
 	}
 
-	id, ok := article[id].(string)
+	//TODO: This may need to be moved to a validation function in the unroller in case `id` is not present in any of the unrollable content
+	id, ok := content[id].(string)
 	if !ok {
 		return unrollEvent, errors.New("Missing or invalid id field")
 	}
@@ -121,7 +108,7 @@ func createUnrollEvent(r *http.Request, tid string) (UnrollEvent, error) {
 	if err != nil {
 		return unrollEvent, err
 	}
-	unrollEvent = UnrollEvent{article, tid, uuid}
+	unrollEvent = UnrollEvent{content, tid, uuid}
 
 	return unrollEvent, nil
 }

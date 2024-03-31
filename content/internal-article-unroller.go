@@ -6,14 +6,11 @@ func NewInternalArticleUnroller(r Reader, apiHost string) *InternalArticleUnroll
 	return (*InternalArticleUnroller)(NewArticleUnroller(r, apiHost))
 }
 
-func (u *InternalArticleUnroller) Validate(article Content) bool {
-	_, hasLeadImages := article[leadImages]
-	_, hasBody := article[bodyXML]
+func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
+	if !validateInternalArticle(req.c) {
+		return req.c, ValidationError
+	}
 
-	return hasLeadImages || hasBody
-}
-
-func (u *InternalArticleUnroller) Unroll(req UnrollEvent) UnrollResult {
 	cc := req.c.clone()
 	expLeadImages, foundImages := unrollLeadImages(cc, u.reader, req.tid, req.uuid)
 	if foundImages {
@@ -25,5 +22,12 @@ func (u *InternalArticleUnroller) Unroll(req UnrollEvent) UnrollResult {
 		cc[embeds] = dynContents
 	}
 
-	return UnrollResult{cc, nil}
+	return cc, nil
+}
+
+func validateInternalArticle(article Content) bool {
+	_, hasLeadImages := article[leadImages]
+	_, hasBody := article[bodyXML]
+
+	return hasLeadImages || hasBody
 }

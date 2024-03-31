@@ -2,6 +2,8 @@ package content
 
 import "github.com/pkg/errors"
 
+var ValidationError = errors.New("Invalid content")
+
 type ArticleUnroller struct {
 	reader  Reader
 	apiHost string
@@ -14,22 +16,18 @@ func NewArticleUnroller(r Reader, apiHost string) *ArticleUnroller {
 	}
 }
 
-func (*ArticleUnroller) Validate(article Content) bool {
-	_, hasMainImage := article[mainImage]
-	_, hasBody := article[bodyXML]
-	_, hasAltImg := article[altImages].(map[string]interface{})
+func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
+	if !validateArticle(req.c) {
+		return req.c, ValidationError
+	}
 
-	return hasMainImage || hasBody || hasAltImg
-}
-
-func (u *ArticleUnroller) Unroll(req UnrollEvent) UnrollResult {
 	cc := req.c.clone()
 
 	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
 	if schema != nil {
 		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 		if err != nil {
-			return UnrollResult{req.c, errors.Wrapf(err, "Error while getting expanded content for uuid: %v", req.uuid)}
+			return req.c, errors.Wrapf(err, "Error while getting expanded content for uuid: %v", req.uuid)
 		}
 		u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
 
@@ -56,7 +54,7 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) UnrollResult {
 		}
 	}
 
-	return UnrollResult{cc, nil}
+	return cc, nil
 }
 
 func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) ContentSchema {
@@ -180,4 +178,12 @@ func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 		}
 		imageSet[members] = expMembers
 	}
+}
+
+func validateArticle(article Content) bool {
+	_, hasMainImage := article[mainImage]
+	_, hasBody := article[bodyXML]
+	_, hasAltImg := article[altImages].(map[string]interface{})
+
+	return hasMainImage || hasBody || hasAltImg
 }

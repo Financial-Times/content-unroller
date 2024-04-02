@@ -27,16 +27,16 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	cc := req.c.clone()
 
 	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
-	if schema != nil {
+	if schema != nil { //TODO: Invert check
 		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 		if err != nil {
 			return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
 		}
 		u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
 
-		mainImageUUID := schema.get(mainImage)
+		mainImageUUID := schema.get(mainImageField)
 		if mainImageUUID != "" {
-			cc[mainImage] = contentMap[mainImageUUID]
+			cc[mainImageField] = contentMap[mainImageUUID]
 		}
 
 		embeddedContentUUIDs := schema.getAll(embeds)
@@ -52,7 +52,7 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 		if promImgUUID != "" {
 			pi, found := contentMap[promImgUUID]
 			if found {
-				cc[altImages].(map[string]interface{})[promotionalImage] = pi
+				cc[altImagesField].(map[string]interface{})[promotionalImage] = pi
 			}
 		}
 	}
@@ -61,16 +61,16 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 }
 
 func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) ContentSchema {
-	//mainImage
+	//mainImageField
 	schema := make(ContentSchema)
-	mi, foundMainImg := cc[mainImage].(map[string]interface{})
+	mi, foundMainImg := cc[mainImageField].(map[string]interface{})
 	if foundMainImg {
 		u, err := extractUUIDFromString(mi[id].(string))
 		if err != nil {
 			logger.Errorf(tid, uuid, "Cannot find main image: %v. Skipping expanding main image", err.Error())
 			foundMainImg = false
 		} else {
-			schema.put(mainImage, u)
+			schema.put(mainImageField, u)
 		}
 	} else {
 		logger.Debug(tid, uuid, "Cannot find main image. Skipping expanding main image")
@@ -84,7 +84,7 @@ func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string
 
 	//promotional image
 	var foundPromImg bool
-	altImg, found := cc[altImages].(map[string]interface{})
+	altImg, found := cc[altImagesField].(map[string]interface{})
 	if found {
 		var promImg map[string]interface{}
 		promImg, foundPromImg = altImg[promotionalImage].(map[string]interface{})
@@ -115,29 +115,11 @@ func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string
 }
 
 func (u *ArticleUnroller) resolveModelsForSetsMembers(b ContentSchema, imgMap map[string]Content, tid string, uuid string) {
-	mainImageUUID := b.get(mainImage)
+	mainImageUUID := b.get(mainImageField)
 	u.resolveImageSet(mainImageUUID, imgMap, tid, uuid)
 	for _, embeddedImgSet := range b.getAll(embeds) {
 		u.resolveImageSet(embeddedImgSet, imgMap, tid, uuid)
 	}
-}
-
-func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
-	posterData, found := poster.(map[string]interface{})
-	if !found {
-		return Content{}, errors.New("Problem in poster field")
-	}
-	papiurl := posterData["apiUrl"].(string)
-	pUUID, err := extractUUIDFromString(papiurl)
-	if err != nil {
-		return Content{}, err
-	}
-	posterContent, err := u.reader.Get([]string{pUUID}, tid)
-	if err != nil {
-		return Content{}, err
-	}
-	u.resolveImageSet(pUUID, posterContent, tid, uuid)
-	return posterContent[pUUID], nil
 }
 
 func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string]Content, tid string, uuid string) {
@@ -147,7 +129,7 @@ func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 		return
 	}
 
-	rawMembers, found := imageSet[members]
+	rawMembers, found := imageSet[membersField]
 	if found {
 		membList, ok := rawMembers.([]interface{})
 		if !ok {
@@ -179,14 +161,33 @@ func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 			mData.merge(mContent)
 			expMembers = append(expMembers, mData)
 		}
-		imageSet[members] = expMembers
+		imageSet[membersField] = expMembers
 	}
 }
 
-func validateArticle(article Content) bool {
-	_, hasMainImage := article[mainImage]
-	_, hasBody := article[bodyXML]
-	_, hasAltImg := article[altImages].(map[string]interface{})
+func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
+	posterData, found := poster.(map[string]interface{})
+	if !found {
+		return Content{}, errors.New("Problem in poster field")
+	}
+	papiurl := posterData["apiUrl"].(string)
+	pUUID, err := extractUUIDFromString(papiurl)
+	if err != nil {
+		return Content{}, err
+	}
+	posterContent, err := u.reader.Get([]string{pUUID}, tid)
+	if err != nil {
+		return Content{}, err
+	}
+	u.resolveImageSet(pUUID, posterContent, tid, uuid)
+	return posterContent[pUUID], nil
+}
 
-	return hasMainImage || hasBody || hasAltImg
+func validateArticle(article Content) bool {
+	_, hasMainImage := article[mainImageField]
+	_, hasBody := article[bodyXMLField]
+	_, hasAltImg := article[altImagesField].(map[string]interface{})
+	contentType, _ := article[typeField].(string) //TODO: Add tests with types not containing article
+
+	return (hasMainImage || hasBody || hasAltImg) && contentType == ArticleType
 }

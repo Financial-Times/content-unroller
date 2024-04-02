@@ -57,7 +57,7 @@ func (cr *ContentReader) Get(uuids []string, tid string) (map[string]Content, er
 	var imgModelUUIDs []string
 	for _, c := range contentBatch {
 		cr.addItemToMap(c, cm)
-		if _, foundMembers := c[members]; foundMembers {
+		if _, foundMembers := c[membersField]; foundMembers {
 			imgModelUUIDs = append(imgModelUUIDs, c.getMembersUUID()...)
 		}
 	}

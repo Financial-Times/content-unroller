@@ -136,8 +136,8 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Implement clipset unroller
-//TODO: Create tests for clipset unroller
+//TODO: Implement clip unroller
+//TODO: Create tests for clip unroller
 //TODO: Move tests is service_test to corresponding unroller_test
 //Optional todos:
 //TODO: Fix logger

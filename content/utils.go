@@ -4,15 +4,18 @@ const (
 	ImageSetType       = "http://www.ft.com/ontology/content/ImageSet"
 	DynamicContentType = "http://www.ft.com/ontology/content/DynamicContent"
 	ClipSetType        = "http://www.ft.com/ontology/content/ClipSet"
-	mainImage          = "mainImage"
+	mainImageField     = "mainImage"
 	id                 = "id"
 	embeds             = "embeds"
-	altImages          = "alternativeImages"
+	altImagesField     = "alternativeImages"
 	leadImages         = "leadImages"
-	members            = "members"
-	bodyXML            = "bodyXML"
+	membersField       = "members"
+	bodyXMLField       = "bodyXML"
 	promotionalImage   = "promotionalImage"
 	image              = "image"
+	typeField          = "type"
+	typesField         = "types"
+	ArticleType        = "http://www.ft.com/ontology/content/Article"
 )
 
 type Content map[string]interface{}
@@ -27,7 +30,7 @@ func (c Content) clone() Content {
 
 func (c Content) getMembersUUID() []string {
 	uuids := []string{}
-	members, found := c[members]
+	members, found := c[membersField]
 	if !found {
 		return uuids
 	}
@@ -61,7 +64,7 @@ func (c Content) merge(src Content) {
 type ContentSchema map[string][]string
 
 func (u ContentSchema) put(key string, value string) {
-	if key != mainImage && key != promotionalImage && key != leadImages {
+	if key != mainImageField && key != promotionalImage && key != leadImages {
 		return
 	}
 	prev, found := u[key]
@@ -74,7 +77,7 @@ func (u ContentSchema) put(key string, value string) {
 }
 
 func (u ContentSchema) get(key string) string {
-	if _, found := u[key]; key != mainImage && key != promotionalImage || !found {
+	if _, found := u[key]; key != mainImageField && key != promotionalImage || !found {
 		return ""
 	}
 	return u[key][0]
@@ -199,7 +202,7 @@ func resolveContent(uuid string, imgMap map[string]Content) (Content, bool) {
 }
 
 func extractEmbeddedContentByType(cc Content, acceptedTypes []string, tid string, uuid string) ([]string, bool) {
-	body, foundBody := cc[bodyXML]
+	body, foundBody := cc[bodyXMLField]
 	if !foundBody {
 		logger.Debug(tid, uuid, "Missing body. Skipping expanding embedded content and images.")
 		return nil, false

@@ -125,7 +125,7 @@ func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
 	actual, actualErr := cu.Unroll(req)
 
 	assert.NoError(t, actualErr, "Should not get an error when expanding images")
-	assert.Equal(t, expectedAltImages, actual[altImages])
+	assert.Equal(t, expectedAltImages, actual[altImagesField])
 }
 
 func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
@@ -158,7 +158,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 	actual, actualErr := cu.Unroll(req)
 
 	assert.NoError(t, actualErr, "Should not get an error when expanding images")
-	assert.Equal(t, expectedAltImages, actual[altImages])
+	assert.Equal(t, expectedAltImages, actual[altImagesField])
 }
 
 func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
@@ -180,7 +180,7 @@ func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 	fileBytes, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")
 	err = json.Unmarshal(fileBytes, &c)
-	c[bodyXML] = "invalid body"
+	c[bodyXMLField] = "invalid body"
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
 	res, resErr := cu.Unroll(req)

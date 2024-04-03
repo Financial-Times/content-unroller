@@ -1,9 +1,5 @@
 package content
 
-import (
-	"slices"
-)
-
 type InternalArticleUnroller ArticleUnroller
 
 func NewInternalArticleUnroller(r Reader, apiHost string) *InternalArticleUnroller {
@@ -35,7 +31,7 @@ func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 func validateInternalArticle(article Content) bool {
 	_, hasLeadImages := article[leadImages]
 	_, hasBody := article[bodyXMLField]
-	contentTypes, _ := article[typesField].([]interface{}) //TODO: Add tests with types not containing article
+	//TODO: Add tests with types not containing article
 
-	return (hasLeadImages || hasBody) && slices.Contains(contentTypes, ArticleType)
+	return (hasLeadImages || hasBody) && checkType(article, ArticleType)
 }

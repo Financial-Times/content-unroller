@@ -1,15 +1,19 @@
 package content
 
+import "slices"
+
 const (
 	ImageSetType       = "http://www.ft.com/ontology/content/ImageSet"
 	DynamicContentType = "http://www.ft.com/ontology/content/DynamicContent"
 	ClipSetType        = "http://www.ft.com/ontology/content/ClipSet"
+	ClipType           = "http://www.ft.com/ontology/content/Clip"
 	mainImageField     = "mainImage"
 	id                 = "id"
 	embeds             = "embeds"
 	altImagesField     = "alternativeImages"
 	leadImages         = "leadImages"
 	membersField       = "members"
+	posterField        = "poster"
 	bodyXMLField       = "bodyXML"
 	promotionalImage   = "promotionalImage"
 	image              = "image"
@@ -220,4 +224,15 @@ func extractEmbeddedContentByType(cc Content, acceptedTypes []string, tid string
 	}
 
 	return emContentUUIDs, true
+}
+
+// TODO: Add tests
+func checkType(content Content, wantedType string) bool {
+	if contentTypes, ok := content[typesField].([]interface{}); ok {
+		return slices.ContainsFunc(contentTypes, func(contentType interface{}) bool {
+			return contentType == wantedType
+		})
+	}
+	contentType, _ := content[typeField].(string)
+	return contentType == wantedType
 }

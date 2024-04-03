@@ -187,7 +187,7 @@ func validateArticle(article Content) bool {
 	_, hasMainImage := article[mainImageField]
 	_, hasBody := article[bodyXMLField]
 	_, hasAltImg := article[altImagesField].(map[string]interface{})
-	contentType, _ := article[typeField].(string) //TODO: Add tests with types not containing article
+	//TODO: Add tests with types not containing article
 
-	return (hasMainImage || hasBody || hasAltImg) && contentType == ArticleType
+	return (hasMainImage || hasBody || hasAltImg) && checkType(article, ArticleType)
 }

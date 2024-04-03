@@ -145,11 +145,19 @@ func Test_validateClipset(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "content-with-correct-type",
+			name: "content-with-correct-type-and-no-members",
 			content: Content{
 				typeField: ClipSetType,
 			},
 			want: false,
+		},
+		{
+			name: "content-with-correct-type-and-members",
+			content: Content{
+				typeField:    ClipSetType,
+				membersField: []member{},
+			},
+			want: true,
 		},
 	}
 	for _, tt := range tests {

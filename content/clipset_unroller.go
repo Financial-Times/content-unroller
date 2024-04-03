@@ -67,12 +67,10 @@ func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
 	returnContent := event.c.clone()
 	returnContent[membersField] = unrolledClips
 	return returnContent, nil
-
 }
 
 func validateClipset(c Content) bool {
 	_, hasMembers := c[membersField] //TODO: Check if clipset can have no members and will this field exists in this case
-	contentType, _ := c[typeField].(string)
 
-	return hasMembers && contentType == ClipSetType
+	return hasMembers && checkType(c, ClipSetType)
 }

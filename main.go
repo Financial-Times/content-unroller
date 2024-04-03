@@ -138,6 +138,13 @@ func getServiceHealthURI(hostname string) string {
 
 //TODO: Implement clip unroller
 //TODO: Create tests for clip unroller
+//TODO: Implement imageSet unroller
+//TODO: Create tests for imageSet unroller
+//Optional if `type` will always be a string:
+//TODO: Add general unroller struct to handler
+//TODO: Create generic unroller struct that unrolls based on type field
+//TODO: Replace unroller structures with functions
+//End of optional
 //TODO: Move tests is service_test to corresponding unroller_test
 //Optional todos:
 //TODO: Fix logger

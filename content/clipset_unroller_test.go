@@ -55,7 +55,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 				tid:  testTID,
 				uuid: testUUID,
 			},
-			want:    invalidClipset,
+			want:    nil,
 			wantErr: assert.Error,
 		},
 		{

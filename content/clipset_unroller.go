@@ -26,7 +26,7 @@ type member struct {
 
 func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
 	if !validateClipset(event.c) {
-		return event.c, ValidationError
+		return nil, ValidationError
 	}
 
 	members, ok := event.c[membersField].([]member)

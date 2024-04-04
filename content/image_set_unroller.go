@@ -1,9 +1,8 @@
 package content
 
 type ImageSetUnroller struct {
-	imageUnroller Unroller
-	reader        Reader
-	apiHost       string
+	reader  Reader
+	apiHost string
 }
 
 func NewImageSetUnroller(r Reader, apiHost string) *ImageSetUnroller {
@@ -18,8 +17,8 @@ func (u *ImageSetUnroller) Unroll(event UnrollEvent) (Content, error) {
 		return nil, ValidationError
 	}
 
-	members, found := event.c[membersField].([]member)
-	if !found {
+	members, ok := event.c[membersField].([]interface{})
+	if !ok {
 		return nil, ConversionError
 	}
 	if len(members) == 0 {
@@ -28,7 +27,11 @@ func (u *ImageSetUnroller) Unroll(event UnrollEvent) (Content, error) {
 
 	var imageUUIDs []string
 	for _, m := range members {
-		uuid, err := extractUUIDFromString(m.UUID)
+		memberID, ok := m.(map[string]interface{})["id"].(string)
+		if !ok {
+			return nil, ConversionError
+		}
+		uuid, err := extractUUIDFromString(memberID)
 		if err != nil {
 			return nil, err
 		}
@@ -42,15 +45,7 @@ func (u *ImageSetUnroller) Unroll(event UnrollEvent) (Content, error) {
 
 	var unrolledImages []Content
 	for _, imageUUID := range imageUUIDs {
-		unrolledClip, err := u.imageUnroller.Unroll(UnrollEvent{
-			c:    images[imageUUID],
-			tid:  event.tid,
-			uuid: imageUUID,
-		})
-		if err != nil {
-			return nil, err
-		}
-		unrolledImages = append(unrolledImages, unrolledClip)
+		unrolledImages = append(unrolledImages, images[imageUUID])
 	}
 
 	returnContent := event.c.clone()

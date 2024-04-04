@@ -20,16 +20,12 @@ func NewClipsetUnroller(clipUnroller Unroller, r Reader, apiHost string) *Clipse
 	}
 }
 
-type member struct {
-	UUID string `json:"id"`
-}
-
 func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
 	if !validateClipset(event.c) {
 		return nil, ValidationError
 	}
 
-	members, ok := event.c[membersField].([]member)
+	members, ok := event.c[membersField].([]interface{})
 	if !ok {
 		return nil, ConversionError
 	}
@@ -39,7 +35,11 @@ func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
 
 	var clipUUIDs []string
 	for _, m := range members {
-		uuid, err := extractUUIDFromString(m.UUID)
+		memberID, ok := m.(map[string]interface{})["id"].(string)
+		if !ok {
+			return nil, ConversionError
+		}
+		uuid, err := extractUUIDFromString(memberID)
 		if err != nil {
 			return nil, err
 		}

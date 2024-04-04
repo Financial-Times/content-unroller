@@ -188,36 +188,46 @@ func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 	assert.Nil(t, res["embeds"], "Response should not contain embeds field")
 }
 
-//func TestUnrollContent_ClipSet(t *testing.T) {
-//	cu := ArticleUnroller{
-//		reader: &ReaderMock{
-//			mockGet: func(c []string, tid string) (map[string]Content, error) {
-//				b, err := os.ReadFile("testdata/reader-content-clipset-valid-response.json")
-//				assert.NoError(t, err, "Cannot open file necessary for test case")
-//				var res map[string]Content
-//				err = json.Unmarshal(b, &res)
-//				assert.NoError(t, err, "Cannot return valid response")
-//				return res, nil
-//			},
-//		},
-//		apiHost: "test.api.ft.com",
-//	}
-//
-//	expected, err := os.ReadFile("testdata/content-clipset-valid-response.json")
-//	assert.NoError(t, err, "Cannot read necessary test file")
-//
-//	var c Content
-//	fileBytes, err := os.ReadFile("testdata/content-clipset-valid-request.json")
-//	assert.NoError(t, err, "Cannot read necessary test file")
-//	err = json.Unmarshal(fileBytes, &c)
-//	assert.NoError(t, err, "Cannot build json body")
-//	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-//	actual := cu.Unroll(req)
-//	assert.NoError(t, actual.err, "Should not get an error when expanding images")
-//
-//	actualJSON, err := json.Marshal(actual.uc)
-//	assert.JSONEq(t, string(expected), string(actualJSON))
-//}
+func TestUnrollContent_ClipSet(t *testing.T) {
+	defaultReader := &ReaderMock{
+		mockGet: func(c []string, tid string) (map[string]Content, error) {
+			b, err := os.ReadFile("testdata/reader-content-clipset-valid-response.json")
+			assert.NoError(t, err, "Cannot open file necessary for test case")
+			var res map[string]Content
+			err = json.Unmarshal(b, &res)
+			assert.NoError(t, err, "Cannot return valid response")
+			return res, nil
+		},
+	}
+	defaultAPIHost := "test.api.ft.com"
+	clipsetUnroller := ClipsetUnroller{
+		clipUnroller: &ClipUnroller{
+			imageSetUnroller: &ImageSetUnroller{
+				reader:  defaultReader,
+				apiHost: defaultAPIHost,
+			},
+			reader:  defaultReader,
+			apiHost: defaultAPIHost,
+		},
+		reader:  defaultReader,
+		apiHost: defaultAPIHost,
+	}
+
+	expected, err := os.ReadFile("testdata/content-clipset-valid-response.json")
+	assert.NoError(t, err, "Cannot read necessary test file")
+
+	var c Content
+	fileBytes, err := os.ReadFile("testdata/content-clipset-valid-request.json")
+	assert.NoError(t, err, "Cannot read necessary test file")
+	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Cannot build json body")
+	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
+	actual, err := clipsetUnroller.Unroll(req)
+	assert.NoError(t, err, "Should not get an error when expanding clipset")
+
+	actualJSON, err := json.Marshal(actual)
+	assert.JSONEq(t, string(expected), string(actualJSON))
+}
 
 func TestUnrollInternalContent(t *testing.T) {
 	cu := InternalArticleUnroller{

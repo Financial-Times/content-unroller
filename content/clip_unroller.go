@@ -14,22 +14,17 @@ func NewClipUnroller(imageSetUnroller Unroller, r Reader, apiHost string) *ClipU
 	}
 }
 
-type poster struct {
-	ApiUrl string `json:"apiUrl"`
-	Type   string `json:"type"`
-}
-
 func (u *ClipUnroller) Unroll(event UnrollEvent) (Content, error) {
 	if !validateClip(event.c) {
 		return nil, ValidationError
 	}
 
-	poster, ok := event.c[posterField].(poster)
+	p, ok := event.c[posterField].(map[string]interface{})["apiUrl"].(string)
 	if !ok {
 		return nil, ConversionError
 	}
 
-	posterUUID, err := extractUUIDFromString(poster.ApiUrl)
+	posterUUID, err := extractUUIDFromString(p)
 	if err != nil {
 		return nil, err
 	}

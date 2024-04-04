@@ -7,6 +7,7 @@ const (
 	DynamicContentType = "http://www.ft.com/ontology/content/DynamicContent"
 	ClipSetType        = "http://www.ft.com/ontology/content/ClipSet"
 	ClipType           = "http://www.ft.com/ontology/content/Clip"
+	ArticleType        = "http://www.ft.com/ontology/content/Article"
 	mainImageField     = "mainImage"
 	id                 = "id"
 	embeds             = "embeds"
@@ -19,7 +20,6 @@ const (
 	image              = "image"
 	typeField          = "type"
 	typesField         = "types"
-	ArticleType        = "http://www.ft.com/ontology/content/Article"
 )
 
 type Content map[string]interface{}

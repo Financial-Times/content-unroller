@@ -136,10 +136,6 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Implement clip unroller
-//TODO: Create tests for clip unroller
-//TODO: Implement imageSet unroller
-//TODO: Create tests for imageSet unroller
 //TODO: Add general unroller struct to handler
 //TODO: Create generic unroller struct that unrolls based on type field
 //TODO: Replace unroller structures with functions

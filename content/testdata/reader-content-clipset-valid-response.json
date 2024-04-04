@@ -23,11 +23,11 @@
         "audioCodec": "aac"
       }
     ],
+    "canBeSyndicated": "verify",
     "poster": {
       "apiUrl": "https://api.ft.com/content/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
       "type": "http://www.ft.com/ontology/content/ImageSet"
-    },
-    "canBeSyndicated": "verify"
+    }
   },
   "99d3c5f9-eeee-461f-a0d8-13f671fa17ae": {
     "id": "http://www.ft.com/thing/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
@@ -35,17 +35,17 @@
     "alternativeTitles": {},
     "alternativeStandfirsts": {},
     "publishedDate": "2024-03-06T17:01:36.790Z",
-    "members": [
-      {
-        "id": "https://api-t.ft.com/content/e37aa9c0-69bd-4bd0-8874-c90f0a265894"
-      }
-    ],
     "requestUrl": "https://api-t.ft.com/content/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
     "brands": [
       "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
     ],
     "alternativeImages": {},
-    "canBeSyndicated": "verify"
+    "canBeSyndicated": "verify",
+    "members": [
+      {
+        "id": "https://api-t.ft.com/content/e37aa9c0-69bd-4bd0-8874-c90f0a265894"
+      }
+    ]
   },
   "e37aa9c0-69bd-4bd0-8874-c90f0a265894": {
     "id": "http://www.ft.com/thing/e37aa9c0-69bd-4bd0-8874-c90f0a265894",

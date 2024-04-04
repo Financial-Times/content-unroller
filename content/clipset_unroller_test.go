@@ -24,7 +24,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 		typeField: "wrong",
 	}
 	validClipsetWithNoMembers := Content{
-		membersField: []member{},
+		membersField: []interface{}{},
 		typeField:    ClipSetType,
 	}
 	unrolledClip := Content{
@@ -72,6 +72,9 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 			},
 			want:    validClipsetWithNoMembers,
 			wantErr: assert.NoError,
+
+			//want:    nil,
+			//wantErr: assert.Error, //TODO: Do we want error when sending empty members?
 		},
 		{
 			name: "valid-clipset-with-members",
@@ -92,8 +95,10 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 			},
 			event: UnrollEvent{
 				c: Content{
-					membersField: []member{
-						{UUID: testUUIDClip},
+					membersField: []interface{}{
+						map[string]interface{}{
+							id: testUUIDClip,
+						},
 					},
 					typeField: ClipSetType,
 				},
@@ -155,7 +160,7 @@ func Test_validateClipset(t *testing.T) {
 			name: "content-with-correct-type-and-members",
 			content: Content{
 				typeField:    ClipSetType,
-				membersField: []member{},
+				membersField: []Content{},
 			},
 			want: true,
 		},

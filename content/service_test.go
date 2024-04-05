@@ -200,15 +200,7 @@ func TestUnrollContent_ClipSet(t *testing.T) {
 		},
 	}
 	defaultAPIHost := "test.api.ft.com"
-	clipsetUnroller := ClipsetUnroller{
-		clipUnroller: &ClipUnroller{
-			imageSetUnroller: &ImageSetUnroller{
-				reader:  defaultReader,
-				apiHost: defaultAPIHost,
-			},
-			reader:  defaultReader,
-			apiHost: defaultAPIHost,
-		},
+	unroller := UniversalUnroller{
 		reader:  defaultReader,
 		apiHost: defaultAPIHost,
 	}
@@ -222,7 +214,7 @@ func TestUnrollContent_ClipSet(t *testing.T) {
 	err = json.Unmarshal(fileBytes, &c)
 	assert.NoError(t, err, "Cannot build json body")
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
-	actual, err := clipsetUnroller.Unroll(req)
+	actual, err := unroller.UnrollContent(req)
 	assert.NoError(t, err, "Should not get an error when expanding clipset")
 
 	actualJSON, err := json.Marshal(actual)

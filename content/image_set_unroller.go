@@ -1,18 +1,6 @@
 package content
 
-type ImageSetUnroller struct {
-	reader  Reader
-	apiHost string
-}
-
-func NewImageSetUnroller(r Reader, apiHost string) *ImageSetUnroller {
-	return &ImageSetUnroller{
-		reader:  r,
-		apiHost: apiHost,
-	}
-}
-
-func (u *ImageSetUnroller) Unroll(event UnrollEvent) (Content, error) {
+func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 	if !validateImageSet(event.c) {
 		return nil, ValidationError
 	}

@@ -24,8 +24,12 @@ type ContentUnrollerMock struct {
 	mockUnrollContent func(UnrollEvent) (Content, error)
 }
 
-func (cu *ContentUnrollerMock) Unroll(req UnrollEvent) (Content, error) {
-	return cu.mockUnrollContent(req)
+func (cu *ContentUnrollerMock) UnrollContent(event UnrollEvent) (Content, error) {
+	return cu.mockUnrollContent(event)
+}
+
+func (cu *ContentUnrollerMock) UnrollInternalContent(event UnrollEvent) (Content, error) {
+	return cu.mockUnrollContent(event)
 }
 
 func TestGetContentReturns200(t *testing.T) {
@@ -41,7 +45,7 @@ func TestGetContentReturns200(t *testing.T) {
 	}
 
 	h := Handler{
-		ContentUnroller: []Unroller{&cu},
+		Unroller: &cu,
 	}
 	body, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")
@@ -63,7 +67,7 @@ func TestGetContentReturns200(t *testing.T) {
 
 func TestGetContent_UnrollEventError(t *testing.T) {
 	h := Handler{
-		ContentUnroller: nil,
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/content", strings.NewReader("sample body"))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -78,7 +82,7 @@ func TestGetContent_UnrollEventError(t *testing.T) {
 
 func TestGetContent_UnrollEventError_MissingID(t *testing.T) {
 	h := Handler{
-		ContentUnroller: []Unroller{&ArticleUnroller{}},
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/content", strings.NewReader(invalidBodyMissingID))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -94,7 +98,7 @@ func TestGetContent_UnrollEventError_MissingID(t *testing.T) {
 // TODO: Fix this test, by testing the real validation function
 func TestGetContent_ValidationError(t *testing.T) {
 	h := Handler{
-		ContentUnroller: []Unroller{&ArticleUnroller{}},
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/content", strings.NewReader(InvalidBodyRequest))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -104,7 +108,7 @@ func TestGetContent_ValidationError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Invalid content")
+	assert.Contains(t, string(rr.Body.Bytes()), "invalid content")
 }
 
 func TestGetContent_UnrollingError(t *testing.T) {
@@ -115,7 +119,7 @@ func TestGetContent_UnrollingError(t *testing.T) {
 	}
 
 	h := Handler{
-		ContentUnroller: []Unroller{&cu},
+		Unroller: &cu,
 	}
 	body, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")
@@ -143,7 +147,7 @@ func TestGetInternalContentReturns200(t *testing.T) {
 	}
 
 	h := Handler{
-		InternalContentUnroller: []Unroller{&cu},
+		Unroller: &cu,
 	}
 	body, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")
@@ -163,7 +167,7 @@ func TestGetInternalContentReturns200(t *testing.T) {
 
 func TestGetInternalContent_UnrollEventError(t *testing.T) {
 	h := Handler{
-		InternalContentUnroller: []Unroller{&InternalArticleUnroller{}},
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/internalcontent", strings.NewReader("sample body"))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -178,7 +182,7 @@ func TestGetInternalContent_UnrollEventError(t *testing.T) {
 
 func TestGetInternalContent_UnrollEventError_MissingID(t *testing.T) {
 	h := Handler{
-		InternalContentUnroller: []Unroller{&InternalArticleUnroller{}},
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/internalcontent", strings.NewReader(invalidBodyMissingID))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -193,7 +197,7 @@ func TestGetInternalContent_UnrollEventError_MissingID(t *testing.T) {
 
 func TestGetInternalContent_ValidationError(t *testing.T) {
 	h := Handler{
-		InternalContentUnroller: []Unroller{&InternalArticleUnroller{}},
+		Unroller: &UniversalUnroller{},
 	}
 	req, err := http.NewRequest(http.MethodPost, "/internalcontent", strings.NewReader(InvalidBodyRequest))
 	assert.NoError(t, err, "Cannot create request necessary for test")
@@ -203,7 +207,7 @@ func TestGetInternalContent_ValidationError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Invalid content")
+	assert.Contains(t, string(rr.Body.Bytes()), "invalid content")
 }
 
 func TestGetInternalContent_UnrollingError(t *testing.T) {
@@ -214,7 +218,7 @@ func TestGetInternalContent_UnrollingError(t *testing.T) {
 	}
 
 	h := Handler{
-		InternalContentUnroller: []Unroller{&cu},
+		Unroller: &cu,
 	}
 	body, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")

@@ -86,10 +86,9 @@ func main() {
 		}
 
 		reader := content.NewContentReader(readerConfig, httpClient)
-		unroller := content.NewArticleUnroller(reader, *apiHost)
-		internalUnroller := content.NewInternalArticleUnroller(reader, *apiHost)
+		unroller := content.NewUniversalUnroller(reader, *apiHost)
 
-		h := setupServiceHandler(unroller, internalUnroller, sc)
+		h := setupServiceHandler(unroller, sc)
 		err := http.ListenAndServe(":"+*port, h)
 		if err != nil {
 			log.Fatalf("Unable to start server: %v", err)
@@ -104,11 +103,10 @@ func main() {
 	}
 }
 
-func setupServiceHandler(contentUnroller, internalContentUnroller content.Unroller, sc content.ServiceConfig) *mux.Router {
+func setupServiceHandler(unroller content.Unroller, sc content.ServiceConfig) *mux.Router {
 	r := mux.NewRouter()
 	ch := &content.Handler{
-		ContentUnroller:         []content.Unroller{contentUnroller},
-		InternalContentUnroller: []content.Unroller{internalContentUnroller},
+		Unroller: unroller,
 	}
 
 	var checks []fthealth.Check
@@ -136,9 +134,6 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Add general unroller struct to handler
-//TODO: Create generic unroller struct that unrolls based on type field
-//TODO: Replace unroller structures with functions
 //TODO: Move tests is service_test to corresponding unroller_test
 //Optional todos:
 //TODO: Fix logger

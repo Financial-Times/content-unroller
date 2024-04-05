@@ -11,7 +11,11 @@ type mockUnroller struct {
 	unrollFunc func(event UnrollEvent) (Content, error)
 }
 
-func (m mockUnroller) Unroll(event UnrollEvent) (Content, error) {
+func (m mockUnroller) UnrollContent(event UnrollEvent) (Content, error) {
+	return m.unrollFunc(event)
+}
+
+func (m mockUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
 	return m.unrollFunc(event)
 }
 
@@ -30,6 +34,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 	unrolledClip := Content{
 		id:         testUUIDClip,
 		"unrolled": "true",
+		typeField:  ClipType,
 	}
 	type fields struct {
 		clipUnroller Unroller
@@ -117,12 +122,8 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := &ClipsetUnroller{
-				clipUnroller: tt.unrollerFields.clipUnroller,
-				reader:       tt.unrollerFields.reader,
-				apiHost:      tt.unrollerFields.apiHost,
-			}
-			got, err := u.Unroll(tt.event)
+			u := NewUniversalUnroller(tt.unrollerFields.reader, tt.unrollerFields.apiHost)
+			got, err := u.UnrollContent(tt.event)
 			if !tt.wantErr(t, err, fmt.Sprintf("Unroll(%v)", tt.event)) {
 				return
 			}

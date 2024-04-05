@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-var ValidationError = errors.New("Invalid content")
-
 type ArticleUnroller struct {
 	reader  Reader
 	apiHost string

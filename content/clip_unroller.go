@@ -1,30 +1,21 @@
 package content
 
-type ClipUnroller struct {
-	imageSetUnroller Unroller
-	reader           Reader
-	apiHost          string
-}
-
-func NewClipUnroller(imageSetUnroller Unroller, r Reader, apiHost string) *ClipUnroller {
-	return &ClipUnroller{
-		imageSetUnroller: imageSetUnroller,
-		reader:           r,
-		apiHost:          apiHost,
-	}
-}
-
-func (u *ClipUnroller) Unroll(event UnrollEvent) (Content, error) {
+func (u *UniversalUnroller) unrollClip(event UnrollEvent) (Content, error) {
 	if !validateClip(event.c) {
 		return nil, ValidationError
 	}
 
-	p, ok := event.c[posterField].(map[string]interface{})["apiUrl"].(string)
+	p, ok := event.c[posterField]
+	if !ok {
+		return event.c, nil
+	}
+
+	apiUrl, ok := p.(map[string]interface{})["apiUrl"].(string)
 	if !ok {
 		return nil, ConversionError
 	}
 
-	posterUUID, err := extractUUIDFromString(p)
+	posterUUID, err := extractUUIDFromString(apiUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +25,7 @@ func (u *ClipUnroller) Unroll(event UnrollEvent) (Content, error) {
 		return nil, err
 	}
 
-	unrolledPoster, err := u.imageSetUnroller.Unroll(
+	unrolledPoster, err := u.unrollImageSet(
 		UnrollEvent{
 			c:    posterContent[posterUUID],
 			tid:  event.tid,

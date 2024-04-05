@@ -1,26 +1,6 @@
 package content
 
-import (
-	"errors"
-)
-
-var ConversionError = errors.New("failed to cast variable to expected type")
-
-type ClipsetUnroller struct {
-	clipUnroller Unroller
-	reader       Reader
-	apiHost      string
-}
-
-func NewClipsetUnroller(clipUnroller Unroller, r Reader, apiHost string) *ClipsetUnroller {
-	return &ClipsetUnroller{
-		clipUnroller: clipUnroller,
-		reader:       r,
-		apiHost:      apiHost,
-	}
-}
-
-func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
+func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 	if !validateClipset(event.c) {
 		return nil, ValidationError
 	}
@@ -53,7 +33,7 @@ func (u *ClipsetUnroller) Unroll(event UnrollEvent) (Content, error) {
 
 	var unrolledClips []Content
 	for _, clipUUID := range clipUUIDs {
-		unrolledClip, err := u.clipUnroller.Unroll(UnrollEvent{
+		unrolledClip, err := u.unrollClip(UnrollEvent{
 			c:    clips[clipUUID],
 			tid:  event.tid,
 			uuid: clipUUID,

@@ -24,12 +24,8 @@ func TestClipUnroller_Unroll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := &ClipUnroller{
-				imageSetUnroller: tt.fields.imageSetUnroller,
-				reader:           tt.fields.reader,
-				apiHost:          tt.fields.apiHost,
-			}
-			got, err := u.Unroll(tt.event)
+			u := NewUniversalUnroller(tt.fields.reader, tt.fields.apiHost)
+			got, err := u.UnrollContent(tt.event)
 			if !tt.wantErr(t, err, fmt.Sprintf("Unroll(%v)", tt.event)) {
 				return
 			}

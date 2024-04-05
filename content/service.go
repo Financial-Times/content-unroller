@@ -1,6 +1,10 @@
 package content
 
-import "slices"
+import (
+	"errors"
+	"fmt"
+	"slices"
+)
 
 const (
 	ImageSetType       = "http://www.ft.com/ontology/content/ImageSet"
@@ -21,6 +25,51 @@ const (
 	typeField          = "type"
 	typesField         = "types"
 )
+
+var (
+	ConversionError = errors.New("failed to cast variable to expected type")
+	ValidationError = errors.New("invalid content")
+)
+
+type UniversalUnroller struct {
+	reader  Reader
+	apiHost string
+}
+
+func NewUniversalUnroller(r Reader, apiHost string) *UniversalUnroller {
+	return &UniversalUnroller{
+		reader:  r,
+		apiHost: apiHost,
+	}
+}
+
+func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
+	articleUnroller := NewArticleUnroller(u.reader, u.apiHost)
+
+	switch getEventType(event.c) {
+	case ArticleType:
+		return articleUnroller.Unroll(event)
+	case ClipSetType:
+		return u.unrollClipSet(event)
+	case ClipType:
+		return u.unrollClip(event)
+	case ImageSetType:
+		return u.unrollImageSet(event)
+	}
+
+	return nil, errors.Join(ValidationError, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+}
+
+func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
+	articleUnroller := NewInternalArticleUnroller(u.reader, u.apiHost)
+
+	switch getEventType(event.c) {
+	case ArticleType:
+		return articleUnroller.Unroll(event)
+	}
+
+	return nil, errors.Join(ValidationError, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+}
 
 type Content map[string]interface{}
 
@@ -235,4 +284,19 @@ func checkType(content Content, wantedType string) bool {
 	}
 	contentType, _ := content[typeField].(string)
 	return contentType == wantedType
+}
+
+// TODO: Add tests
+func getEventType(content Content) string {
+	if contentTypes, ok := content[typesField].([]interface{}); ok {
+		if len(contentTypes) > 0 {
+			return contentTypes[0].(string)
+		}
+		return ""
+	}
+	if t, ok := content[typeField].(string); ok {
+		return t
+	}
+
+	return ""
 }

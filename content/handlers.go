@@ -13,12 +13,12 @@ import (
 var logger = NewAppLogger()
 
 type Unroller interface {
-	Unroll(UnrollEvent) (Content, error)
+	UnrollContent(event UnrollEvent) (Content, error)
+	UnrollInternalContent(event UnrollEvent) (Content, error)
 }
 
 type Handler struct {
-	ContentUnroller         []Unroller
-	InternalContentUnroller []Unroller
+	Unroller Unroller
 }
 
 type UnrollEvent struct {
@@ -37,7 +37,7 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res, err := tryAllUnrollers(hh.ContentUnroller, event)
+	res, err := hh.Unroller.UnrollContent(event)
 	if errors.Is(err, APIConnectivityError) {
 		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
@@ -69,7 +69,7 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 
 	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
 
-	res, err := tryAllUnrollers(hh.InternalContentUnroller, event)
+	res, err := hh.Unroller.UnrollInternalContent(event)
 	if errors.Is(err, APIConnectivityError) {
 		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
@@ -130,16 +130,4 @@ func handleError(r *http.Request, tid string, uuid string, w http.ResponseWriter
 	}
 	w.WriteHeader(statusCode)
 	w.Write([]byte(errMsg))
-}
-
-func tryAllUnrollers(unrollers []Unroller, event UnrollEvent) (Content, error) {
-	var finalError error
-	for _, unroller := range unrollers {
-		res, err := unroller.Unroll(event)
-		if err == nil {
-			return res, nil
-		}
-		finalError = errors.Join(err)
-	}
-	return nil, finalError
 }

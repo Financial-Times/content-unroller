@@ -3,21 +3,22 @@ package content
 import (
 	"strings"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"golang.org/x/net/html"
 )
 
-func getEmbedded(body string, acceptedTypes []string, tid string, uuid string) ([]string, error) {
+func getEmbedded(log *logger.UPPLogger, body string, acceptedTypes []string, tid string, uuid string) ([]string, error) {
 	embedsResult := []string{}
 	doc, err := html.Parse(strings.NewReader(body))
 	if err != nil {
 		return embedsResult, err
 	}
 
-	parse(doc, acceptedTypes, &embedsResult, tid, uuid)
+	parse(doc, log, acceptedTypes, &embedsResult, tid, uuid)
 	return embedsResult, nil
 }
 
-func parse(n *html.Node, acceptedTypes []string, embedsResult *[]string, tid string, uuid string) {
+func parse(n *html.Node, log *logger.UPPLogger, acceptedTypes []string, embedsResult *[]string, tid string, uuid string) {
 	if n.Data == "ft-content" {
 		isEmbedded := false
 		isTypeMatching := false
@@ -35,14 +36,14 @@ func parse(n *html.Node, acceptedTypes []string, embedsResult *[]string, tid str
 		if isEmbedded && isTypeMatching {
 			u, err := extractUUIDFromString(id)
 			if err != nil {
-				logger.Errorf(tid, uuid, "Cannot extract UUID: %v", err.Error())
+				log.WithError(err).Errorf(tid, uuid, "Cannot extract UUID: %v", err.Error())
 			} else {
 				*embedsResult = append(*embedsResult, u)
 			}
 		}
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		parse(c, acceptedTypes, embedsResult, tid, uuid)
+		parse(c, log, acceptedTypes, embedsResult, tid, uuid)
 	}
 }
 

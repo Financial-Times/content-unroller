@@ -1,12 +1,11 @@
 package content
 
+import "github.com/Financial-Times/go-logger/v2"
+
 type InternalArticleUnroller ArticleUnroller
 
-func NewInternalArticleUnroller(r Reader, apiHost string) *InternalArticleUnroller {
-	return &InternalArticleUnroller{
-		reader:  r,
-		apiHost: apiHost,
-	}
+func NewInternalArticleUnroller(r Reader, log *logger.UPPLogger, apiHost string) *InternalArticleUnroller {
+	return (*InternalArticleUnroller)(NewArticleUnroller(r, log, apiHost))
 }
 
 func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
@@ -15,12 +14,12 @@ func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	}
 
 	cc := req.c.clone()
-	expLeadImages, foundImages := unrollLeadImages(cc, u.reader, req.tid, req.uuid)
+	expLeadImages, foundImages := unrollLeadImages(cc, u.reader, u.log, req.tid, req.uuid)
 	if foundImages {
 		cc[leadImages] = expLeadImages
 	}
 
-	dynContents, foundDyn := unrollDynamicContent(cc, req.tid, req.uuid, u.reader.GetInternal)
+	dynContents, foundDyn := unrollDynamicContent(cc, u.log, req.tid, req.uuid, u.reader.GetInternal)
 	if foundDyn {
 		cc[embeds] = dynContents
 	}

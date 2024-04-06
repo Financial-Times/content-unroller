@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,6 +21,7 @@ func (m mockUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) 
 }
 
 func TestClipsetUnroller_Unroll(t *testing.T) {
+	testLogger := logger.NewUPPLogger("test-service", "Error")
 	defaultAPIHost := "test.api.ft.com"
 	testTID := "testTID"
 	testUUID := "testUUID"
@@ -122,7 +124,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := NewUniversalUnroller(tt.unrollerFields.reader, tt.unrollerFields.apiHost)
+			u := NewUniversalUnroller(tt.unrollerFields.reader, testLogger, tt.unrollerFields.apiHost)
 			got, err := u.UnrollContent(tt.event)
 			if !tt.wantErr(t, err, fmt.Sprintf("Unroll(%v)", tt.event)) {
 				return

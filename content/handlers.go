@@ -7,10 +7,9 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Financial-Times/go-logger/v2"
 	transactionidutils "github.com/Financial-Times/transactionid-utils-go"
 )
-
-var logger = NewAppLogger()
 
 type Unroller interface {
 	UnrollContent(event UnrollEvent) (Content, error)
@@ -19,6 +18,11 @@ type Unroller interface {
 
 type Handler struct {
 	Unroller Unroller
+	log      *logger.UPPLogger
+}
+
+func NewHandler(u Unroller, l *logger.UPPLogger) *Handler {
+	return &Handler{Unroller: u, log: l}
 }
 
 type UnrollEvent struct {
@@ -31,31 +35,31 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 	tid := transactionidutils.GetTransactionIDFromRequest(r)
 	event, err := createUnrollEvent(r, tid)
 	if err != nil {
-		handleError(r, tid, "", w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, "", w, err, http.StatusBadRequest)
 		return
 	}
 
-	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
+	transactionStartedEvent(hh.log, r.RequestURI, tid, event.uuid)
 
 	res, err := hh.Unroller.UnrollContent(event)
 	if errors.Is(err, APIConnectivityError) {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	} else if errors.Is(err, ValidationError) {
-		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	}
 
 	jsonRes, err := json.Marshal(res)
 	if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	logger.TransactionFinishedEvent(r.RequestURI, tid, http.StatusOK, event.uuid, "success")
+	transactionFinishedEvent(hh.log, r.RequestURI, tid, http.StatusOK, event.uuid, "success")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(jsonRes)
 }
@@ -64,30 +68,30 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 	tid := transactionidutils.GetTransactionIDFromRequest(r)
 	event, err := createUnrollEvent(r, tid)
 	if err != nil {
-		handleError(r, tid, "", w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, "", w, err, http.StatusBadRequest)
 	}
 
-	logger.TransactionStartedEvent(r.RequestURI, tid, event.uuid)
+	transactionStartedEvent(hh.log, r.RequestURI, tid, event.uuid)
 
 	res, err := hh.Unroller.UnrollInternalContent(event)
 	if errors.Is(err, APIConnectivityError) {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	} else if errors.Is(err, ValidationError) {
-		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	}
 
 	jsonRes, err := json.Marshal(res)
 	if err != nil {
-		handleError(r, tid, event.uuid, w, err, http.StatusInternalServerError)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	logger.TransactionFinishedEvent(r.RequestURI, tid, http.StatusOK, event.uuid, "success")
+	transactionFinishedEvent(hh.log, r.RequestURI, tid, http.StatusOK, event.uuid, "success")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(jsonRes)
 }
@@ -119,14 +123,14 @@ func createUnrollEvent(r *http.Request, tid string) (UnrollEvent, error) {
 	return unrollEvent, nil
 }
 
-func handleError(r *http.Request, tid string, uuid string, w http.ResponseWriter, err error, statusCode int) {
+func handleError(r *http.Request, log *logger.UPPLogger, tid string, uuid string, w http.ResponseWriter, err error, statusCode int) {
 	var errMsg string
 	if statusCode >= 400 && statusCode < 500 {
 		errMsg = fmt.Sprintf("Error expanding content, supplied UUID is invalid: %s", err.Error())
-		logger.Errorf(tid, errMsg)
+		log.WithTransactionID(tid).WithError(err).Errorf(errMsg)
 	} else if statusCode >= 500 {
 		errMsg = fmt.Sprintf("Error expanding content for: %v: %v", uuid, err.Error())
-		logger.TransactionFinishedEvent(r.RequestURI, tid, statusCode, uuid, err.Error())
+		transactionFinishedEvent(log, r.RequestURI, tid, statusCode, uuid, err.Error())
 	}
 	w.WriteHeader(statusCode)
 	w.Write([]byte(errMsg))

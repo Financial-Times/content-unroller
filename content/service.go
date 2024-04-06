@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+
+	"github.com/Financial-Times/go-logger/v2"
 )
 
 const (
@@ -33,18 +35,20 @@ var (
 
 type UniversalUnroller struct {
 	reader  Reader
+	log     *logger.UPPLogger
 	apiHost string
 }
 
-func NewUniversalUnroller(r Reader, apiHost string) *UniversalUnroller {
+func NewUniversalUnroller(r Reader, log *logger.UPPLogger, apiHost string) *UniversalUnroller {
 	return &UniversalUnroller{
 		reader:  r,
+		log:     log,
 		apiHost: apiHost,
 	}
 }
 
 func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewArticleUnroller(u.reader, u.apiHost)
+	articleUnroller := NewArticleUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
 	case ArticleType:
@@ -61,7 +65,7 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 }
 
 func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewInternalArticleUnroller(u.reader, u.apiHost)
+	articleUnroller := NewInternalArticleUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
 	case ArticleType:
@@ -170,15 +174,17 @@ func fromMap(src map[string]interface{}) Content {
 	return dest
 }
 
-func unrollLeadImages(cc Content, r Reader, tid string, uuid string) ([]Content, bool) {
+func unrollLeadImages(cc Content, r Reader, log *logger.UPPLogger, tid string, uuid string) ([]Content, bool) {
+	localLog := log.WithTransactionID(tid).WithUUID(uuid)
+
 	images, foundLeadImages := cc[leadImages].([]interface{})
 	if !foundLeadImages {
-		logger.Debug(tid, uuid, "No lead images to expand for supplied content")
+		localLog.Debug("No lead images to expand for supplied content")
 		return nil, false
 	}
 
 	if len(images) == 0 {
-		logger.Debug(tid, uuid, "No lead images to expand for supplied content")
+		localLog.Debug("No lead images to expand for supplied content")
 		return nil, false
 	}
 	schema := make(ContentSchema)
@@ -186,7 +192,7 @@ func unrollLeadImages(cc Content, r Reader, tid string, uuid string) ([]Content,
 		li := item.(map[string]interface{})
 		uuid, err := extractUUIDFromString(li[id].(string))
 		if err != nil {
-			logger.Errorf(tid, uuid, "Error while getting UUID for %s: %v", li[id].(string), err.Error())
+			localLog.WithError(err).Errorf("Error while getting UUID for %s: %v", li[id].(string), err.Error())
 			continue
 		}
 		li[image] = uuid
@@ -195,7 +201,7 @@ func unrollLeadImages(cc Content, r Reader, tid string, uuid string) ([]Content,
 
 	imgMap, err := r.Get(schema.toArray(), tid)
 	if err != nil {
-		logger.Errorf(tid, "Error while getting content for expanded images %s", err.Error())
+		localLog.WithError(err).Errorf("Error while getting content for expanded images %s", err.Error())
 
 		// couldn't get the images so we have to delete the additional uuid field (previously added)
 		for _, li := range images {
@@ -206,14 +212,14 @@ func unrollLeadImages(cc Content, r Reader, tid string, uuid string) ([]Content,
 		return nil, false
 	}
 
-	expLeadImages := []Content{}
+	var expLeadImages []Content
 	for _, li := range images {
 		rawLi := li.(map[string]interface{})
 		rawLiUUID := rawLi[image].(string)
 		liContent := fromMap(rawLi)
 		imageData, found := resolveContent(rawLiUUID, imgMap)
 		if !found {
-			logger.Debugf(tid, uuid, "Missing image model %s. Returning only the id.", rawLiUUID)
+			localLog.Debugf("Missing image model %s. Returning only the id.", rawLiUUID)
 			delete(liContent, image)
 			expLeadImages = append(expLeadImages, liContent)
 			continue
@@ -226,19 +232,19 @@ func unrollLeadImages(cc Content, r Reader, tid string, uuid string) ([]Content,
 	return expLeadImages, true
 }
 
-func unrollDynamicContent(cc Content, tid string, uuid string, getContentFromSourceFn ReaderFunc) ([]Content, bool) {
-	emContentUUIDs, foundEmbedded := extractEmbeddedContentByType(cc, []string{DynamicContentType}, tid, uuid)
+func unrollDynamicContent(cc Content, log *logger.UPPLogger, tid string, uuid string, getContentFromSourceFn ReaderFunc) ([]Content, bool) {
+	emContentUUIDs, foundEmbedded := extractEmbeddedContentByType(cc, log, []string{DynamicContentType}, tid, uuid)
 	if !foundEmbedded {
 		return nil, false
 	}
 
 	contentMap, err := getContentFromSourceFn(emContentUUIDs, tid)
 	if err != nil {
-		logger.Errorf(tid, "Error while getting embedded dynamic content %s", err.Error())
+		log.WithError(err).WithTransactionID(tid).WithUUID(uuid).Errorf(tid, "Error while getting embedded dynamic content %s", err.Error())
 		return nil, false
 	}
 
-	embedded := []Content{}
+	var embedded []Content
 	for _, ec := range emContentUUIDs {
 		embedded = append(embedded, contentMap[ec])
 	}
@@ -254,17 +260,19 @@ func resolveContent(uuid string, imgMap map[string]Content) (Content, bool) {
 	return c, true
 }
 
-func extractEmbeddedContentByType(cc Content, acceptedTypes []string, tid string, uuid string) ([]string, bool) {
+func extractEmbeddedContentByType(cc Content, log *logger.UPPLogger, acceptedTypes []string, tid string, uuid string) ([]string, bool) {
+	localLog := log.WithTransactionID(tid).WithUUID(uuid)
+
 	body, foundBody := cc[bodyXMLField]
 	if !foundBody {
-		logger.Debug(tid, uuid, "Missing body. Skipping expanding embedded content and images.")
+		localLog.Debug("Missing body. Skipping expanding embedded content and images.")
 		return nil, false
 	}
 
 	bodyXML := body.(string)
-	emContentUUIDs, err := getEmbedded(bodyXML, acceptedTypes, tid, uuid)
+	emContentUUIDs, err := getEmbedded(log, bodyXML, acceptedTypes, tid, uuid)
 	if err != nil {
-		logger.Errorf(tid, "Cannot parse bodyXML for content %s", err.Error())
+		localLog.WithError(err).Errorf("Cannot parse bodyXML for content %s", err.Error())
 		return nil, false
 	}
 

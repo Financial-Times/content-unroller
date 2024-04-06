@@ -9,11 +9,11 @@ import (
 
 	"github.com/Financial-Times/content-unroller/content"
 	fthealth "github.com/Financial-Times/go-fthealth/v1_1"
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/Financial-Times/service-status-go/httphandlers"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	cli "github.com/jawher/mow.cli"
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -60,6 +60,16 @@ func main() {
 		Desc:   "API host to use for URLs in responses",
 		EnvVar: "API_HOST",
 	})
+	applicationName := app.String(cli.StringOpt{
+		Name: "applicationName",
+		//TODO: Add
+	})
+	logLevel := app.String(cli.StringOpt{
+		Name: "logLevel",
+		//TODO: Add
+	})
+
+	log := logger.NewUPPLogger(*applicationName, *logLevel)
 
 	app.Action = func() {
 		httpClient := &http.Client{
@@ -86,16 +96,16 @@ func main() {
 		}
 
 		reader := content.NewContentReader(readerConfig, httpClient)
-		unroller := content.NewUniversalUnroller(reader, *apiHost)
+		unroller := content.NewUniversalUnroller(reader, log, *apiHost)
+		handler := content.NewHandler(unroller, log)
 
-		h := setupServiceHandler(unroller, sc)
+		h := setupServiceHandler(sc, *handler)
 		err := http.ListenAndServe(":"+*port, h)
 		if err != nil {
 			log.Fatalf("Unable to start server: %v", err)
 		}
 	}
 
-	log.SetLevel(log.InfoLevel)
 	log.Infof("Application started with args %s", os.Args)
 	if err := app.Run(os.Args); err != nil {
 		log.Fatalf("Unable to start application: %v", err)
@@ -103,17 +113,14 @@ func main() {
 	}
 }
 
-func setupServiceHandler(unroller content.Unroller, sc content.ServiceConfig) *mux.Router {
+func setupServiceHandler(sc content.ServiceConfig, handler content.Handler) *mux.Router {
 	r := mux.NewRouter()
-	ch := &content.Handler{
-		Unroller: unroller,
-	}
 
 	var checks []fthealth.Check
 	var gtgHandler func(http.ResponseWriter, *http.Request)
 
-	r.HandleFunc("/content", ch.GetContent).Methods("POST")
-	r.HandleFunc("/internalcontent", ch.GetInternalContent).Methods("POST")
+	r.HandleFunc("/content", handler.GetContent).Methods("POST")
+	r.HandleFunc("/internalcontent", handler.GetInternalContent).Methods("POST")
 	checks = []fthealth.Check{sc.ContentStoreCheck()}
 	gtgHandler = httphandlers.NewGoodToGoHandler(sc.GtgCheck)
 
@@ -134,9 +141,11 @@ func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
 
-//TODO: Move tests is service_test to corresponding unroller_test
+//TODO: Split service.go into utils.go and unroller.go
+//TODO: Separate test files in service_test.go
+//TODO: Add all _unroller.go files into unroller.go
+//TODO: Reach 90% test coverage
 //Optional todos:
-//TODO: Fix logger
 //TODO: Remove mow.cli
 //TODO: Optimise number of requests to content store
 //Very Optional todos:

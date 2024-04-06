@@ -7,6 +7,7 @@ import (
 
 	"errors"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,6 +41,7 @@ func TestUnrollContent(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -79,6 +81,7 @@ func TestUnrollContent_ErrorExpandingFromContentStore(t *testing.T) {
 				return nil, errors.New("Cannot expand content from content store")
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -113,6 +116,7 @@ func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -146,6 +150,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -173,6 +178,7 @@ func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -241,6 +247,7 @@ func TestUnrollInternalContent(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -275,6 +282,7 @@ func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 				return res, nil
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 
@@ -309,6 +317,7 @@ func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.
 				return nil, errors.New("Error retrieving content")
 			},
 		},
+		log:     logger.NewUPPLogger("test-service", "Error"),
 		apiHost: "test.api.ft.com",
 	}
 

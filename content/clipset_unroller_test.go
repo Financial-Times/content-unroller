@@ -89,7 +89,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 					},
 				},
 				reader: &ReaderMock{
-					mockGet: func(uuids []string, tid string) (map[string]Content, error) {
+					mockGet: func(_ []string, _ string) (map[string]Content, error) {
 						return map[string]Content{
 							testUUIDClip: unrolledClip,
 						}, nil

@@ -2,7 +2,7 @@ package content
 
 func (u *UniversalUnroller) unrollClip(event UnrollEvent) (Content, error) {
 	if !validateClip(event.c) {
-		return nil, ValidationError
+		return nil, ErrValidating
 	}
 
 	p, ok := event.c[posterField]
@@ -12,14 +12,14 @@ func (u *UniversalUnroller) unrollClip(event UnrollEvent) (Content, error) {
 
 	posterMap, ok := p.(map[string]interface{})
 	if !ok {
-		return nil, ConversionError
+		return nil, ErrConverting
 	}
-	apiUrl, ok := posterMap[apiUrlField].(string)
+	apiURL, ok := posterMap[apiURLField].(string)
 	if !ok {
-		return nil, ConversionError
+		return nil, ErrConverting
 	}
 
-	posterUUID, err := extractUUIDFromString(apiUrl)
+	posterUUID, err := extractUUIDFromString(apiURL)
 	if err != nil {
 		return nil, err
 	}

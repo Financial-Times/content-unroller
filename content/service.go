@@ -26,12 +26,12 @@ const (
 	image              = "image"
 	typeField          = "type"
 	typesField         = "types"
-	apiUrlField        = "apiUrl"
+	apiURLField        = "apiUrl"
 )
 
 var (
-	ConversionError = errors.New("failed to cast variable to expected type")
-	ValidationError = errors.New("invalid content")
+	ErrConverting = errors.New("failed to cast variable to expected type")
+	ErrValidating = errors.New("invalid content")
 )
 
 type UniversalUnroller struct {
@@ -62,7 +62,7 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 		return u.unrollImageSet(event)
 	}
 
-	return nil, errors.Join(ValidationError, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+	return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 }
 
 func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
@@ -73,7 +73,7 @@ func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, e
 		return articleUnroller.Unroll(event)
 	}
 
-	return nil, errors.Join(ValidationError, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+	return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 }
 
 type Content map[string]interface{}
@@ -118,10 +118,10 @@ func (c Content) merge(src Content) {
 	}
 }
 
-// ContentSchema is a map containing UUIDs of related content and the name of the field they are used in.
-type ContentSchema map[string][]string
+// Schema is a map containing UUIDs of related content and the name of the field they are used in.
+type Schema map[string][]string
 
-func (u ContentSchema) put(key string, value string) {
+func (u Schema) put(key string, value string) {
 	if key != mainImageField && key != promotionalImage && key != leadImages {
 		return
 	}
@@ -134,14 +134,14 @@ func (u ContentSchema) put(key string, value string) {
 	u[key] = act
 }
 
-func (u ContentSchema) get(key string) string {
+func (u Schema) get(key string) string {
 	if _, found := u[key]; key != mainImageField && key != promotionalImage || !found {
 		return ""
 	}
 	return u[key][0]
 }
 
-func (u ContentSchema) putAll(key string, values []string) {
+func (u Schema) putAll(key string, values []string) {
 	if key != embeds && key != leadImages {
 		return
 	}
@@ -153,14 +153,14 @@ func (u ContentSchema) putAll(key string, values []string) {
 	u[key] = append(prevValue, values...)
 }
 
-func (u ContentSchema) getAll(key string) []string {
+func (u Schema) getAll(key string) []string {
 	if key != embeds && key != leadImages {
 		return []string{}
 	}
 	return u[key]
 }
 
-func (u ContentSchema) toArray() (UUIDs []string) {
+func (u Schema) toArray() (UUIDs []string) {
 	for _, v := range u {
 		UUIDs = append(UUIDs, v...)
 	}
@@ -188,7 +188,7 @@ func unrollLeadImages(cc Content, r Reader, log *logger.UPPLogger, tid string, u
 		localLog.Debug("No lead images to expand for supplied content")
 		return nil, false
 	}
-	schema := make(ContentSchema)
+	schema := make(Schema)
 	for _, item := range images {
 		li := item.(map[string]interface{})
 		uuid, err := extractUUIDFromString(li[id].(string))
@@ -282,6 +282,23 @@ func extractEmbeddedContentByType(cc Content, log *logger.UPPLogger, acceptedTyp
 	}
 
 	return emContentUUIDs, true
+}
+
+func extractMainImageContentByType(cc Content, log *logger.UPPLogger, tid string, uuid string) (string, bool) {
+	localLog := log.WithTransactionID(tid).WithUUID(uuid)
+	mi, foundMainImg := cc[mainImageField].(map[string]interface{})
+	if foundMainImg {
+		u, err := extractUUIDFromString(mi[id].(string))
+		if err != nil {
+			localLog.WithError(err).Errorf("Cannot find main image: %v. Skipping expanding main image", err.Error())
+			foundMainImg = false
+		} else {
+			return u, foundMainImg
+		}
+	} else {
+		localLog.Debug(tid, uuid, "Cannot find main image. Skipping expanding main image")
+	}
+	return "", foundMainImg
 }
 
 func checkType(content Content, wantedType string) bool {

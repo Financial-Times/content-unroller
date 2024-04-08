@@ -13,7 +13,7 @@ import (
 func TestUnrollContent(t *testing.T) {
 	cu := ArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -39,6 +39,7 @@ func TestUnrollContent(t *testing.T) {
 	assert.NoError(t, actualErr, "Should not get an error when expanding images")
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(expected), string(actualJSON))
 }
 
@@ -51,6 +52,7 @@ func TestUnrollContent_NilSchema(t *testing.T) {
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
 	actual, _ := cu.Unroll(req)
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 
 	assert.JSONEq(t, InvalidBodyRequest, string(actualJSON))
 }
@@ -58,7 +60,7 @@ func TestUnrollContent_NilSchema(t *testing.T) {
 func TestUnrollContent_ErrorExpandingFromContentStore(t *testing.T) {
 	cu := ArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				return nil, errors.New("Cannot expand content from content store")
 			},
 		},
@@ -75,6 +77,7 @@ func TestUnrollContent_ErrorExpandingFromContentStore(t *testing.T) {
 	actual, actualErr := cu.Unroll(req)
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(fileBytes), string(actualJSON))
 	assert.Error(t, actualErr, "Expected to return error when cannot read from content store")
 }
@@ -88,7 +91,7 @@ func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
 
 	cu := ArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -122,7 +125,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 
 	cu := ArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -150,7 +153,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 	cu := ArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response-no-body.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -167,6 +170,7 @@ func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
 	fileBytes, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read test file")
 	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Cannot build json body")
 	c[bodyXMLField] = "invalid body"
 
 	req := UnrollEvent{c, "tid_sample", "sample_uuid"}

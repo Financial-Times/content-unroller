@@ -28,7 +28,7 @@ func (rm *ReaderMock) GetInternal(c []string, tid string) (map[string]Content, e
 
 func TestUnrollContent_ClipSet(t *testing.T) {
 	defaultReader := &ReaderMock{
-		mockGet: func(c []string, tid string) (map[string]Content, error) {
+		mockGet: func(_ []string, _ string) (map[string]Content, error) {
 			b, err := os.ReadFile("testdata/reader-content-clipset-valid-response.json")
 			assert.NoError(t, err, "Cannot open file necessary for test case")
 			var res map[string]Content
@@ -56,6 +56,7 @@ func TestUnrollContent_ClipSet(t *testing.T) {
 	assert.NoError(t, err, "Should not get an error when expanding clipset")
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(expected), string(actualJSON))
 }
 

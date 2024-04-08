@@ -10,7 +10,7 @@ func NewInternalArticleUnroller(r Reader, log *logger.UPPLogger, apiHost string)
 
 func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	if !validateInternalArticle(req.c) {
-		return req.c, ValidationError
+		return req.c, ErrValidating
 	}
 
 	cc := req.c.clone()

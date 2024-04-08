@@ -12,7 +12,7 @@ const uuidRegex = "([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 func extractUUIDFromString(url string) (string, error) {
 	re, err := regexp.Compile(uuidRegex)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("Error during extracting UUID"))
+		return "", errors.Join(err, fmt.Errorf("error during extracting UUID"))
 	}
 
 	values := re.FindStringSubmatch(url)

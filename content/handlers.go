@@ -42,10 +42,10 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 	transactionStartedEvent(hh.log, r.RequestURI, tid, event.uuid)
 
 	res, err := hh.Unroller.UnrollContent(event)
-	if errors.Is(err, APIConnectivityError) {
+	if errors.Is(err, ErrConnectingToAPI) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
-	} else if errors.Is(err, ValidationError) {
+	} else if errors.Is(err, ErrValidating) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
@@ -74,10 +74,10 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 	transactionStartedEvent(hh.log, r.RequestURI, tid, event.uuid)
 
 	res, err := hh.Unroller.UnrollInternalContent(event)
-	if errors.Is(err, APIConnectivityError) {
+	if errors.Is(err, ErrConnectingToAPI) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
-	} else if errors.Is(err, ValidationError) {
+	} else if errors.Is(err, ErrValidating) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {

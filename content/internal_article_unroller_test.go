@@ -13,7 +13,7 @@ import (
 func TestUnrollInternalContent(t *testing.T) {
 	cu := InternalArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -21,7 +21,7 @@ func TestUnrollInternalContent(t *testing.T) {
 				assert.NoError(t, err, "Cannot return valid response")
 				return res, nil
 			},
-			mockGetInternal: func(c []string, tid string) (map[string]Content, error) {
+			mockGetInternal: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-dynamic-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -38,6 +38,7 @@ func TestUnrollInternalContent(t *testing.T) {
 	fileBytes, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "File necessary for building request body nod found")
 	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Expected to build json body")
 
 	expected, err := os.ReadFile("testdata/internalcontent-valid-response.json")
 	assert.NoError(t, err, "Cannot read necessary test file")
@@ -47,16 +48,17 @@ func TestUnrollInternalContent(t *testing.T) {
 	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }
 
 func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 	cu := InternalArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				return nil, errors.New("Error retrieving content")
 			},
-			mockGetInternal: func(c []string, tid string) (map[string]Content, error) {
+			mockGetInternal: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-dynamic-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -73,6 +75,7 @@ func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 	fileBytes, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "File necessary for building request body nod found")
 	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Cannot build json body")
 
 	expected, err := os.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
 	assert.NoError(t, err, "Cannot read necessary test file")
@@ -82,13 +85,14 @@ func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }
 
 func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.T) {
 	cu := InternalArticleUnroller{
 		reader: &ReaderMock{
-			mockGet: func(c []string, tid string) (map[string]Content, error) {
+			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-valid-response.json")
 				assert.NoError(t, err, "Cannot open file necessary for test case")
 				var res map[string]Content
@@ -96,7 +100,7 @@ func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.
 				assert.NoError(t, err, "Cannot return valid response")
 				return res, nil
 			},
-			mockGetInternal: func(c []string, tid string) (map[string]Content, error) {
+			mockGetInternal: func(_ []string, _ string) (map[string]Content, error) {
 				return nil, errors.New("Error retrieving content")
 			},
 		},
@@ -108,6 +112,7 @@ func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.
 	fileBytes, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "File necessary for building request body nod found")
 	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Cannot build json body")
 
 	expected, err := os.ReadFile("testdata/internalcontent-valid-response-no-dynamic-content.json")
 	assert.NoError(t, err, "Cannot read necessary test file")
@@ -117,5 +122,6 @@ func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.
 	assert.NoError(t, actualErr, "Should not receive error for expanding internal content")
 
 	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
 	assert.JSONEq(t, string(actualJSON), string(expected))
 }

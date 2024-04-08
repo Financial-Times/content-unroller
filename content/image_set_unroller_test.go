@@ -71,7 +71,7 @@ func TestUniversalUnroller_unrollImageSet(t *testing.T) {
 			name: "valid-clipset-with-members",
 			unrollerFields: fields{
 				reader: &ReaderMock{
-					mockGet: func(uuids []string, tid string) (map[string]Content, error) {
+					mockGet: func(_ []string, _ string) (map[string]Content, error) {
 						return map[string]Content{
 							testUUIDClip: unrolledClip,
 						}, nil

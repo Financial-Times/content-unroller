@@ -10,7 +10,7 @@ import (
 
 func TestClipUnroller_Unroll(t *testing.T) {
 	testLogger := logger.NewUPPLogger("test-service", "Error")
-	testApiHost := "test.api.ft.com"
+	testAPIHost := "test.api.ft.com"
 	posterUUID := "22c0d426-1466-11e7-b0c1-37e417ee6c76"
 	type fields struct {
 		reader  Reader
@@ -28,7 +28,7 @@ func TestClipUnroller_Unroll(t *testing.T) {
 			name: "invalid-clip",
 			fields: fields{
 				reader:  nil,
-				apiHost: testApiHost,
+				apiHost: testAPIHost,
 			},
 			event: UnrollEvent{
 				c: Content{
@@ -42,7 +42,7 @@ func TestClipUnroller_Unroll(t *testing.T) {
 			name: "valid-clip-without-poster",
 			fields: fields{
 				reader:  nil,
-				apiHost: testApiHost,
+				apiHost: testAPIHost,
 			},
 			event: UnrollEvent{
 				c: Content{
@@ -58,7 +58,7 @@ func TestClipUnroller_Unroll(t *testing.T) {
 			name: "valid-clip-with-poster",
 			fields: fields{
 				reader: &ReaderMock{
-					mockGet: func(c []string, tid string) (map[string]Content, error) {
+					mockGet: func(_ []string, _ string) (map[string]Content, error) {
 						return map[string]Content{
 							posterUUID: {
 								id:         posterUUID,
@@ -78,12 +78,12 @@ func TestClipUnroller_Unroll(t *testing.T) {
 						}, nil
 					},
 				},
-				apiHost: testApiHost,
+				apiHost: testAPIHost,
 			},
 			event: UnrollEvent{
 				c: Content{
 					posterField: map[string]interface{}{
-						apiUrlField: posterUUID,
+						apiURLField: posterUUID,
 					},
 					typeField: ClipType,
 				},

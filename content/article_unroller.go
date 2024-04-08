@@ -23,7 +23,7 @@ func NewArticleUnroller(r Reader, log *logger.UPPLogger, apiHost string) *Articl
 
 func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	if !validateArticle(req.c) {
-		return req.c, ValidationError
+		return req.c, ErrValidating
 	}
 
 	cc := req.c.clone()
@@ -62,23 +62,15 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	return cc, nil
 }
 
-func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) ContentSchema {
-	//mainImageField
-	schema := make(ContentSchema)
+func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) Schema {
+	schema := make(Schema)
 
 	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
 
-	mi, foundMainImg := cc[mainImageField].(map[string]interface{})
+	//mainImageField
+	mainImageUUID, foundMainImg := extractMainImageContentByType(cc, u.log, tid, uuid)
 	if foundMainImg {
-		u, err := extractUUIDFromString(mi[id].(string))
-		if err != nil {
-			localLog.WithError(err).Errorf("Cannot find main image: %v. Skipping expanding main image", err.Error())
-			foundMainImg = false
-		} else {
-			schema.put(mainImageField, u)
-		}
-	} else {
-		localLog.Debug(tid, uuid, "Cannot find main image. Skipping expanding main image")
+		schema.put(mainImageField, mainImageUUID)
 	}
 
 	//embedded - images and dynamic content
@@ -119,7 +111,7 @@ func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string
 	return schema
 }
 
-func (u *ArticleUnroller) resolveModelsForSetsMembers(b ContentSchema, imgMap map[string]Content, tid string, uuid string) {
+func (u *ArticleUnroller) resolveModelsForSetsMembers(b Schema, imgMap map[string]Content, tid string, uuid string) {
 	mainImageUUID := b.get(mainImageField)
 	u.resolveImageSet(mainImageUUID, imgMap, tid, uuid)
 	for _, embeddedImgSet := range b.getAll(embeds) {
@@ -175,9 +167,9 @@ func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
 	posterData, found := poster.(map[string]interface{})
 	if !found {
-		return Content{}, errors.New("Problem in poster field")
+		return Content{}, errors.New("problem in poster field")
 	}
-	papiurl := posterData[apiUrlField].(string)
+	papiurl := posterData[apiURLField].(string)
 	pUUID, err := extractUUIDFromString(papiurl)
 	if err != nil {
 		return Content{}, err

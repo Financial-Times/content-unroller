@@ -2,12 +2,12 @@ package content
 
 func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 	if !validateClipset(event.c) {
-		return nil, ValidationError
+		return nil, ErrValidating
 	}
 
 	members, ok := event.c[membersField].([]interface{})
 	if !ok {
-		return nil, ConversionError
+		return nil, ErrConverting
 	}
 	if len(members) == 0 {
 		return event.c, nil
@@ -17,7 +17,7 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 	for _, m := range members {
 		memberID, ok := m.(map[string]interface{})["id"].(string)
 		if !ok {
-			return nil, ConversionError
+			return nil, ErrConverting
 		}
 		uuid, err := extractUUIDFromString(memberID)
 		if err != nil {

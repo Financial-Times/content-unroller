@@ -35,7 +35,7 @@ func (cu *ContentUnrollerMock) UnrollInternalContent(event UnrollEvent) (Content
 
 func TestGetContentReturns200(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) (Content, error) {
+		mockUnrollContent: func(_ UnrollEvent) (Content, error) {
 			var r Content
 			fileBytes, err := os.ReadFile("testdata/content-valid-response.json")
 			assert.NoError(t, err, "Cannot read resources test file")
@@ -112,13 +112,13 @@ func TestGetContent_ValidationError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "invalid content")
+	assert.Contains(t, rr.Body.String(), "invalid content")
 }
 
 func TestGetContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) (Content, error) {
-			return nil, errors.Join(APIConnectivityError, fmt.Errorf("error while unrolling content"))
+		mockUnrollContent: func(_ UnrollEvent) (Content, error) {
+			return nil, errors.Join(ErrConnectingToAPI, fmt.Errorf("error while unrolling content"))
 		},
 	}
 
@@ -136,12 +136,12 @@ func TestGetContent_UnrollingError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "error while unrolling content")
+	assert.Contains(t, rr.Body.String(), "error while unrolling content")
 }
 
 func TestGetInternalContentReturns200(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) (Content, error) {
+		mockUnrollContent: func(_ UnrollEvent) (Content, error) {
 			var r Content
 			fileBytes, err := os.ReadFile("testdata/internalcontent-valid-response.json")
 			assert.NoError(t, err, "Cannot read test file")
@@ -216,13 +216,13 @@ func TestGetInternalContent_ValidationError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "invalid content")
+	assert.Contains(t, rr.Body.String(), "invalid content")
 }
 
 func TestGetInternalContent_UnrollingError(t *testing.T) {
 	cu := ContentUnrollerMock{
-		mockUnrollContent: func(req UnrollEvent) (Content, error) {
-			return nil, errors.Join(APIConnectivityError, fmt.Errorf("error while unrolling content"))
+		mockUnrollContent: func(_ UnrollEvent) (Content, error) {
+			return nil, errors.Join(ErrConnectingToAPI, fmt.Errorf("error while unrolling content"))
 		},
 	}
 
@@ -240,5 +240,5 @@ func TestGetInternalContent_UnrollingError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "error while unrolling content")
+	assert.Contains(t, rr.Body.String(), "error while unrolling content")
 }

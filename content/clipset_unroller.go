@@ -50,7 +50,7 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 }
 
 func validateClipset(c Content) bool {
-	_, hasMembers := c[membersField] //TODO: Check if clipset can have no members and will this field exists in this case
+	_, hasMembers := c[membersField]
 
 	return hasMembers && checkType(c, ClipSetType)
 }

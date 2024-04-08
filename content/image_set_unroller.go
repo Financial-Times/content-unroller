@@ -42,7 +42,7 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 }
 
 func validateImageSet(c Content) bool {
-	_, hasMembers := c[membersField] //TODO: Check if imageset can have no members and will this field exists in this case
+	_, hasMembers := c[membersField]
 
 	return hasMembers && checkType(c, ImageSetType)
 }

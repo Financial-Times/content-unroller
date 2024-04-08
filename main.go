@@ -138,5 +138,3 @@ func setupServiceHandler(sc content.ServiceConfig, handler content.Handler) *mux
 func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
-
-//TODO: When members do not exists add empty members array to response

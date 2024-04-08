@@ -60,16 +60,14 @@ func main() {
 		Desc:   "API host to use for URLs in responses",
 		EnvVar: "API_HOST",
 	})
-	applicationName := app.String(cli.StringOpt{
-		Name: "applicationName",
-		//TODO: Add
-	})
 	logLevel := app.String(cli.StringOpt{
-		Name: "logLevel",
-		//TODO: Add
+		Name:   "logLevel",
+		Value:  "INFO",
+		Desc:   "Log level",
+		EnvVar: "LOG_LEVEL",
 	})
 
-	log := logger.NewUPPLogger(*applicationName, *logLevel)
+	log := logger.NewUPPLogger(AppName, *logLevel)
 
 	app.Action = func() {
 		httpClient := &http.Client{
@@ -140,13 +138,3 @@ func setupServiceHandler(sc content.ServiceConfig, handler content.Handler) *mux
 func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
-
-//TODO: Split service.go into utils.go and unroller.go
-//TODO: Separate test files in service_test.go
-//TODO: Add all _unroller.go files into unroller.go
-//TODO: Reach 90% test coverage
-//Optional todos:
-//TODO: Remove mow.cli
-//TODO: Optimise number of requests to content store
-//Very Optional todos:
-//TODO: Rework healthcheck to get checks directly from structures

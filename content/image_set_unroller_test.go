@@ -8,19 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type mockUnroller struct {
-	unrollFunc func(event UnrollEvent) (Content, error)
-}
-
-func (m mockUnroller) UnrollContent(event UnrollEvent) (Content, error) {
-	return m.unrollFunc(event)
-}
-
-func (m mockUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
-	return m.unrollFunc(event)
-}
-
-func TestClipsetUnroller_Unroll(t *testing.T) {
+func TestUniversalUnroller_unrollImageSet(t *testing.T) {
 	testLogger := logger.NewUPPLogger("test-service", "Error")
 	defaultAPIHost := "test.api.ft.com"
 	testTID := "testTID"
@@ -31,17 +19,17 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 	}
 	validClipsetWithNoMembers := Content{
 		membersField: []interface{}{},
-		typeField:    ClipSetType,
+		typeField:    ImageSetType,
 	}
 	unrolledClip := Content{
 		id:         testUUIDClip,
 		"unrolled": "true",
-		typeField:  ClipType,
+		typeField:  image,
 	}
 	type fields struct {
-		clipUnroller Unroller
-		reader       Reader
-		apiHost      string
+		reader  Reader
+		log     *logger.UPPLogger
+		apiHost string
 	}
 	tests := []struct {
 		name           string
@@ -49,28 +37,27 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 		event          UnrollEvent
 		want           Content
 		wantErr        assert.ErrorAssertionFunc
-	}{
-		{
-			name: "invalid-clipset",
-			unrollerFields: fields{
-				clipUnroller: nil,
-				reader:       nil,
-				apiHost:      defaultAPIHost,
-			},
-			event: UnrollEvent{
-				c:    invalidClipset,
-				tid:  testTID,
-				uuid: testUUID,
-			},
-			want:    nil,
-			wantErr: assert.Error,
+	}{{
+		name: "invalid-clipset",
+		unrollerFields: fields{
+			reader:  nil,
+			log:     testLogger,
+			apiHost: defaultAPIHost,
 		},
+		event: UnrollEvent{
+			c:    invalidClipset,
+			tid:  testTID,
+			uuid: testUUID,
+		},
+		want:    nil,
+		wantErr: assert.Error,
+	},
 		{
 			name: "valid-clipset-with-no-members",
 			unrollerFields: fields{
-				clipUnroller: nil,
-				reader:       nil,
-				apiHost:      defaultAPIHost,
+				reader:  nil,
+				log:     testLogger,
+				apiHost: defaultAPIHost,
 			},
 			event: UnrollEvent{
 				c:    validClipsetWithNoMembers,
@@ -86,11 +73,6 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 		{
 			name: "valid-clipset-with-members",
 			unrollerFields: fields{
-				clipUnroller: mockUnroller{
-					unrollFunc: func(event UnrollEvent) (Content, error) {
-						return event.c, nil
-					},
-				},
 				reader: &ReaderMock{
 					mockGet: func(uuids []string, tid string) (map[string]Content, error) {
 						return map[string]Content{
@@ -98,6 +80,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 						}, nil
 					},
 				},
+				log:     testLogger,
 				apiHost: defaultAPIHost,
 			},
 			event: UnrollEvent{
@@ -107,7 +90,7 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 							id: testUUIDClip,
 						},
 					},
-					typeField: ClipSetType,
+					typeField: ImageSetType,
 				},
 				tid:  testTID,
 				uuid: testUUID,
@@ -116,24 +99,28 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 				membersField: []Content{
 					unrolledClip,
 				},
-				typeField: ClipSetType,
+				typeField: ImageSetType,
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := NewUniversalUnroller(tt.unrollerFields.reader, testLogger, tt.unrollerFields.apiHost)
-			got, err := u.UnrollContent(tt.event)
-			if !tt.wantErr(t, err, fmt.Sprintf("Unroll(%v)", tt.event)) {
+			u := &UniversalUnroller{
+				reader:  tt.unrollerFields.reader,
+				log:     tt.unrollerFields.log,
+				apiHost: tt.unrollerFields.apiHost,
+			}
+			got, err := u.unrollImageSet(tt.event)
+			if !tt.wantErr(t, err, fmt.Sprintf("unrollImageSet(%v)", tt.event)) {
 				return
 			}
-			assert.Equalf(t, tt.want, got, "Unroll(%v)", tt.event)
+			assert.Equalf(t, tt.want, got, "unrollImageSet(%v)", tt.event)
 		})
 	}
 }
 
-func Test_validateClipset(t *testing.T) {
+func Test_validateImageSet(t *testing.T) {
 	tests := []struct {
 		name    string
 		content Content
@@ -154,14 +141,14 @@ func Test_validateClipset(t *testing.T) {
 		{
 			name: "content-with-correct-type-and-no-members",
 			content: Content{
-				typeField: ClipSetType,
+				typeField: ImageSetType,
 			},
 			want: false,
 		},
 		{
 			name: "content-with-correct-type-and-members",
 			content: Content{
-				typeField:    ClipSetType,
+				typeField:    ImageSetType,
 				membersField: []Content{},
 			},
 			want: true,
@@ -169,7 +156,7 @@ func Test_validateClipset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, validateClipset(tt.content), "validateClipset(%v)", tt.content)
+			assert.Equalf(t, tt.want, validateImageSet(tt.content), "validateImageSet(%v)", tt.content)
 		})
 	}
 }

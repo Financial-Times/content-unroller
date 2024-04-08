@@ -30,7 +30,6 @@ func (u *InternalArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 func validateInternalArticle(article Content) bool {
 	_, hasLeadImages := article[leadImages]
 	_, hasBody := article[bodyXMLField]
-	//TODO: Add tests with types not containing article
 
 	return (hasLeadImages || hasBody) && checkType(article, ArticleType)
 }

@@ -10,7 +10,11 @@ func (u *UniversalUnroller) unrollClip(event UnrollEvent) (Content, error) {
 		return event.c, nil
 	}
 
-	apiUrl, ok := p.(map[string]interface{})["apiUrl"].(string)
+	posterMap, ok := p.(map[string]interface{})
+	if !ok {
+		return nil, ConversionError
+	}
+	apiUrl, ok := posterMap[apiUrlField].(string)
 	if !ok {
 		return nil, ConversionError
 	}

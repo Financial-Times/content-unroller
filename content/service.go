@@ -26,6 +26,7 @@ const (
 	image              = "image"
 	typeField          = "type"
 	typesField         = "types"
+	apiUrlField        = "apiUrl"
 )
 
 var (
@@ -283,7 +284,6 @@ func extractEmbeddedContentByType(cc Content, log *logger.UPPLogger, acceptedTyp
 	return emContentUUIDs, true
 }
 
-// TODO: Add tests
 func checkType(content Content, wantedType string) bool {
 	if contentTypes, ok := content[typesField].([]interface{}); ok {
 		return slices.ContainsFunc(contentTypes, func(contentType interface{}) bool {
@@ -294,7 +294,6 @@ func checkType(content Content, wantedType string) bool {
 	return contentType == wantedType
 }
 
-// TODO: Add tests
 func getEventType(content Content) string {
 	if contentTypes, ok := content[typesField].([]interface{}); ok {
 		if len(contentTypes) > 0 {

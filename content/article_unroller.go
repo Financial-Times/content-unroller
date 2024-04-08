@@ -29,7 +29,7 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	cc := req.c.clone()
 
 	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
-	if schema != nil { //TODO: Invert check
+	if schema != nil {
 		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 		if err != nil {
 			return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
@@ -177,7 +177,7 @@ func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 	if !found {
 		return Content{}, errors.New("Problem in poster field")
 	}
-	papiurl := posterData["apiUrl"].(string)
+	papiurl := posterData[apiUrlField].(string)
 	pUUID, err := extractUUIDFromString(papiurl)
 	if err != nil {
 		return Content{}, err
@@ -194,7 +194,6 @@ func validateArticle(article Content) bool {
 	_, hasMainImage := article[mainImageField]
 	_, hasBody := article[bodyXMLField]
 	_, hasAltImg := article[altImagesField].(map[string]interface{})
-	//TODO: Add tests with types not containing article
 
 	return (hasMainImage || hasBody || hasAltImg) && checkType(article, ArticleType)
 }

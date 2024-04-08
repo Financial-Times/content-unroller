@@ -99,7 +99,6 @@ func TestGetContent_UnrollEventError_MissingID(t *testing.T) {
 	assert.Contains(t, string(rr.Body.Bytes()), "Missing or invalid id field")
 }
 
-// TODO: Fix this test, by testing the real validation function
 func TestGetContent_ValidationError(t *testing.T) {
 	h := Handler{
 		Unroller: &UniversalUnroller{},

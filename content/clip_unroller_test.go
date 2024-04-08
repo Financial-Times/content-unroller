@@ -10,11 +10,13 @@ import (
 
 func TestClipUnroller_Unroll(t *testing.T) {
 	testLogger := logger.NewUPPLogger("test-service", "Error")
+	testApiHost := "test.api.ft.com"
+	posterUUID := "22c0d426-1466-11e7-b0c1-37e417ee6c76"
 	type fields struct {
-		imageSetUnroller Unroller
-		reader           Reader
-		apiHost          string
+		reader  Reader
+		apiHost string
 	}
+	imageUUID := "22c0d426-1466-11e7-b0c1-37e417ee6c77"
 	tests := []struct {
 		name    string
 		fields  fields
@@ -22,7 +24,87 @@ func TestClipUnroller_Unroll(t *testing.T) {
 		want    Content
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "invalid-clip",
+			fields: fields{
+				reader:  nil,
+				apiHost: testApiHost,
+			},
+			event: UnrollEvent{
+				c: Content{
+					typeField: "wrong",
+				},
+			},
+			want:    nil,
+			wantErr: assert.Error,
+		},
+		{
+			name: "valid-clip-without-poster",
+			fields: fields{
+				reader:  nil,
+				apiHost: testApiHost,
+			},
+			event: UnrollEvent{
+				c: Content{
+					typeField: ClipType,
+				},
+			},
+			want: Content{
+				typeField: ClipType,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "valid-clip-with-poster",
+			fields: fields{
+				reader: &ReaderMock{
+					mockGet: func(c []string, tid string) (map[string]Content, error) {
+						return map[string]Content{
+							posterUUID: {
+								id:         posterUUID,
+								"unrolled": "true",
+								typeField:  ImageSetType,
+								membersField: []interface{}{
+									map[string]interface{}{
+										id: imageUUID,
+									},
+								},
+							},
+							imageUUID: {
+								id:         imageUUID,
+								typeField:  image,
+								"unrolled": "true",
+							},
+						}, nil
+					},
+				},
+				apiHost: testApiHost,
+			},
+			event: UnrollEvent{
+				c: Content{
+					posterField: map[string]interface{}{
+						apiUrlField: posterUUID,
+					},
+					typeField: ClipType,
+				},
+			},
+			want: Content{
+				posterField: Content{
+					id:         posterUUID,
+					"unrolled": "true",
+					typeField:  ImageSetType,
+					membersField: []Content{
+						{
+							id:         imageUUID,
+							typeField:  image,
+							"unrolled": "true",
+						},
+					},
+				},
+				typeField: ClipType,
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

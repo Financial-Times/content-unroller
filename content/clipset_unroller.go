@@ -6,13 +6,6 @@ import (
 )
 
 func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
-	clipSets, err := u.reader.Get([]string{event.uuid}, event.tid)
-	readClipSet, ok := clipSets[event.uuid]
-	if !ok {
-		return nil, errors.Join(ErrValidating, fmt.Errorf("did not find clipset"))
-	}
-	event.c = readClipSet
-
 	if !validateClipset(event.c) {
 		return nil, ErrValidating
 	}

@@ -34,9 +34,10 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 		typeField:    ClipSetType,
 	}
 	unrolledClip := Content{
-		id:         testUUIDClip,
-		"unrolled": "true",
-		typeField:  ClipType,
+		id:          testUUIDClip,
+		"unrolled":  "true",
+		typeField:   ClipType,
+		formatField: "",
 	}
 	type fields struct {
 		clipUnroller Unroller
@@ -101,7 +102,8 @@ func TestClipsetUnroller_Unroll(t *testing.T) {
 				c: Content{
 					membersField: []interface{}{
 						map[string]interface{}{
-							id: testUUIDClip,
+							id:          testUUIDClip,
+							formatField: "",
 						},
 					},
 					typeField: ClipSetType,

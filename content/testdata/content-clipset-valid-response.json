@@ -51,6 +51,7 @@
         }
       ],
       "canBeSyndicated": "verify",
+      "format": "",
       "poster": {
         "id": "http://www.ft.com/thing/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
         "type": "http://www.ft.com/ontology/content/ImageSet",

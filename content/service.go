@@ -16,6 +16,7 @@ const (
 	ArticleType        = "http://www.ft.com/ontology/content/Article"
 	mainImageField     = "mainImage"
 	id                 = "id"
+	formatField        = "format"
 	embeds             = "embeds"
 	altImagesField     = "alternativeImages"
 	leadImages         = "leadImages"
@@ -60,9 +61,9 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 		return u.unrollClip(event)
 	case ImageSetType:
 		return u.unrollImageSet(event)
+	default:
+		return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 	}
-
-	return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 }
 
 func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
@@ -71,9 +72,9 @@ func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, e
 	switch getEventType(event.c) {
 	case ArticleType:
 		return articleUnroller.Unroll(event)
+	default:
+		return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 	}
-
-	return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
 }
 
 type Content map[string]interface{}

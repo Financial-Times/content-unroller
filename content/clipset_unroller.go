@@ -1,5 +1,10 @@
 package content
 
+import (
+	"errors"
+	"fmt"
+)
+
 func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 	if !validateClipset(event.c) {
 		return nil, ErrValidating
@@ -13,9 +18,11 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 		return event.c, nil
 	}
 
+	clipUUIDAndFormat := map[string]string{} //TODO: This solution should be optimised to avoid using a map. Maybe using a single for loop can fix this.
 	var clipUUIDs []string
 	for _, m := range members {
-		memberID, ok := m.(map[string]interface{})["id"].(string)
+		memberMap := m.(map[string]interface{})
+		memberID, ok := memberMap["id"].(string)
 		if !ok {
 			return nil, ErrConverting
 		}
@@ -24,6 +31,10 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 			return nil, err
 		}
 		clipUUIDs = append(clipUUIDs, uuid)
+		clipUUIDAndFormat[uuid], ok = memberMap[formatField].(string)
+		if !ok {
+			return nil, errors.Join(ErrConverting, fmt.Errorf("missing format field for clip %s", uuid))
+		}
 	}
 
 	clips, err := u.reader.Get(clipUUIDs, event.tid)
@@ -41,6 +52,7 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 		if err != nil {
 			return nil, err
 		}
+		unrolledClip[formatField] = clipUUIDAndFormat[clipUUID] //TODO: Reformat this
 		unrolledClips = append(unrolledClips, unrolledClip)
 	}
 

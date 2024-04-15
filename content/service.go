@@ -49,7 +49,7 @@ func NewUniversalUnroller(r Reader, log *logger.UPPLogger, apiHost string) *Univ
 }
 
 func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewArticleUnroller(u.reader, u.log, u.apiHost)
+	defaultUnroller := NewDefaultUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
 	case ClipSetType:
@@ -59,16 +59,16 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 	case ImageSetType:
 		return u.unrollImageSet(event)
 	default:
-		return articleUnroller.Unroll(event)
+		return defaultUnroller.Unroll(event)
 	}
 }
 
 func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewInternalArticleUnroller(u.reader, u.log, u.apiHost)
+	defaultInternalUnroller := NewDefaultInternalUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
 	default:
-		return articleUnroller.Unroll(event)
+		return defaultInternalUnroller.Unroll(event)
 	}
 }
 

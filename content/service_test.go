@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -163,4 +164,39 @@ func Test_getEventType(t *testing.T) {
 			assert.Equalf(t, tt.want, getEventType(tt.content), "getEventType(%v)", tt.content)
 		})
 	}
+}
+
+func TestUnrollContent_LiveBlogPackage(t *testing.T) {
+	testReader := &ReaderMock{
+		mockGet: func(_ []string, _ string) (map[string]Content, error) {
+			b, err := os.ReadFile("testdata/reader-content-liveblogpackage-valid-response.json")
+			assert.NoError(t, err, "Cannot open file necessary for test case")
+			var res map[string]Content
+			err = json.Unmarshal(b, &res)
+			assert.NoError(t, err, "Cannot return valid response")
+			return res, nil
+		},
+	}
+	defaultAPIHost := "test.api.ft.com"
+	unroller := UniversalUnroller{
+		reader:  testReader,
+		log:     logger.NewUPPLogger("test", "debug"),
+		apiHost: defaultAPIHost,
+	}
+
+	expected, err := os.ReadFile("testdata/content-liveblogpackage-valid-response.json")
+	assert.NoError(t, err, "Cannot read necessary test file")
+
+	var c Content
+	fileBytes, err := os.ReadFile("testdata/content-liveblogpackage-valid-request.json")
+	assert.NoError(t, err, "Cannot read necessary test file")
+	err = json.Unmarshal(fileBytes, &c)
+	assert.NoError(t, err, "Cannot build json body")
+	req := UnrollEvent{c, "tid_sample", "sample_uuid"}
+	actual, err := unroller.UnrollContent(req)
+	assert.NoError(t, err, "Should not get an error when expanding clipset")
+
+	actualJSON, err := json.Marshal(actual)
+	assert.NoError(t, err, "Expected to marshall correctly")
+	assert.JSONEq(t, string(expected), string(actualJSON))
 }

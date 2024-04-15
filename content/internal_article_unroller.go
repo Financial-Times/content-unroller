@@ -31,5 +31,5 @@ func validateInternalArticle(article Content) bool {
 	_, hasLeadImages := article[leadImages]
 	_, hasBody := article[bodyXMLField]
 
-	return (hasLeadImages || hasBody) && checkType(article, ArticleType)
+	return hasLeadImages || hasBody
 }

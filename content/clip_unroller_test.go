@@ -35,7 +35,9 @@ func TestClipUnroller_Unroll(t *testing.T) {
 					typeField: "wrong",
 				},
 			},
-			want:    nil,
+			want: Content{
+				typeField: "wrong",
+			},
 			wantErr: assert.Error,
 		},
 		{

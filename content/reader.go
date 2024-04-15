@@ -100,7 +100,7 @@ func (cr *ContentReader) doGet(uuids []string, tid string, reqURL string, appNam
 
 	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
 	if err != nil {
-		return cb, errors.Join(err, ErrConnectingToAPI, fmt.Errorf("error creating request to %v", appName))
+		return cb, errors.Join(ErrConnectingToAPI, err, fmt.Errorf("error creating request to %v", appName))
 	}
 
 	req.Header.Add(transactionidutils.TransactionIDHeader, tid)
@@ -114,7 +114,7 @@ func (cr *ContentReader) doGet(uuids []string, tid string, reqURL string, appNam
 	req.URL.RawQuery = q.Encode()
 	res, err := cr.client.Do(req)
 	if err != nil {
-		return cb, errors.Join(err, ErrConnectingToAPI, fmt.Errorf("request to %v failed", appName))
+		return cb, errors.Join(ErrConnectingToAPI, err, fmt.Errorf("request to %v failed", appName))
 	}
 	defer res.Body.Close()
 
@@ -124,12 +124,12 @@ func (cr *ContentReader) doGet(uuids []string, tid string, reqURL string, appNam
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return cb, errors.Join(err, ErrConnectingToAPI, fmt.Errorf("error reading response received from %v", appName))
+		return cb, errors.Join(ErrConnectingToAPI, err, fmt.Errorf("error reading response received from %v", appName))
 	}
 
 	err = json.Unmarshal(body, &cb)
 	if err != nil {
-		return cb, errors.Join(err, ErrConnectingToAPI, fmt.Errorf("error unmarshalling response from %v", appName))
+		return cb, errors.Join(ErrConnectingToAPI, err, fmt.Errorf("error unmarshalling response from %v", appName))
 	}
 	return cb, nil
 }

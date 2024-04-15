@@ -49,7 +49,7 @@ func (hh *Handler) GetContent(w http.ResponseWriter, r *http.Request) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -81,7 +81,7 @@ func (hh *Handler) GetInternalContent(w http.ResponseWriter, r *http.Request) {
 		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
 		return
 	} else if err != nil {
-		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusBadRequest)
+		handleError(r, hh.log, tid, event.uuid, w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -127,7 +127,7 @@ func handleError(r *http.Request, log *logger.UPPLogger, tid string, uuid string
 	var errMsg string
 	if statusCode >= 400 && statusCode < 500 {
 		errMsg = fmt.Sprintf("Error expanding content, supplied UUID is invalid: %s", err.Error())
-		log.WithTransactionID(tid).WithError(err).Errorf(errMsg)
+		transactionFinishedEvent(log, r.RequestURI, tid, statusCode, uuid, err.Error())
 	} else if statusCode >= 500 {
 		errMsg = fmt.Sprintf("Error expanding content for: %v: %v", uuid, err.Error())
 		transactionFinishedEvent(log, r.RequestURI, tid, statusCode, uuid, err.Error())

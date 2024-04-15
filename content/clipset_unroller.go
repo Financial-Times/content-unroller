@@ -62,7 +62,7 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 }
 
 func validateClipset(c Content) bool {
-	_, hasMembers := c[membersField]
+	_, ok := c[membersField]
 
-	return hasMembers && checkType(c, ClipSetType)
+	return ok && checkType(c, ClipSetType)
 }

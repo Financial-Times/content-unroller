@@ -29,33 +29,35 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	cc := req.c.clone()
 
 	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
-	if schema != nil {
-		contentMap, err := u.reader.Get(schema.toArray(), req.tid)
-		if err != nil {
-			return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
-		}
-		u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
+	if schema == nil {
+		return cc, nil
+	}
 
-		mainImageUUID := schema.get(mainImageField)
-		if mainImageUUID != "" {
-			cc[mainImageField] = contentMap[mainImageUUID]
-		}
+	contentMap, err := u.reader.Get(schema.toArray(), req.tid)
+	if err != nil {
+		return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
+	}
+	u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
 
-		embeddedContentUUIDs := schema.getAll(embeds)
-		if len(embeddedContentUUIDs) > 0 {
-			embedded := []Content{}
-			for _, emb := range embeddedContentUUIDs {
-				embedded = append(embedded, contentMap[emb])
-			}
-			cc[embeds] = embedded
-		}
+	mainImageUUID := schema.get(mainImageField)
+	if mainImageUUID != "" {
+		cc[mainImageField] = contentMap[mainImageUUID]
+	}
 
-		promImgUUID := schema.get(promotionalImage)
-		if promImgUUID != "" {
-			pi, found := contentMap[promImgUUID]
-			if found {
-				cc[altImagesField].(map[string]interface{})[promotionalImage] = pi
-			}
+	embeddedContentUUIDs := schema.getAll(embeds)
+	if len(embeddedContentUUIDs) > 0 {
+		embedded := []Content{}
+		for _, emb := range embeddedContentUUIDs {
+			embedded = append(embedded, contentMap[emb])
+		}
+		cc[embeds] = embedded
+	}
+
+	promImgUUID := schema.get(promotionalImage)
+	if promImgUUID != "" {
+		pi, found := contentMap[promImgUUID]
+		if found {
+			cc[altImagesField].(map[string]interface{})[promotionalImage] = pi
 		}
 	}
 

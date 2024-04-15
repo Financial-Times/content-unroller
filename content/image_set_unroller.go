@@ -42,7 +42,7 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 }
 
 func validateImageSet(c Content) bool {
-	_, hasMembers := c[membersField]
+	_, ok := c[membersField]
 
-	return hasMembers && checkType(c, ImageSetType)
+	return ok && checkType(c, ImageSetType)
 }

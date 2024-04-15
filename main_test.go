@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -11,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/Financial-Times/content-unroller/content"
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -20,25 +20,21 @@ const (
 	contentStoreAppName = "content-source-app-name"
 )
 
-var (
-	unrollerService *httptest.Server
-)
-
 func TestContent_ShouldReturn200(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
-	expected, err := ioutil.ReadFile("testdata/content-valid-response.json")
+	expected, err := os.ReadFile("testdata/content-valid-response.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("testdata/content-valid-request.json")
+	body, err := os.ReadFile("testdata/content-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
-	resp, err := http.Post(unrollerService.URL+"/content", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(srv.URL+"/content", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
 	defer resp.Body.Close()
-	actualResponse, err := ioutil.ReadAll(resp.Body)
+	actualResponse, err := io.ReadAll(resp.Body)
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NoError(t, err, "")
@@ -47,12 +43,12 @@ func TestContent_ShouldReturn200(t *testing.T) {
 
 func TestContent_ShouldReturn400WhenInvalidJson(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
 	body := `{"body":"invalid""body"}`
-	resp, err := http.Post(unrollerService.URL+"/content", "application/json", strings.NewReader(body))
+	resp, err := http.Post(srv.URL+"/content", "application/json", strings.NewReader(body))
 	assert.NoError(t, err, "")
 	defer resp.Body.Close()
 
@@ -61,12 +57,12 @@ func TestContent_ShouldReturn400WhenInvalidJson(t *testing.T) {
 
 func TestContent_ShouldReturn400WhenInvalidContentRequest(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
 	body := `{"id":"36037ab1-da3b-35bf-b5ee-4fc23723b635"}`
-	resp, err := http.Post(unrollerService.URL+"/content", "application/json", strings.NewReader(body))
+	resp, err := http.Post(srv.URL+"/content", "application/json", strings.NewReader(body))
 	assert.NoError(t, err, "")
 	defer resp.Body.Close()
 
@@ -75,33 +71,33 @@ func TestContent_ShouldReturn400WhenInvalidContentRequest(t *testing.T) {
 
 func TestInternalContent_ShouldReturn200(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
-	expected, err := ioutil.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
+	expected, err := os.ReadFile("testdata/internalcontent-valid-response-no-lead-images.json")
 	assert.NoError(t, err, "")
 
-	body, err := ioutil.ReadFile("testdata/internalcontent-valid-request.json")
+	body, err := os.ReadFile("testdata/internalcontent-valid-request.json")
 	assert.NoError(t, err, "Cannot read file necessary for test case")
-	resp, err := http.Post(unrollerService.URL+"/internalcontent", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(srv.URL+"/internalcontent", "application/json", bytes.NewReader(body))
 	assert.NoError(t, err, "Should not fail")
 	defer resp.Body.Close()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	actualResponse, err := ioutil.ReadAll(resp.Body)
+	actualResponse, err := io.ReadAll(resp.Body)
 	assert.NoError(t, err, "")
 	assert.JSONEq(t, string(expected), string(actualResponse))
 }
 
 func TestInternalContent_ShouldReturn400InvalidJson(t *testing.T) {
 	internalContentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
-	startUnrollerService(internalContentStoreServiceMock.URL)
+	srv := startUnrollerService(internalContentStoreServiceMock.URL)
 	defer internalContentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
 	body := `{"body":"invalid""body"}`
-	resp, err := http.Post(unrollerService.URL+"/internalcontent", "application/json", strings.NewReader(body))
+	resp, err := http.Post(srv.URL+"/internalcontent", "application/json", strings.NewReader(body))
 	assert.NoError(t, err, "")
 	defer resp.Body.Close()
 
@@ -110,12 +106,12 @@ func TestInternalContent_ShouldReturn400InvalidJson(t *testing.T) {
 
 func TestInternalContent_ShouldReturn400InvalidArticle(t *testing.T) {
 	internalContentStoreServiceMock := startContentServerMock("testdata/internalcontent-source-valid-response.json")
-	startUnrollerService(internalContentStoreServiceMock.URL)
+	srv := startUnrollerService(internalContentStoreServiceMock.URL)
 	defer internalContentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
 	body := `{"id":"36037ab1-da3b-35bf-b5ee-4fc23723b635"}`
-	resp, err := http.Post(unrollerService.URL+"/internalcontent", "application/json", strings.NewReader(body))
+	resp, err := http.Post(srv.URL+"/internalcontent", "application/json", strings.NewReader(body))
 	assert.NoError(t, err, "")
 	defer resp.Body.Close()
 
@@ -124,12 +120,11 @@ func TestInternalContent_ShouldReturn400InvalidArticle(t *testing.T) {
 
 func TestShouldBeHealthy(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
-
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
-	resp, err := http.Get(unrollerService.URL + "/__health")
+	resp, err := http.Get(srv.URL + "/__health")
 	if err == nil {
 		defer resp.Body.Close()
 	}
@@ -140,12 +135,11 @@ func TestShouldBeHealthy(t *testing.T) {
 
 func TestShouldBeGoodToGo(t *testing.T) {
 	contentStoreServiceMock := startContentServerMock("testdata/source-content-valid-response.json")
-	startUnrollerService(contentStoreServiceMock.URL)
-
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
-	resp, err := http.Get(unrollerService.URL + "/__gtg")
+	resp, err := http.Get(srv.URL + "/__gtg")
 	if err == nil {
 		defer resp.Body.Close()
 	}
@@ -156,12 +150,11 @@ func TestShouldBeGoodToGo(t *testing.T) {
 
 func TestShouldNotBeGoodToGoWhenContentStoreIsNotHappy(t *testing.T) {
 	contentStoreServiceMock := startUnhealthyContentServerMock()
-	startUnrollerService(contentStoreServiceMock.URL)
-
+	srv := startUnrollerService(contentStoreServiceMock.URL)
 	defer contentStoreServiceMock.Close()
-	defer unrollerService.Close()
+	defer srv.Close()
 
-	resp, err := http.Get(unrollerService.URL + "/__gtg")
+	resp, err := http.Get(srv.URL + "/__gtg")
 	if err == nil {
 		defer resp.Body.Close()
 	}
@@ -206,7 +199,7 @@ func statusServiceUnavailableHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
-func startUnrollerService(contentStoreURL string) {
+func startUnrollerService(contentStoreURL string) *httptest.Server {
 	sc := content.ServiceConfig{
 		ContentStoreAppName:      contentStoreAppName,
 		ContentStoreAppHealthURI: getServiceHealthURI(contentStoreURL),
@@ -221,8 +214,10 @@ func startUnrollerService(contentStoreURL string) {
 	}
 
 	reader := content.NewContentReader(rc, http.DefaultClient)
-	unroller := content.NewContentUnroller(reader, "test.api.ft.com")
+	testLogger := logger.NewUPPLogger("test-service", "Error")
+	unroller := content.NewUniversalUnroller(reader, testLogger, contentStoreURL)
+	handler := content.NewHandler(unroller, testLogger)
 
-	h := setupServiceHandler(unroller, sc)
-	unrollerService = httptest.NewServer(h)
+	h := setupServiceHandler(sc, *handler)
+	return httptest.NewServer(h)
 }

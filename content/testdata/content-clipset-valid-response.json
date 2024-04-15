@@ -1,0 +1,87 @@
+{
+  "id": "http://www.ft.com/thing/3863a40b-0cee-4e5e-8396-8434f6eaf2aa",
+  "type": "http://www.ft.com/ontology/content/ClipSet",
+  "alternativeTitles": {},
+  "alternativeStandfirsts": {},
+  "description": "UK chancellor Jeremy Hunt's key policy announcements and official economic forecasts",
+  "publishedDate": "2024-03-06T19:26:25.375Z",
+  "requestUrl": "https://api-t.ft.com/content/3863a40b-0cee-4e5e-8396-8434f6eaf2aa",
+  "brands": [
+    "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+  ],
+  "alternativeImages": {},
+  "canBeDistributed": "verify",
+  "caption": "UK chancellor Jeremy Hunt's key policy announcements and official economic forecasts",
+  "dataCopyright": "parliamentlive.tv",
+  "contentWarning": [],
+  "systemTitle": "Hunt compilation - UK Budget",
+  "canBeSyndicated": "verify",
+  "accessibility": {
+    "captions": [
+      {
+        "url": "https://next-media-api.ft.com/clips/captions/34104433",
+        "mediaType": "text/vtt"
+      }
+    ],
+    "transcript": "<p>Now the OBR expects the economy to grow by 0.8% this year and 1.9% next year, 0.5% higher than their autumn forecast. After that, growth rises to 2.2%, 1.8%, and 1.7% in 2028. </p><p>After a consultation on its implementation, I will introduce a brand new British ISA, which will allow an additional 5,000 pound annual investment for investments in UK equity with all the tax advantages of other ISAs. And this will be on top of the existing ISA allowances ensurer British savers can benefit from the growth of the most promising UK businesses, as well as supporting those businesses with the capital to expand. </p><p>But because the increase in energy prices caused by the Ukraine war is expected to last longer, so too will the sector's windfall profits. So I will extend the sunset on the energy profits levy for an additional year to 2029, raising 1.5 billion pounds. We will replace the non-dom regime with a modern, simpler, and fairer residency-based system. From April 25, new arrivals to the UK will not be required to pay any tax on foreign income and gains for their first four years of UK residency, a more generous regime than at present and one of the most attractive offers in Europe. But after four years, those who continue to live in the UK will pay the same tax as other UK residents. </p><p>I confirm that, from this April, the high income child benefit charge threshold will be raised from 50,000 to 60,000 pounds. We will raise the top of the taper at which it is withdrawn to 80,000 pounds. That means no one earning under 60,000 pounds will pay the charge, taking 170,000 families out of paying it altogether. </p><p>From April the 6th, employee national insurance will be cut by another 2p from 10% to 8%. Self-employed national insurance will be cut from 8% to 6%. It means an additional 450 pounds a year for the average employee or 350 pounds for someone self-employed. When combined with the autumn reductions, it means 27 million employees will get an average tax cut of 900 pounds a year. </p>"
+  },
+  "members": [
+    {
+      "id": "http://www.ft.com/thing/c96a594e-2466-422e-9aed-200abdc4de1c",
+      "type": "http://www.ft.com/ontology/content/Clip",
+      "alternativeTitles": {},
+      "alternativeStandfirsts": {},
+      "firstPublishedDate": "2024-03-06T17:01:36.771Z",
+      "publishedDate": "2024-03-06T17:01:36.771Z",
+      "requestUrl": "https://api-t.ft.com/content/c96a594e-2466-422e-9aed-200abdc4de1c",
+      "brands": [
+        "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+      ],
+      "alternativeImages": {},
+      "canBeDistributed": "verify",
+      "dataSource": [
+        {
+          "binaryUrl": "https://next-media-api.ft.com/clips/optimised-media-files/17097409578660/1920x1080.mp4",
+          "pixelWidth": 1920,
+          "pixelHeight": 1080,
+          "mediaType": "video/mp4",
+          "duration": 161012,
+          "videoCodec": "h264",
+          "audioCodec": "aac"
+        }
+      ],
+      "canBeSyndicated": "verify",
+      "format": "",
+      "poster": {
+        "id": "http://www.ft.com/thing/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
+        "type": "http://www.ft.com/ontology/content/ImageSet",
+        "alternativeTitles": {},
+        "alternativeStandfirsts": {},
+        "publishedDate": "2024-03-06T17:01:36.790Z",
+        "requestUrl": "https://api-t.ft.com/content/99d3c5f9-eeee-461f-a0d8-13f671fa17ae",
+        "brands": [
+          "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+        ],
+        "alternativeImages": {},
+        "canBeSyndicated": "verify",
+        "members": [
+          {
+            "id": "http://www.ft.com/thing/e37aa9c0-69bd-4bd0-8874-c90f0a265894",
+            "type": "http://www.ft.com/ontology/content/Image",
+            "alternativeTitles": {},
+            "alternativeStandfirsts": {},
+            "firstPublishedDate": "2024-03-06T17:01:36.774Z",
+            "publishedDate": "2024-03-06T17:01:36.774Z",
+            "requestUrl": "https://api-t.ft.com/content/e37aa9c0-69bd-4bd0-8874-c90f0a265894",
+            "binaryUrl": "https://spark-clips-prod.s3.eu-west-1.amazonaws.com/poster-images/e37aa9c0-69bd-4bd0-8874-c90f0a265894",
+            "brands": [
+              "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+            ],
+            "alternativeImages": {},
+            "canBeSyndicated": "verify"
+          }
+        ]
+      }
+    }
+  ]
+}

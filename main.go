@@ -9,12 +9,11 @@ import (
 
 	"github.com/Financial-Times/content-unroller/content"
 	fthealth "github.com/Financial-Times/go-fthealth/v1_1"
-	"github.com/Financial-Times/service-status-go/gtg"
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/Financial-Times/service-status-go/httphandlers"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	cli "github.com/jawher/mow.cli"
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -61,6 +60,14 @@ func main() {
 		Desc:   "API host to use for URLs in responses",
 		EnvVar: "API_HOST",
 	})
+	logLevel := app.String(cli.StringOpt{
+		Name:   "logLevel",
+		Value:  "INFO",
+		Desc:   "Log level",
+		EnvVar: "LOG_LEVEL",
+	})
+
+	log := logger.NewUPPLogger(AppName, *logLevel)
 
 	app.Action = func() {
 		httpClient := &http.Client{
@@ -87,31 +94,33 @@ func main() {
 		}
 
 		reader := content.NewContentReader(readerConfig, httpClient)
-		unroller := content.NewContentUnroller(reader, *apiHost)
+		unroller := content.NewUniversalUnroller(reader, log, *apiHost)
+		handler := content.NewHandler(unroller, log)
 
-		h := setupServiceHandler(unroller, sc)
+		h := setupServiceHandler(sc, *handler)
 		err := http.ListenAndServe(":"+*port, h)
 		if err != nil {
 			log.Fatalf("Unable to start server: %v", err)
 		}
 	}
 
-	log.SetLevel(log.InfoLevel)
 	log.Infof("Application started with args %s", os.Args)
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatalf("Unable to start application: %v", err)
+		return
+	}
 }
 
-func setupServiceHandler(s content.Unroller, sc content.ServiceConfig) *mux.Router {
+func setupServiceHandler(sc content.ServiceConfig, handler content.Handler) *mux.Router {
 	r := mux.NewRouter()
-	ch := &content.Handler{Service: s}
 
 	var checks []fthealth.Check
 	var gtgHandler func(http.ResponseWriter, *http.Request)
 
-	r.HandleFunc("/content", ch.GetContent).Methods("POST")
-	r.HandleFunc("/internalcontent", ch.GetInternalContent).Methods("POST")
+	r.HandleFunc("/content", handler.GetContent).Methods("POST")
+	r.HandleFunc("/internalcontent", handler.GetInternalContent).Methods("POST")
 	checks = []fthealth.Check{sc.ContentStoreCheck()}
-	gtgHandler = httphandlers.NewGoodToGoHandler(gtg.StatusChecker(sc.GtgCheck))
+	gtgHandler = httphandlers.NewGoodToGoHandler(sc.GtgCheck)
 
 	r.Path(httphandlers.BuildInfoPath).HandlerFunc(httphandlers.BuildInfoHandler)
 	r.Path(httphandlers.PingPath).HandlerFunc(httphandlers.PingHandler)

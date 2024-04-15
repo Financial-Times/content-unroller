@@ -2,13 +2,15 @@ package content
 
 import (
 	"errors"
-	"io/ioutil"
+	"os"
 	"testing"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetEmbedded(t *testing.T) {
+	testLogger := logger.NewUPPLogger("test-service", "Error")
 	tests := []struct {
 		name           string
 		body           string
@@ -98,7 +100,7 @@ func TestGetEmbedded(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			emImagesUUIDs, err := getEmbedded(test.body, test.acceptedTypes, "", "")
+			emImagesUUIDs, err := getEmbedded(testLogger, test.body, test.acceptedTypes, "", "")
 			if test.expectedErr != nil {
 				assert.Error(t, err)
 				assert.True(t, errors.Is(err, test.expectedErr))
@@ -112,7 +114,7 @@ func TestGetEmbedded(t *testing.T) {
 
 func loadBodyFromFile(t *testing.T, filePath string) string {
 	t.Helper()
-	data, err := ioutil.ReadFile(filePath)
+	data, err := os.ReadFile(filePath)
 	assert.NoError(t, err, "Cannot read test file")
 	return string(data)
 }

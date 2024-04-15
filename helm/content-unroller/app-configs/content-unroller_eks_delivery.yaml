@@ -9,3 +9,4 @@ content_store:
 
 content_path: /content
 internal_content_path: /internalcontent
+log_level: INFO

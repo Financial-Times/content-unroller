@@ -2,7 +2,6 @@ package content
 
 import (
 	"errors"
-	"fmt"
 	"slices"
 
 	"github.com/Financial-Times/go-logger/v2"
@@ -50,11 +49,9 @@ func NewUniversalUnroller(r Reader, log *logger.UPPLogger, apiHost string) *Univ
 }
 
 func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewArticleUnroller(u.reader, u.log, u.apiHost)
+	defaultUnroller := NewDefaultUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
-	case ArticleType:
-		return articleUnroller.Unroll(event)
 	case ClipSetType:
 		return u.unrollClipSet(event)
 	case ClipType:
@@ -62,18 +59,16 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 	case ImageSetType:
 		return u.unrollImageSet(event)
 	default:
-		return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+		return defaultUnroller.Unroll(event)
 	}
 }
 
 func (u *UniversalUnroller) UnrollInternalContent(event UnrollEvent) (Content, error) {
-	articleUnroller := NewInternalArticleUnroller(u.reader, u.log, u.apiHost)
+	defaultInternalUnroller := NewDefaultInternalUnroller(u.reader, u.log, u.apiHost)
 
 	switch getEventType(event.c) {
-	case ArticleType:
-		return articleUnroller.Unroll(event)
 	default:
-		return nil, errors.Join(ErrValidating, fmt.Errorf("unsupported content type %s", getEventType(event.c)))
+		return defaultInternalUnroller.Unroll(event)
 	}
 }
 

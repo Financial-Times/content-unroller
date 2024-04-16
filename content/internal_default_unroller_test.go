@@ -11,7 +11,7 @@ import (
 )
 
 func TestUnrollInternalContent(t *testing.T) {
-	cu := InternalArticleUnroller{
+	cu := DefaultInternalUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-valid-response.json")
@@ -53,7 +53,7 @@ func TestUnrollInternalContent(t *testing.T) {
 }
 
 func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
-	cu := InternalArticleUnroller{
+	cu := DefaultInternalUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				return nil, errors.New("Error retrieving content")
@@ -90,7 +90,7 @@ func TestUnrollInternalContent_LeadImagesSkippedWhenReadingError(t *testing.T) {
 }
 
 func TestUnrollInternalContent_DynamicContentSkippedWhenReadingError(t *testing.T) {
-	cu := InternalArticleUnroller{
+	cu := DefaultInternalUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-internalcontent-valid-response.json")

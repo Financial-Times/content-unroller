@@ -1,0 +1,50 @@
+{
+  "15f560c5-fa19-4997-aa33-aa3b6638442e": {
+    "alternativeImages": {
+    },
+    "alternativeStandfirsts": {
+    },
+    "alternativeTitles": {
+    },
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "canBeSyndicated": "verify",
+    "description": "",
+    "id": "http://www.ft.com/thing/15f560c5-fa19-4997-aa33-aa3b6638442e",
+    "members": [
+      {
+        "format": "standard",
+        "id": "https://api.ft.com/content/e1645ef0-7a42-492f-8d43-e3b91f9e0da8"
+      }
+    ],
+    "publication": [
+      "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+    ],
+    "publishedDate": "2024-04-15T15:16:44.994Z",
+    "requestUrl": "https://api.ft.com/content/15f560c5-fa19-4997-aa33-aa3b6638442e",
+    "type": "http://www.ft.com/ontology/content/ImageSet"
+  },
+  "e1645ef0-7a42-492f-8d43-e3b91f9e0da8": {
+    "id": "http://www.ft.com/thing/e1645ef0-7a42-492f-8d43-e3b91f9e0da8",
+    "type": "http://www.ft.com/ontology/content/Image",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "",
+    "firstPublishedDate": "2024-04-15T15:16:44.993Z",
+    "publishedDate": "2024-04-15T15:16:44.993Z",
+    "requestUrl": "https://api.ft.com/content/e1645ef0-7a42-492f-8d43-e3b91f9e0da8",
+    "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/e1645ef0-7a42-492f-8d43-e3b91f9e0da8.jpg",
+    "pixelWidth": 2492,
+    "pixelHeight": 1402,
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "publication": [
+      "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+    ],
+    "canBeSyndicated": "verify"
+  }
+}

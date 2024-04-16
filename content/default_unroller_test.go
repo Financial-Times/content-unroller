@@ -11,7 +11,7 @@ import (
 )
 
 func TestUnrollContent(t *testing.T) {
-	cu := ArticleUnroller{
+	cu := DefaultUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
@@ -44,7 +44,7 @@ func TestUnrollContent(t *testing.T) {
 }
 
 func TestUnrollContent_NilSchema(t *testing.T) {
-	cu := ArticleUnroller{reader: nil}
+	cu := DefaultUnroller{reader: nil}
 	var c Content
 	err := json.Unmarshal([]byte(InvalidBodyRequest), &c)
 	assert.NoError(t, err, "Cannot build json body")
@@ -58,7 +58,7 @@ func TestUnrollContent_NilSchema(t *testing.T) {
 }
 
 func TestUnrollContent_ErrorExpandingFromContentStore(t *testing.T) {
-	cu := ArticleUnroller{
+	cu := DefaultUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				return nil, errors.New("Cannot expand content from content store")
@@ -89,7 +89,7 @@ func TestUnrollContent_SkipPromotionalImageWhenIdIsMissing(t *testing.T) {
 		},
 	}
 
-	cu := ArticleUnroller{
+	cu := DefaultUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
@@ -123,7 +123,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 		},
 	}
 
-	cu := ArticleUnroller{
+	cu := DefaultUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response.json")
@@ -151,7 +151,7 @@ func TestUnrollContent_SkipPromotionalImageWhenUUIDIsInvalid(t *testing.T) {
 }
 
 func TestUnrollContent_EmbeddedContentSkippedWhenMissingBodyXML(t *testing.T) {
-	cu := ArticleUnroller{
+	cu := DefaultUnroller{
 		reader: &ReaderMock{
 			mockGet: func(_ []string, _ string) (map[string]Content, error) {
 				b, err := os.ReadFile("testdata/reader-content-valid-response-no-body.json")

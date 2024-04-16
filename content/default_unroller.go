@@ -7,22 +7,22 @@ import (
 	"github.com/Financial-Times/go-logger/v2"
 )
 
-type ArticleUnroller struct {
+type DefaultUnroller struct {
 	reader  Reader
 	log     *logger.UPPLogger
 	apiHost string
 }
 
-func NewArticleUnroller(r Reader, log *logger.UPPLogger, apiHost string) *ArticleUnroller {
-	return &ArticleUnroller{
+func NewDefaultUnroller(r Reader, log *logger.UPPLogger, apiHost string) *DefaultUnroller {
+	return &DefaultUnroller{
 		reader:  r,
 		log:     log,
 		apiHost: apiHost,
 	}
 }
 
-func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
-	if !validateArticle(req.c) {
+func (u *DefaultUnroller) Unroll(req UnrollEvent) (Content, error) {
+	if !validateDefaultContent(req.c) {
 		return req.c, ErrValidating
 	}
 
@@ -64,7 +64,7 @@ func (u *ArticleUnroller) Unroll(req UnrollEvent) (Content, error) {
 	return cc, nil
 }
 
-func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) Schema {
+func (u *DefaultUnroller) createContentSchema(cc Content, acceptedTypes []string, tid string, uuid string) Schema {
 	schema := make(Schema)
 
 	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
@@ -113,7 +113,7 @@ func (u *ArticleUnroller) createContentSchema(cc Content, acceptedTypes []string
 	return schema
 }
 
-func (u *ArticleUnroller) resolveModelsForSetsMembers(b Schema, imgMap map[string]Content, tid string, uuid string) {
+func (u *DefaultUnroller) resolveModelsForSetsMembers(b Schema, imgMap map[string]Content, tid string, uuid string) {
 	mainImageUUID := b.get(mainImageField)
 	u.resolveImageSet(mainImageUUID, imgMap, tid, uuid)
 	for _, embeddedImgSet := range b.getAll(embeds) {
@@ -121,7 +121,7 @@ func (u *ArticleUnroller) resolveModelsForSetsMembers(b Schema, imgMap map[strin
 	}
 }
 
-func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string]Content, tid string, uuid string) {
+func (u *DefaultUnroller) resolveImageSet(imageSetUUID string, imgMap map[string]Content, tid string, uuid string) {
 	imageSet, found := resolveContent(imageSetUUID, imgMap)
 	if !found {
 		imgMap[imageSetUUID] = Content{id: createID(u.apiHost, "content", imageSetUUID)}
@@ -166,7 +166,7 @@ func (u *ArticleUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 	}
 }
 
-func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
+func (u *DefaultUnroller) resolvePoster(poster interface{}, tid, uuid string) (Content, error) {
 	posterData, found := poster.(map[string]interface{})
 	if !found {
 		return Content{}, errors.New("problem in poster field")
@@ -184,10 +184,10 @@ func (u *ArticleUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 	return posterContent[pUUID], nil
 }
 
-func validateArticle(article Content) bool {
-	_, hasMainImage := article[mainImageField]
-	_, hasBody := article[bodyXMLField]
-	_, hasAltImg := article[altImagesField].(map[string]interface{})
+func validateDefaultContent(content Content) bool {
+	_, hasMainImage := content[mainImageField]
+	_, hasBody := content[bodyXMLField]
+	_, hasAltImg := content[altImagesField].(map[string]interface{})
 
-	return (hasMainImage || hasBody || hasAltImg) && checkType(article, ArticleType)
+	return hasMainImage || hasBody || hasAltImg
 }

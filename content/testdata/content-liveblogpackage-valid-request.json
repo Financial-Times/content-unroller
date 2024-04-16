@@ -1,0 +1,190 @@
+{
+  "accessLevel": "subscribed",
+  "alternativeTitles": {
+    "promotionalTitle": "Yen falls below ¥154 for first time since 1990"
+  },
+  "annotations": [],
+  "apiUrl": "https://api.ft.com/internalcontent/83dd865f-cd5d-48a2-b02f-451c956154b6",
+  "brands": [
+    "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+  ],
+  "byline": "Jaren Kerr, Jonathan Wheatley, Oliver Ralph and William Sandlund",
+  "canBeDistributed": "yes",
+  "canBeSyndicated": "yes",
+  "comments": {
+    "enabled": false
+  },
+  "containedIn": [],
+  "contains": [
+    {
+      "apiUrl": "http://api.ft.com/content/333e4730-3908-4172-8b6b-129c58c5738a",
+      "id": "http://api.ft.com/things/333e4730-3908-4172-8b6b-129c58c5738a"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/9ea574aa-d17d-4ba6-8c03-fcf7fd7230c5",
+      "id": "http://api.ft.com/things/9ea574aa-d17d-4ba6-8c03-fcf7fd7230c5"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/1f24a331-d1d9-4ca7-b5d2-ec5883bc5bee",
+      "id": "http://api.ft.com/things/1f24a331-d1d9-4ca7-b5d2-ec5883bc5bee"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/31e2d3d6-0d93-4f68-b1cc-58654477e833",
+      "id": "http://api.ft.com/things/31e2d3d6-0d93-4f68-b1cc-58654477e833"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/3cde82d4-1e9d-47ae-9e9c-42a9441c1d37",
+      "id": "http://api.ft.com/things/3cde82d4-1e9d-47ae-9e9c-42a9441c1d37"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/04b53439-e322-4d47-a0d3-caee1d34b1b6",
+      "id": "http://api.ft.com/things/04b53439-e322-4d47-a0d3-caee1d34b1b6"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/c0a09a67-7966-41d5-876a-9d9b84dbcd49",
+      "id": "http://api.ft.com/things/c0a09a67-7966-41d5-876a-9d9b84dbcd49"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/44e0e2fd-660f-4877-b16b-4dff3d78cc6d",
+      "id": "http://api.ft.com/things/44e0e2fd-660f-4877-b16b-4dff3d78cc6d"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/a7add2dc-6034-4b99-9458-86673335a701",
+      "id": "http://api.ft.com/things/a7add2dc-6034-4b99-9458-86673335a701"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/8e2dc6e9-0e9a-47b1-8173-41cd679f08ce",
+      "id": "http://api.ft.com/things/8e2dc6e9-0e9a-47b1-8173-41cd679f08ce"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/1e68e311-f035-49cc-bb44-d0dfdff39dae",
+      "id": "http://api.ft.com/things/1e68e311-f035-49cc-bb44-d0dfdff39dae"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/0c008c0a-2dd7-497a-bde7-0a4d1a1c6d7b",
+      "id": "http://api.ft.com/things/0c008c0a-2dd7-497a-bde7-0a4d1a1c6d7b"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/90d0d85a-b380-492d-b3fa-2a51b0653cd8",
+      "id": "http://api.ft.com/things/90d0d85a-b380-492d-b3fa-2a51b0653cd8"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/39ddf659-791d-4b6a-93f6-d7d1adb6544c",
+      "id": "http://api.ft.com/things/39ddf659-791d-4b6a-93f6-d7d1adb6544c"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/f49d98f7-5785-4506-a1d6-1fd668afd358",
+      "id": "http://api.ft.com/things/f49d98f7-5785-4506-a1d6-1fd668afd358"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/b1e014c5-4bc2-46ba-9734-6c25e1a56492",
+      "id": "http://api.ft.com/things/b1e014c5-4bc2-46ba-9734-6c25e1a56492"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/071ff504-6479-48ed-b4c3-11f9fbaa4b01",
+      "id": "http://api.ft.com/things/071ff504-6479-48ed-b4c3-11f9fbaa4b01"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/9cc40187-5a64-43cb-ba9a-f3f5b3da654f",
+      "id": "http://api.ft.com/things/9cc40187-5a64-43cb-ba9a-f3f5b3da654f"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/40e56ed9-995c-4951-85f3-1e9f703c6be7",
+      "id": "http://api.ft.com/things/40e56ed9-995c-4951-85f3-1e9f703c6be7"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/e9c92b2e-cf90-4cb0-ab8a-965f07cfb919",
+      "id": "http://api.ft.com/things/e9c92b2e-cf90-4cb0-ab8a-965f07cfb919"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/dc6f2219-d9fe-4d76-ace2-a479c2ad83d1",
+      "id": "http://api.ft.com/things/dc6f2219-d9fe-4d76-ace2-a479c2ad83d1"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/7f7e0e5d-f9b8-4de6-b12f-618ed7282d2d",
+      "id": "http://api.ft.com/things/7f7e0e5d-f9b8-4de6-b12f-618ed7282d2d"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/99cb5aac-c6ad-43cf-9e72-c3ad60b916b8",
+      "id": "http://api.ft.com/things/99cb5aac-c6ad-43cf-9e72-c3ad60b916b8"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/06af11a1-5091-42de-85bd-0595925b7b0e",
+      "id": "http://api.ft.com/things/06af11a1-5091-42de-85bd-0595925b7b0e"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/854a67ce-c5c3-4a6b-be74-a21dcf5d9117",
+      "id": "http://api.ft.com/things/854a67ce-c5c3-4a6b-be74-a21dcf5d9117"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/cb038763-8640-4676-a92b-68a2f99311a3",
+      "id": "http://api.ft.com/things/cb038763-8640-4676-a92b-68a2f99311a3"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/06f0b36d-0c0b-4c7a-8689-254369c280a1",
+      "id": "http://api.ft.com/things/06f0b36d-0c0b-4c7a-8689-254369c280a1"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/44074884-419d-412c-879b-ba680421be01",
+      "id": "http://api.ft.com/things/44074884-419d-412c-879b-ba680421be01"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/22f75ebe-717c-4aed-b0ef-977d3a10b28b",
+      "id": "http://api.ft.com/things/22f75ebe-717c-4aed-b0ef-977d3a10b28b"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/c9746065-1cfe-4286-9bab-dedb585f7675",
+      "id": "http://api.ft.com/things/c9746065-1cfe-4286-9bab-dedb585f7675"
+    }
+  ],
+  "curatedRelatedContent": [],
+  "firstPublishedDate": "2024-04-14T22:58:16.812Z",
+  "id": "http://www.ft.com/thing/83dd865f-cd5d-48a2-b02f-451c956154b6",
+  "identifiers": [
+    {
+      "authority": "http://api.ft.com/system/cct",
+      "identifierValue": "83dd865f-cd5d-48a2-b02f-451c956154b6"
+    }
+  ],
+  "lastModified": "2024-04-15T15:20:41.000Z",
+  "leadImages": [
+    {
+      "id": "https://api.ft.com/content/e1645ef0-7a42-492f-8d43-e3b91f9e0da8",
+      "type": "standard"
+    }
+  ],
+  "mainImage": {
+    "id": "https://api.ft.com/content/15f560c5-fa19-4997-aa33-aa3b6638442e"
+  },
+  "pinnedPosts": [
+    "44074884-419d-412c-879b-ba680421be01"
+  ],
+  "prefLabel": "Live news: Yen falls below ¥154 for first time since 1990",
+  "publication": [
+    "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+  ],
+  "publishReference": "republish_tid_ox3VSSZYjR",
+  "publishedDate": "2024-04-14T22:58:16.812Z",
+  "realtime": true,
+  "requestUrl": "https://api.ft.com/internalcontent/83dd865f-cd5d-48a2-b02f-451c956154b6",
+  "standout": {
+    "editorsChoice": false,
+    "exclusive": false,
+    "scoop": false
+  },
+  "summary": {
+    "bodyXML": ""
+  },
+  "title": "Live news: Yen falls below ¥154 for first time since 1990",
+  "topper": {
+    "backgroundBox": false,
+    "backgroundColour": "auto",
+    "layout": "full-bleed-offset",
+    "textShadow": false
+  },
+  "type": "http://www.ft.com/ontology/content/LiveBlogPackage",
+  "types": [
+    "http://www.ft.com/ontology/content/LiveBlogPackage"
+  ],
+  "webUrl": "https://www.ft.com/content/83dd865f-cd5d-48a2-b02f-451c956154b6"
+}

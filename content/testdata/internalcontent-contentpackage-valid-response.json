@@ -1,0 +1,150 @@
+{
+  "accessLevel": "free",
+  "alternativeTitles": {
+    "promotionalTitle": "Innovation in Energy"
+  },
+  "annotations": [],
+  "apiUrl": "https://api.ft.com/internalcontent/40409b13-20a5-4cf1-a4cb-159daa48134d",
+  "bodyXML": "",
+  "brands": [
+    "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+  ],
+  "canBeDistributed": "yes",
+  "canBeSyndicated": "yes",
+  "canonicalWebUrl": "https://www.ft.com/content/40409b13-20a5-4cf1-a4cb-159daa48134d",
+  "containedIn": [],
+  "contains": [
+    {
+      "apiUrl": "http://api.ft.com/content/2401d64e-f23e-48a6-9a0b-9ee5d777e5e4",
+      "id": "http://api.ft.com/things/2401d64e-f23e-48a6-9a0b-9ee5d777e5e4"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/a2602177-7ba0-470b-abfb-8cae5ef5e4a5",
+      "id": "http://api.ft.com/things/a2602177-7ba0-470b-abfb-8cae5ef5e4a5"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/50656582-8b42-47d9-9bcf-decb0f976dd3",
+      "id": "http://api.ft.com/things/50656582-8b42-47d9-9bcf-decb0f976dd3"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/55bc9d43-1260-49ca-8a3d-0f25ae712e23",
+      "id": "http://api.ft.com/things/55bc9d43-1260-49ca-8a3d-0f25ae712e23"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/5de1a278-9d49-441d-ab67-fe6aa0f3ec9b",
+      "id": "http://api.ft.com/things/5de1a278-9d49-441d-ab67-fe6aa0f3ec9b"
+    },
+    {
+      "apiUrl": "http://api.ft.com/content/4bc25fa2-acb3-461f-b1f3-548f82b78b5b",
+      "id": "http://api.ft.com/things/4bc25fa2-acb3-461f-b1f3-548f82b78b5b"
+    }
+  ],
+  "curatedRelatedContent": [],
+  "design": {
+    "theme": "special-report"
+  },
+  "firstPublishedDate": "2023-02-07T05:03:49.926Z",
+  "id": "http://www.ft.com/thing/40409b13-20a5-4cf1-a4cb-159daa48134d",
+  "leadImages": [
+    {
+      "id": "https://api.ft.com/content/828e9a62-014f-445c-a7dd-a879d64f6cca",
+      "image": {
+        "alternativeImages": {},
+        "alternativeStandfirsts": {},
+        "alternativeTitles": {},
+        "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/828e9a62-014f-445c-a7dd-a879d64f6cca.jpg",
+        "brands": [
+          "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+        ],
+        "canBeSyndicated": "verify",
+        "copyright": {
+          "notice": "© Jeremy Sutton-Hibbert"
+        },
+        "description": "two men on a boat on its way to a tidal turbine",
+        "firstPublishedDate": "2023-02-07T05:03:49.945Z",
+        "id": "http://www.ft.com/thing/828e9a62-014f-445c-a7dd-a879d64f6cca",
+        "publishedDate": "2023-02-07T05:03:49.945Z",
+        "requestUrl": "https://api-t.ft.com/content/828e9a62-014f-445c-a7dd-a879d64f6cca",
+        "title": "",
+        "type": "http://www.ft.com/ontology/content/Image"
+      },
+      "type": "standard"
+    },
+    {
+      "id": "https://api.ft.com/content/e9491ffe-d894-4773-8510-a2b2dba51ef6",
+      "image": {
+        "alternativeImages": {},
+        "alternativeStandfirsts": {},
+        "alternativeTitles": {},
+        "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/e9491ffe-d894-4773-8510-a2b2dba51ef6.jpg",
+        "brands": [
+          "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+        ],
+        "canBeSyndicated": "verify",
+        "copyright": {
+          "notice": "© Jeremy Sutton-Hibbert"
+        },
+        "description": "two men on a boat on its way to a tidal turbine",
+        "firstPublishedDate": "2023-02-07T05:03:49.947Z",
+        "id": "http://www.ft.com/thing/e9491ffe-d894-4773-8510-a2b2dba51ef6",
+        "publishedDate": "2023-02-07T05:03:49.947Z",
+        "requestUrl": "https://api-t.ft.com/content/e9491ffe-d894-4773-8510-a2b2dba51ef6",
+        "title": "",
+        "type": "http://www.ft.com/ontology/content/Image"
+      },
+      "type": "square"
+    },
+    {
+      "id": "https://api.ft.com/content/f85130c2-c3ce-4359-afd8-a2278ba99939",
+      "image": {
+        "alternativeImages": {},
+        "alternativeStandfirsts": {},
+        "alternativeTitles": {},
+        "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/f85130c2-c3ce-4359-afd8-a2278ba99939.jpg",
+        "brands": [
+          "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+        ],
+        "canBeSyndicated": "verify",
+        "copyright": {
+          "notice": "© Jeremy Sutton-Hibbert"
+        },
+        "description": "two men on a boat on its way to a tidal turbine",
+        "firstPublishedDate": "2023-02-07T05:03:49.948Z",
+        "id": "http://www.ft.com/thing/f85130c2-c3ce-4359-afd8-a2278ba99939",
+        "publishedDate": "2023-02-07T05:03:49.948Z",
+        "requestUrl": "https://api-t.ft.com/content/f85130c2-c3ce-4359-afd8-a2278ba99939",
+        "title": "",
+        "type": "http://www.ft.com/ontology/content/Image"
+      },
+      "type": "wide"
+    }
+  ],
+  "prefLabel": "Innovation in Energy",
+  "publishedDate": "2023-02-07T05:03:49.926Z",
+  "requestUrl": "https://api.ft.com/internalcontent/40409b13-20a5-4cf1-a4cb-159daa48134d",
+  "standfirst": "New technologies — ranging from wireless vehicle charging pads to domestic heat pumps — plus older solutions, such as sail-power, are helping to limit the impact of climate change. But spending on research needs to increase to achieve global goals",
+  "standout": {
+    "editorsChoice": false,
+    "exclusive": false,
+    "scoop": false
+  },
+  "summary": {
+    "bodyXML": ""
+  },
+  "tableOfContents": {
+    "labelType": "none",
+    "sequence": "none"
+  },
+  "title": "Innovation in Energy",
+  "topper": {
+    "backgroundBox": false,
+    "backgroundColour": "auto",
+    "layout": "split-text-left",
+    "textShadow": false
+  },
+  "type": "http://www.ft.com/ontology/content/ContentPackage",
+  "types": [
+    "http://www.ft.com/ontology/content/ContentPackage"
+  ],
+  "webUrl": "https://www.ft.com/content/40409b13-20a5-4cf1-a4cb-159daa48134d"
+}

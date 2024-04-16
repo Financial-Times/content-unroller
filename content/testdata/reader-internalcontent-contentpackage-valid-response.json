@@ -1,0 +1,62 @@
+{
+  "828e9a62-014f-445c-a7dd-a879d64f6cca": {
+    "id": "http://www.ft.com/thing/828e9a62-014f-445c-a7dd-a879d64f6cca",
+    "type": "http://www.ft.com/ontology/content/Image",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "two men on a boat on its way to a tidal turbine",
+    "firstPublishedDate": "2023-02-07T05:03:49.945Z",
+    "publishedDate": "2023-02-07T05:03:49.945Z",
+    "requestUrl": "https://api-t.ft.com/content/828e9a62-014f-445c-a7dd-a879d64f6cca",
+    "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/828e9a62-014f-445c-a7dd-a879d64f6cca.jpg",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© Jeremy Sutton-Hibbert"
+    },
+    "canBeSyndicated": "verify"
+  },
+  "e9491ffe-d894-4773-8510-a2b2dba51ef6": {
+    "id": "http://www.ft.com/thing/e9491ffe-d894-4773-8510-a2b2dba51ef6",
+    "type": "http://www.ft.com/ontology/content/Image",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "two men on a boat on its way to a tidal turbine",
+    "firstPublishedDate": "2023-02-07T05:03:49.947Z",
+    "publishedDate": "2023-02-07T05:03:49.947Z",
+    "requestUrl": "https://api-t.ft.com/content/e9491ffe-d894-4773-8510-a2b2dba51ef6",
+    "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/e9491ffe-d894-4773-8510-a2b2dba51ef6.jpg",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© Jeremy Sutton-Hibbert"
+    },
+    "canBeSyndicated": "verify"
+  },
+  "f85130c2-c3ce-4359-afd8-a2278ba99939": {
+    "id": "http://www.ft.com/thing/f85130c2-c3ce-4359-afd8-a2278ba99939",
+    "type": "http://www.ft.com/ontology/content/Image",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "two men on a boat on its way to a tidal turbine",
+    "firstPublishedDate": "2023-02-07T05:03:49.948Z",
+    "publishedDate": "2023-02-07T05:03:49.948Z",
+    "requestUrl": "https://api-t.ft.com/content/f85130c2-c3ce-4359-afd8-a2278ba99939",
+    "binaryUrl": "https://d1e00ek4ebabms.cloudfront.net/production/f85130c2-c3ce-4359-afd8-a2278ba99939.jpg",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "copyright": {
+      "notice": "© Jeremy Sutton-Hibbert"
+    },
+    "canBeSyndicated": "verify"
+  }
+}

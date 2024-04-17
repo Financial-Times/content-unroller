@@ -1,0 +1,40 @@
+{
+  "accessLevel": "free",
+  "apiUrl": "https://api-t.ft.com/internalcontent/c8d1d150-7869-11e7-a3e8-60495fe6ca71",
+  "bodyXML": "<body>\n\n\n\n<ft-content type=\"http://www.ft.com/ontology/content/ClipSet\" url=\"http://api-t.ft.com/content/9339b187-2a8a-3b23-950f-0c32ab7313ea\" data-embedded=\"true\"></ft-content>\n<p>The financial crisis that began in the US housing market had turned, by August 2007, into a full-blown global credit crunch that plunged countries around the world into recession. In the US, the economic downturn was the deepest since 1945 and the longest since the Great Depression.</p>\n<p>The US economy had made back that lost ground by 2011, but knock-on sovereign debt crises in the eurozone would delay many European economies’ recovery — and for some, the ground has still not been made up. Unemployment in Greece remains at 23 per cent, some 15 percentage points higher than in 2007.</p>\n<p>Stock markets in most countries have powered to new highs, in part thanks to the monetary stimulus that central banks used to try to pull their economies — and their housing markets — back to health, but the next chapter, in which that stimulus will be removed, is yet to be written.</p>\n<ft-content type=\"http://www.ft.com/ontology/content/ClipSet\" url=\"http://api-t.ft.com/content/b9ab6946-a9dd-358a-87ce-ea432ed8bc33\" data-embedded=\"true\"></ft-content>\n</body>",
+  "brands": [
+    "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+  ],
+  "byline": "Claire Manibog and Stephen Foley",
+  "canBeDistributed": "yes",
+  "canBeSyndicated": "yes",
+  "containedIn": [
+    {
+      "apiUrl": "http://api-t.ft.com/content/0b97b5ca-5d91-11e7-9bc8-8055f264aa8b",
+      "id": "http://api.ft.com/things/0b97b5ca-5d91-11e7-9bc8-8055f264aa8b"
+    }
+  ],
+  "curatedRelatedContent": [],
+  "design": {
+    "layout": "default",
+    "theme": "basic"
+  },
+  "firstPublishedDate": "2017-08-10T04:18:51.000Z",
+  "id": "http://www.ft.com/thing/c8d1d150-7869-11e7-a3e8-60495fe6ca71",
+  "prefLabel": "The long and winding road to economic recovery ",
+  "publishedDate": "2017-08-10T04:18:51.000Z",
+  "requestUrl": "https://api-t.ft.com/internalcontent/c8d1d150-7869-11e7-a3e8-60495fe6ca71",
+  "standfirst": "Some countries still have not regained the ground lost in the Great Recession",
+  "standout": {
+    "editorsChoice": false,
+    "exclusive": false,
+    "scoop": false
+  },
+  "title": "The long and winding road to economic recovery ",
+  "type": "http://www.ft.com/ontology/content/Article",
+  "types": [
+    "http://www.ft.com/ontology/content/Article"
+  ],
+  "webUrl": "https://www.ft.com/content/c8d1d150-7869-11e7-a3e8-60495fe6ca71",
+  "canonicalWebUrl": "https://www.ft.com/content/c8d1d150-7869-11e7-a3e8-60495fe6ca71"
+}

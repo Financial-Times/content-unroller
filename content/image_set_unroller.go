@@ -31,7 +31,7 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 		return nil, err
 	}
 
-	var unrolledImages []Content
+	unrolledImages := []Content{}
 	for _, imageUUID := range imageUUIDs {
 		unrolledImages = append(unrolledImages, images[imageUUID])
 	}

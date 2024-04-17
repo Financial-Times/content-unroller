@@ -138,3 +138,5 @@ func setupServiceHandler(sc content.ServiceConfig, handler content.Handler) *mux
 func getServiceHealthURI(hostname string) string {
 	return fmt.Sprintf("%s%s", hostname, "/__health")
 }
+
+//TODO: Check clipset arrays

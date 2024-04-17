@@ -1,0 +1,16 @@
+{
+  "9339b187-2a8a-3b23-950f-0c32ab7313ea": {
+    "id": "http://www.ft.com/thing/9339b187-2a8a-3b23-950f-0c32ab7313ea",
+    "members": [],
+    "types": [
+      "http://www.ft.com/ontology/content/ImageSet"
+    ]
+  },
+  "b9ab6946-a9dd-358a-87ce-ea432ed8bc33": {
+    "id": "http://www.ft.com/thing/b9ab6946-a9dd-358a-87ce-ea432ed8bc33",
+    "members": [],
+    "types": [
+      "http://www.ft.com/ontology/content/ImageSet"
+    ]
+  }
+}

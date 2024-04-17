@@ -137,7 +137,7 @@ func (u *DefaultUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 			return
 		}
 
-		var expMembers []Content
+		expMembers := []Content{}
 		for _, m := range membList {
 			mData := fromMap(m.(map[string]interface{}))
 			mID := mData[id].(string)

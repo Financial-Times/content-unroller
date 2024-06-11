@@ -1,8 +1,12 @@
-[![CircleCI](https://circleci.com/gh/Financial-Times/content-unroller.svg?style=svg)](https://circleci.com/gh/Financial-Times/content-unroller)
-[![Coverage Status](https://coveralls.io/repos/github/Financial-Times/content-unroller/badge.svg?branch=master)](https://coveralls.io/github/Financial-Times/content-unroller?branch=master)
 # content-unroller
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/content-unroller.svg?style=svg)](https://circleci.com/gh/Financial-Times/content-unroller)
+[![Coverage Status](https://coveralls.io/repos/github/Financial-Times/content-unroller/badge.svg?branch=master)](https://coveralls.io/github/Financial-Times/content-unroller?branch=master)
+
+## Introduction
+
 Content unroller is an internally used API for expanding images and dynamic content of an article. It receives an article and returns the same article with some additional data:
+
 * Each image UUID replaced by its actual data. The types of images that are expanded are:
   * main image
   * body embedded images
@@ -10,45 +14,48 @@ Content unroller is an internally used API for expanding images and dynamic cont
   * lead images
 * Each dynamic content UUID replaced by its actual data. It will be extracted from `bodyXML`, based on its type (`DynamicContent`)
 
-## Usage
-### Install
+## Installation
 
 `go get github.com/Financial-Times/content-unroller`
 
-## Running locally
-  ```
+### Run tests locally and compile
+
+```shell
   go test ./... -race
   go install
-  ```
+```
 
 ## Usage
 
-```
-./content-unroller --help
+### Run service locally with default settings
+
+```shell
+  ./content-unroller --help
 
 ```
 
 ## Endpoints
 
-### Application specific endpoints:
+### Application specific endpoints
 
-Endpoint | Description
---- | --- 
-`/content` | Calls **Content-Public-Read** service to expand main images, alternative images and body embedded images + dynamic content 
-`/internalcontent` | Calls **Content-Public-Read** service to expand lead images and body embedded dynamic content
+| Endpoint           | Description                                                                                              |
+|--------------------|----------------------------------------------------------------------------------------------------------|
+| `/content`         | Calls **Content-Public-Read** service to expand main images, alternative images and body embedded images + dynamic content |
+| `/internalcontent` | Calls **Content-Public-Read** service to expand lead images and body embedded dynamic content            |
 
-### Admin specific endpoints:
+### Admin specific endpoints
 
 * /__ping
 * /__build-info
 * /__health
 * /__gtg
 
-
 ## Example 1 (main image)
+
 POST: `/content`
 Body:
-```
+
+```json
 {
   "id": "http://www.ft.com/thing/22c0d426-1466-11e7-b0c1-37e417ee6c76",
   "type": "http://www.ft.com/ontology/content/Article",
@@ -93,7 +100,8 @@ Body:
 ```
 
 Response:
-```
+
+```json
 {
   "accessLevel": "subscribed",
   "alternativeImages": {},
@@ -124,7 +132,10 @@ Response:
     "alternativeImages": {},
     "alternativeStandfirsts": {},
     "alternativeTitles": {},
-    "canBeDistributed": "verify",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "canBeDistributed": "yes",
     "description": "Donald Tusk, president of the European Union (EU), holds the letter invoking Article 50 of the Lisbon Treaty from U.K. Prime Minister Theresa May as leaves following a news conference at the European Council in Brussels, Belgium, on Wednesday, March 29, 2017. The U.K. will&nbsp;start the clock&nbsp;on two years of negotiations to withdraw from the European Union on Wednesday, when Britain's ambassador hands EU President Donald Tusk&nbsp;a hand-signed&nbsp;letter&nbsp;from Prime Minister&nbsp;Theresa May&nbsp;invoking Article 50 of the Lisbon Treaty, the legal exit mechanism. Photographer: Jasper Juinen/Bloomberg",
     "firstPublishedDate": "2017-03-29T19:39:00.000Z",
     "id": "http://www.ft.com/thing/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
@@ -134,14 +145,18 @@ Response:
         "identifierValue": "639cd952-149f-11e7-2ea7-a07ecd9ac73f"
       }
     ],
-    "lastModified": "2017-03-29T19:39:31.361Z",
+    "lastModified": "2021-10-24T01:58:39.324Z",
     "members": [
       {
         "alternativeImages": {},
         "alternativeStandfirsts": {},
         "alternativeTitles": {},
         "binaryUrl": "http://com.ft.coco-imagepublish.pre-prod.s3.amazonaws.com/639cd952-149f-11e7-b0c1-37e417ee6c76",
-        "canBeDistributed": "verify",
+        "brands": [
+          "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+        ],
+        "canBeDistributed": "yes",
+        "canBeSyndicated": "yes",
         "copyright": {
           "notice": "© Bloomberg"
         },
@@ -154,19 +169,24 @@ Response:
             "identifierValue": "639cd952-149f-11e7-b0c1-37e417ee6c76"
           }
         ],
-        "lastModified": "2017-03-29T19:39:31.361Z",
+        "lastModified": "2021-10-24T01:58:39.323Z",
+        "masterSource": {
+          "authority": "http://api.ft.com/system/FT-FOTOWARE",
+          "identifierValue": "260092155B9D4D5A 9283E0C9376C49F5"
+        },
         "pixelHeight": 1152,
         "pixelWidth": 2048,
-        "publishReference": "tid_5ypvntzcpu",
+        "publishReference": "tid_methode_carousel_0000596917_gentx",
         "publishedDate": "2017-03-29T19:39:00.000Z",
-        "requestUrl": "http://test.api.ft.com/content/639cd952-149f-11e7-b0c1-37e417ee6c76",
+        "requestUrl": "https://api-t.ft.com/content/639cd952-149f-11e7-b0c1-37e417ee6c76",
+        "rightsGroup": "Bloomberg",
         "title": "",
-        "type": "http://www.ft.com/ontology/content/MediaResource"
+        "type": "http://www.ft.com/ontology/content/Image"
       }
     ],
-    "publishReference": "tid_5ypvntzcpu",
+    "publishReference": "tid_methode_carousel_0000596918_gentx",
     "publishedDate": "2017-03-29T19:39:00.000Z",
-    "requestUrl": "http://test.api.ft.com/content/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
+    "requestUrl": "https://api-t.ft.com/content/639cd952-149f-11e7-2ea7-a07ecd9ac73f",
     "title": "",
     "type": "http://www.ft.com/ontology/content/ImageSet"
   },
@@ -184,11 +204,12 @@ Response:
 }
 ```
 
-
 ## Example 2 (alternative images)
+
 POST: `/content`
 Body:
-```
+
+```json
 {
   "id": "http://www.ft.com/thing/bba8a342-28f4-11e7-bc4b-5528796fe35c",
   "type": "http://www.ft.com/ontology/content/Content",
@@ -222,7 +243,8 @@ Body:
 ```
 
 Response:
-```
+
+```json
 {
   "alternativeImages": {
     "promotionalImage": {
@@ -279,9 +301,11 @@ Response:
 ```
 
 ## Example 3 (lead images)
+
 POST: `/internalcontent`
 Body:
-```
+
+```json
 {
   "design": null,
   "tableOfContents": null,
@@ -300,6 +324,7 @@ Body:
       "type": "wide"
     }
   ],
+  "id": "http://www.ft.com/thing/5010e2e4-09bd-11e7-97d1-5e720a26771b",
   "uuid": "5010e2e4-09bd-11e7-97d1-5e720a26771b",
   "lastModified": "2017-03-31T08:23:37.061Z",
   "publishReference": "tid_8pqiiuxbvz"
@@ -307,7 +332,8 @@ Body:
 ```
 
 Response:
-```
+
+```json
 {
   "design": null,
   "lastModified": "2017-03-31T08:23:37.061Z",

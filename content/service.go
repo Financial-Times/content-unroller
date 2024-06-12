@@ -8,25 +8,26 @@ import (
 )
 
 const (
-	ImageSetType       = "http://www.ft.com/ontology/content/ImageSet"
-	DynamicContentType = "http://www.ft.com/ontology/content/DynamicContent"
-	ClipSetType        = "http://www.ft.com/ontology/content/ClipSet"
-	ClipType           = "http://www.ft.com/ontology/content/Clip"
-	ArticleType        = "http://www.ft.com/ontology/content/Article"
-	mainImageField     = "mainImage"
-	id                 = "id"
-	formatField        = "format"
-	embeds             = "embeds"
-	altImagesField     = "alternativeImages"
-	leadImages         = "leadImages"
-	membersField       = "members"
-	posterField        = "poster"
-	bodyXMLField       = "bodyXML"
-	promotionalImage   = "promotionalImage"
-	image              = "image"
-	typeField          = "type"
-	typesField         = "types"
-	apiURLField        = "apiUrl"
+	CustomCodeComponentType = "http://www.ft.com/ontology/content/CustomCodeComponent"
+	ImageSetType            = "http://www.ft.com/ontology/content/ImageSet"
+	DynamicContentType      = "http://www.ft.com/ontology/content/DynamicContent"
+	ClipSetType             = "http://www.ft.com/ontology/content/ClipSet"
+	ClipType                = "http://www.ft.com/ontology/content/Clip"
+	ArticleType             = "http://www.ft.com/ontology/content/Article"
+	mainImageField          = "mainImage"
+	id                      = "id"
+	formatField             = "format"
+	embeds                  = "embeds"
+	altImagesField          = "alternativeImages"
+	leadImages              = "leadImages"
+	membersField            = "members"
+	posterField             = "poster"
+	bodyXMLField            = "bodyXML"
+	promotionalImage        = "promotionalImage"
+	image                   = "image"
+	typeField               = "type"
+	typesField              = "types"
+	apiURLField             = "apiUrl"
 )
 
 var (
@@ -58,6 +59,8 @@ func (u *UniversalUnroller) UnrollContent(event UnrollEvent) (Content, error) {
 		return u.unrollClip(event)
 	case ImageSetType:
 		return u.unrollImageSet(event)
+	case CustomCodeComponentType:
+		return u.unrollCustomCodeComponent(event)
 	default:
 		return defaultUnroller.Unroll(event)
 	}
@@ -200,7 +203,7 @@ func unrollLeadImages(cc Content, r Reader, log *logger.UPPLogger, tid string, u
 	if err != nil {
 		localLog.WithError(err).Errorf("Error while getting content for expanded images %s", err.Error())
 
-		// couldn't get the images so we have to delete the additional uuid field (previously added)
+		// couldn't get the images, so we have to delete the additional uuid field (previously added)
 		for _, li := range images {
 			rawLi := li.(map[string]interface{})
 			delete(rawLi, image)

@@ -12,7 +12,11 @@ Content unroller is an internally used API for expanding images and dynamic cont
   * body embedded images
   * alternative images
   * lead images
-* Each dynamic content UUID replaced by its actual data. It will be extracted from `bodyXML`, based on its type (`DynamicContent`)
+* Each dynamic content and custom code component UUID is replaced by its actual data. It will be extracted from `bodyXML`, based on its type: 
+  * `DynamicContent`
+  * `CustomCodeComponent`
+
+Custom code component supports embedding of `embedded` node in JSON up to two times.
 
 ## Installation
 

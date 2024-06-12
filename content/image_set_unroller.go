@@ -33,6 +33,7 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 
 	unrolledImages := []Content{}
 	for _, imageUUID := range imageUUIDs {
+		// TODO what if any of the images in the ImageSet is not found/loaded?
 		unrolledImages = append(unrolledImages, images[imageUUID])
 	}
 

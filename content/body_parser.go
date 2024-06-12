@@ -48,6 +48,7 @@ func parse(n *html.Node, log *logger.UPPLogger, acceptedTypes []string, embedsRe
 }
 
 func isContentTypeMatching(contentType string, acceptedTypes []string) bool {
+	// TODO replace with: return slices.Contains(acceptedTypes, contentType)
 	for _, t := range acceptedTypes {
 		if contentType == t {
 			return true

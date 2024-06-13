@@ -3,6 +3,7 @@ package content
 import (
 	"errors"
 	"fmt"
+
 	"github.com/Financial-Times/go-logger/v2"
 )
 
@@ -80,7 +81,7 @@ func (u *UniversalUnroller) resolveModelsForInnerBodyXML(
 		if !found {
 			localLog.Debugf("cannot match to any found content UUID: %v", embeddedComponentUUID)
 			// TODO shall we create empty ID in embeds if we cannot read the content by the provided UUID? Like row 36.
-			// Specified UUID in the `id`
+			// Specified UUID in the empty content containing only `id` element
 			foundContent[embeddedComponentUUID] = Content{id: createID(u.apiHost, "content", embeddedComponentUUID)}
 			continue
 		}
@@ -110,7 +111,7 @@ func (u *UniversalUnroller) resolveModelsForInnerBodyXML(
 		// We have found CCC with BodyXML, which has <ft-content> tag for unrolling, so we process it.
 		// If these emContentUUIDs are not already got, get this content via Reader (one more REST call)
 		// add the inner ImageSet and Images and inner CustomCodeComponent to an inner embeds node.
-		innerEmbeds, err := processContentForEmbeds(emContentUUIDs, foundContent, u.reader, u.log, tid, uuid)
+		innerEmbeds, err := processContentForEmbeds(emContentUUIDs, foundContent, u.reader, u.log, u.apiHost, tid, uuid)
 		if err != nil {
 			localLog.Infof("failed to load content to unroll in any of: %v", emContentUUIDs)
 			continue
@@ -121,7 +122,7 @@ func (u *UniversalUnroller) resolveModelsForInnerBodyXML(
 	}
 }
 
-func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Content, reader Reader, log *logger.UPPLogger, tid string, uuid string) (contentForEmbeds []Content, err error) {
+func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Content, reader Reader, log *logger.UPPLogger, apiHost string, tid string, uuid string) (contentForEmbeds []Content, err error) {
 	localLog := log.WithUUID(uuid).WithTransactionID(tid)
 	var innerEmbeds []Content
 	var newInnerContent []string
@@ -148,7 +149,7 @@ func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Co
 		innerContentFound, found := resolveContent(innerUUID, foundContent)
 		if found {
 			// Expand members field of the new inner content, which was just loaded before append to embeds node
-			expMembers, err := unrollMembersForImageSetInCCC(innerContentFound, foundContent, reader, log, tid)
+			expMembers, err := unrollMembersForImageSetInCCC(innerContentFound, foundContent, reader, log, apiHost, tid)
 			if err != nil {
 				localLog.Infof("failed to fill inner content members field. Check for ImageSet %s in CCC, which has not published images", innerUUID)
 				// TODO what to do in this case - we have CCC, it has ImageSet, but the image members are not found!!!
@@ -163,7 +164,7 @@ func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Co
 			// We cannot unroll it.
 			// TODO what to return in this case?!?
 			// Skip the UUID in embeds collection? (currently implemented)
-			// Or add it as content with id element only?
+			// Or add it as content with id element only? like Content{id: createID(u.apiHost, "content", innerUUID)}
 			// TODO replace log to Debugf when ready the implementation
 			localLog.Infof("failed to find inner for CustomCodeComponent content for unroll: %s", innerUUID)
 		}
@@ -171,7 +172,7 @@ func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Co
 	return innerEmbeds, nil
 }
 
-func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[string]Content, reader Reader, log *logger.UPPLogger, tid string) (Content, error) {
+func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[string]Content, reader Reader, log *logger.UPPLogger, apiHost string, tid string) (Content, error) {
 	members, ok := innerContent[membersField].([]interface{})
 	if !ok {
 		// There is no `members` field in this supposed to be ImageSet, maybe it is something else. Return as it is.
@@ -205,10 +206,8 @@ func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[strin
 		}
 	}
 
-	images := map[string]Content{}
 	if len(newImageUUIDs) > 0 {
-		var err error
-		images, err = reader.Get(newImageUUIDs, tid)
+		images, err := reader.Get(newImageUUIDs, tid)
 		if err != nil {
 			// TODO add logs that call to downstream service (content-public-read) has failed to get UUIDs.
 			return nil, err
@@ -224,9 +223,12 @@ func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[strin
 	for _, imageUUID := range imageUUIDs {
 		newImage, ok := loadedContent[imageUUID]
 		// TODO what if any of the images in the ImageSet is not found/loaded? Shall we add something in members as id?
+		// Otherwise the id elements are replaced with null objects in JSON
 		if !ok || newImage == nil {
 			// TODO change to Debugf when ready
 			log.Infof("Not Found Image: %s for ImageSet", imageUUID)
+			// replace back to content like: {"id": "https://api-t.ft.com/content/c52947ee-3fe1-4aee-9f41-344a73c2b605"}
+			unrolledImages = append(unrolledImages, Content{id: createID(apiHost, "content", imageUUID)})
 			continue
 		}
 		unrolledImages = append(unrolledImages, newImage)
@@ -250,7 +252,7 @@ func (u *UniversalUnroller) resolveModelsForSetsMembers(
 			foundContent[embeddedComponentUUID] = Content{id: createID(u.apiHost, "content", embeddedComponentUUID)}
 			continue
 		}
-		unrollMembersContent, err := unrollMembersForImageSetInCCC(embedFoundMember, foundContent, u.reader, u.log, tid)
+		unrollMembersContent, err := unrollMembersForImageSetInCCC(embedFoundMember, foundContent, u.reader, u.log, u.apiHost, tid)
 		if err != nil {
 			localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
 			localLog.Infof("failed to fill inner content members field. Check for ImageSet %s in CCC, which has not published images", embeddedComponentUUID)

@@ -183,6 +183,7 @@ func (u *DefaultUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 		return Content{}, errors.New("problem in poster field")
 	}
 	papiurl := posterData[apiURLField].(string)
+	// Check: check if apiUrl is not found (!ok) in poster
 	pUUID, err := extractUUIDFromString(papiurl)
 	if err != nil {
 		return Content{}, err
@@ -191,8 +192,6 @@ func (u *DefaultUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 	if err != nil {
 		return Content{}, err
 	}
-	// Resolve poster is called by resolveImageSet, it is not OK to call back the same function
-	// as it may cause an endless loop theoretically...
 	u.resolveImageSet(pUUID, posterContent, tid, uuid)
 	return posterContent[pUUID], nil
 }
@@ -203,27 +202,23 @@ func (u *DefaultUnroller) resolveModelsForInnerBodyXML(
 	acceptedTypes []string,
 	tid string,
 	uuid string) {
-	// embeddedComponentUUID is expected to be inner CustomCodeComponent up to level2 depth or ImageSet with Image members.
-	// Here we process inner CustomCodeComponent, but we have to process also the ImageSet in inner CCC if present.
+	// Process CustomCodeComponent(s), but we process also the inner ImageSet or inner CCC if present.
 	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
 
 	for _, embeddedComponentUUID := range embedsElements {
 		embedFoundMember, found := resolveContent(embeddedComponentUUID, foundContent)
 		if !found {
 			localLog.Debugf("cannot match to any found content UUID: %v", embeddedComponentUUID)
-			// TODO shall we create empty ID in embeds if we cannot read the content by the provided UUID? Like row 36.
-			// Specified UUID in the empty content containing only `id` element
 			foundContent[embeddedComponentUUID] = Content{id: createID(u.apiHost, "content", embeddedComponentUUID)}
 			continue
 		}
 
 		// Custom Code Component does not have members field, but it has bodyXML,
-		// so we need to run one more check for inner images and inner CCC
+		// so we need to run one more check for inner members and inner CCC
 		// similar to the extractEmbeddedContentByType in UniversalUnroller service.
-		// We need to just skip the member in case of errors.
 		rawBody, foundBody := embedFoundMember[bodyXMLField]
 		if !foundBody {
-			// localLog.Debug("Missing body. Skipping expanding embedded components and images.")
+			// localLog.Debug("Missing body. Skipping expanding embedded CCC and ImageSet.")
 			continue
 		}
 
@@ -241,7 +236,7 @@ func (u *DefaultUnroller) resolveModelsForInnerBodyXML(
 
 		// We have found CCC with BodyXML, which has <ft-content> tag for unrolling, so we process it.
 		// If these emContentUUIDs are not already got, get this content via Reader (one more REST call)
-		// add the inner ImageSet and Images and inner CustomCodeComponent to an inner embeds node.
+		// add the inner ImageSet (with Images/Graphics) and inner CustomCodeComponent to an inner embeds node.
 		innerEmbeds, innerEmbedsUUIDs, err := processContentForEmbeds(emContentUUIDs, foundContent, u.reader, u.log, u.apiHost, tid, uuid)
 		if err != nil {
 			localLog.Infof("failed to load content to unroll in any of: %v", emContentUUIDs)

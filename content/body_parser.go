@@ -1,6 +1,7 @@
 package content
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/Financial-Times/go-logger/v2"
@@ -48,11 +49,5 @@ func parse(n *html.Node, log *logger.UPPLogger, acceptedTypes []string, embedsRe
 }
 
 func isContentTypeMatching(contentType string, acceptedTypes []string) bool {
-	// TODO replace with: return slices.Contains(acceptedTypes, contentType)
-	for _, t := range acceptedTypes {
-		if contentType == t {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(acceptedTypes, contentType)
 }

@@ -179,7 +179,7 @@ func successfulContentServerMock(resource string) func(http.ResponseWriter, *htt
 			return
 		}
 		defer file.Close()
-		io.Copy(w, file)
+		_, _ = io.Copy(w, file)
 	}
 }
 

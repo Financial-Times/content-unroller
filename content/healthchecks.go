@@ -43,6 +43,9 @@ func (sc *ServiceConfig) ContentStoreCheck() fthealth.Check {
 
 func (sc *ServiceConfig) checkServiceAvailability(serviceName string, healthURI string) (string, error) {
 	req, err := http.NewRequest(http.MethodGet, healthURI, nil)
+	if err != nil {
+		return "Error", fmt.Errorf("%s URL cannot be used to create a request: %v", healthURI, err)
+	}
 	resp, err := sc.HTTPClient.Do(req)
 	if err != nil {
 		return "Error", fmt.Errorf("%s service is unreachable: %v", serviceName, err)

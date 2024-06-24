@@ -64,7 +64,7 @@ func TestGetContentReturns200(t *testing.T) {
 	assert.NoError(t, err, "Cannot read test file")
 	actualBody := rr.Body
 
-	assert.JSONEq(t, string(expectedBody), string(actualBody.Bytes()))
+	assert.JSONEq(t, string(expectedBody), actualBody.String())
 }
 
 func TestGetContent_UnrollEventError(t *testing.T) {
@@ -80,7 +80,7 @@ func TestGetContent_UnrollEventError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "invalid character")
+	assert.Contains(t, rr.Body.String(), "invalid character")
 }
 
 func TestGetContent_UnrollEventError_MissingID(t *testing.T) {
@@ -96,7 +96,7 @@ func TestGetContent_UnrollEventError_MissingID(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Missing or invalid id field")
+	assert.Contains(t, rr.Body.String(), "Missing or invalid id field")
 }
 
 func TestGetContent_ValidationError(t *testing.T) {
@@ -168,7 +168,7 @@ func TestGetInternalContentReturns200(t *testing.T) {
 
 	expectedBody, err := os.ReadFile("testdata/internalcontent-valid-response.json")
 	assert.NoError(t, err, "Cannot read test file")
-	assert.JSONEq(t, string(expectedBody), string(rr.Body.Bytes()))
+	assert.JSONEq(t, string(expectedBody), rr.Body.String())
 }
 
 func TestGetInternalContent_UnrollEventError(t *testing.T) {
@@ -184,7 +184,7 @@ func TestGetInternalContent_UnrollEventError(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "invalid character")
+	assert.Contains(t, rr.Body.String(), "invalid character")
 }
 
 func TestGetInternalContent_UnrollEventError_MissingID(t *testing.T) {
@@ -200,7 +200,7 @@ func TestGetInternalContent_UnrollEventError_MissingID(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
-	assert.Contains(t, string(rr.Body.Bytes()), "Missing or invalid id")
+	assert.Contains(t, rr.Body.String(), "Missing or invalid id")
 }
 
 func TestGetInternalContent_ValidationError(t *testing.T) {

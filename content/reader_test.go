@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -33,7 +32,11 @@ func successfulContentServerMock(t *testing.T, resource string) *httptest.Server
 			return
 		}
 		defer file.Close()
-		io.Copy(w, file)
+		_, err = io.Copy(w, file)
+		if err != nil {
+			assert.NoError(t, err, "Cannot send file content to response writer for Content Mock Server.")
+			return
+		}
 	}))
 }
 
@@ -57,7 +60,7 @@ func TestGet(t *testing.T) {
 	defer ts.Close()
 
 	cr := readerForTest(ts.URL)
-	body, err := ioutil.ReadFile("testdata/reader-content-valid-response.json")
+	body, err := os.ReadFile("testdata/reader-content-valid-response.json")
 	assert.NoError(t, err, "Cannot read file necessary for running test case.")
 
 	var expected map[string]Content
@@ -104,7 +107,7 @@ func TestGetInternal(t *testing.T) {
 	defer ts.Close()
 
 	cr := readerForTest(ts.URL)
-	body, err := ioutil.ReadFile("testdata/reader-internalcontent-dynamic-valid-response.json")
+	body, err := os.ReadFile("testdata/reader-internalcontent-dynamic-valid-response.json")
 	assert.NoError(t, err, "Cannot read file necessary for running test case.")
 
 	var expected map[string]Content

@@ -111,21 +111,6 @@ func (c Content) getMembersUUID() []string {
 	return uuids
 }
 
-func (c Content) getType() string {
-	contentType := ""
-	contentTypeRead, found := c[typeField]
-	if !found {
-		return contentType
-	}
-
-	contentTypeParsed, ok := contentTypeRead.(string)
-	if !ok {
-		return contentType
-	}
-
-	return contentTypeParsed
-}
-
 func (c Content) merge(src Content) {
 	for k, v := range src {
 		c[k] = v

@@ -214,39 +214,18 @@ func (u *DefaultUnroller) resolveModelsForInnerBodyXML(
 		}
 
 		// Custom Code Component does not have members field, but it has bodyXML,
-		// so we need to run one more check for inner members and inner CCC
-		// similar to the extractEmbeddedContentByType in UniversalUnroller service.
+		// but we do not unroll the inner bodyXML and stop on root level. Just validate it.
 		rawBody, foundBody := embedFoundMember[bodyXMLField]
 		if !foundBody {
-			// localLog.Debug("Missing body. Skipping expanding embedded CCC and ImageSet.")
 			continue
 		}
 
 		bodyXML := rawBody.(string)
-		emContentUUIDs, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
+		_, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
 		if err != nil {
 			localLog.WithError(err).Errorf("Cannot parse bodyXML for CCC content %s", err.Error())
 			continue
 		}
-
-		if len(emContentUUIDs) == 0 {
-			localLog.Debug("No embedded unrollable content inside the CCC bodyXML")
-			continue
-		}
-
-		// We have found CCC with BodyXML, which has <ft-content> tag for unrolling, so we process it.
-		// If these emContentUUIDs are not already got, get this content via Reader (one more REST call)
-		// add the inner ImageSet (with Images/Graphics) and inner CustomCodeComponent to an inner embeds node.
-		innerEmbeds, innerEmbedsUUIDs, err := processContentForEmbeds(emContentUUIDs, foundContent, u.reader, u.log, u.apiHost, tid, uuid)
-		if err != nil {
-			localLog.Infof("failed to load content to unroll in any of: %v", emContentUUIDs)
-			continue
-		}
-
-		// Add embeds element to CustomCodeComponent similar to Article, so the internal content is unrolled as well
-		embedFoundMember[embeds] = innerEmbeds
-
-		u.resolveModelsForInnerBodyXML(innerEmbedsUUIDs, foundContent, acceptedTypes, tid, uuid)
 	}
 }
 

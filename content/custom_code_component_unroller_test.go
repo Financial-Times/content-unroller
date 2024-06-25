@@ -3,10 +3,10 @@ package content
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Financial-Times/go-logger/v2"
 	"slices"
 	"testing"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/stretchr/testify/assert"
 )
 

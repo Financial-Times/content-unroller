@@ -38,7 +38,7 @@ func (u *UniversalUnroller) unrollCustomCodeComponent(event UnrollEvent) (Conten
 		for _, innerUUID := range emContentUUIDs {
 			embedded = append(embedded, Content{id: createID(u.apiHost, "content", innerUUID)})
 		}
-		if embedded != nil && len(embedded) > 0 {
+		if len(embedded) > 0 {
 			ccc[embeds] = embedded
 		}
 		return ccc, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v as uuid(s): %v", event.uuid, emContentUUIDs))
@@ -54,7 +54,7 @@ func (u *UniversalUnroller) unrollCustomCodeComponent(event UnrollEvent) (Conten
 		for _, emb := range emContentUUIDs {
 			embedded = append(embedded, contentMap[emb])
 		}
-		if embedded != nil && len(embedded) > 0 {
+		if len(embedded) > 0 {
 			ccc[embeds] = embedded
 		}
 	}
@@ -88,127 +88,19 @@ func (u *UniversalUnroller) resolveModelsForInnerBodyXML(
 		}
 
 		// Custom Code Component does not have members field, but it has bodyXML,
-		// so we need to run one more check for inner images and inner CCC
-		// similar to the extractEmbeddedContentByType in UniversalUnroller service.
-		// We need to just skip the member in case of errors.
+		// however we do not unroll inner CustomCodeComponents
 		rawBody, foundBody := embedFoundMember[bodyXMLField]
 		if !foundBody {
-			// localLog.Debug("Missing body. Skipping expanding embedded components and images.")
 			continue
 		}
 
 		bodyXML := rawBody.(string)
-		emContentUUIDs, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
+		_, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
 		if err != nil {
 			localLog.WithError(err).Errorf("Cannot parse bodyXML for CCC content %s", err.Error())
 			continue
 		}
-
-		if len(emContentUUIDs) == 0 {
-			localLog.Debug("No embedded unrollable content inside the CCC bodyXML")
-			continue
-		}
-
-		// We have found CCC with BodyXML, which has <ft-content> tag for unrolling,
-		// but we do not process deeper level than root level.
-		// Uncomment this code to unroll recursively inner CustomCodeComponents
-		// unrollInnerCustomCodeComponents(err, emContentUUIDs, foundContent, u, tid, uuid, localLog, embedFoundMember, acceptedTypes)
 	}
-}
-
-// unrollInnerCustomCodeComponents unroll the inner CustomCodeComponents introducing inner embeds.
-func unrollInnerCustomCodeComponents(err error, emContentUUIDs []string, foundContent map[string]Content, u *UniversalUnroller, tid string, uuid string, localLog *logger.LogEntry, embedFoundMember Content, acceptedTypes []string) {
-	// We have found CCC with BodyXML, which has <ft-content> tag for unrolling, so we process it.
-	// If these emContentUUIDs are not already got, get this content via Reader (one more REST call)
-	// add the inner ImageSet and Images and inner CustomCodeComponent to an inner embeds node.
-	innerEmbeds, innerEmbedsUUIDs, err := processContentForEmbeds(emContentUUIDs, foundContent, u.reader, u.log, u.apiHost, tid, uuid)
-	if err != nil {
-		localLog.Infof("failed to load content to unroll in any of: %v", emContentUUIDs)
-		return
-	}
-
-	// Add embeds element to CustomCodeComponent similar to Article, so the internal content is unrolled as well
-	if innerEmbeds != nil && len(innerEmbeds) > 0 {
-		embedFoundMember[embeds] = innerEmbeds
-	}
-
-	// This line process next level deeper in embedded CustomCodeComponents
-	u.resolveModelsForInnerBodyXML(innerEmbedsUUIDs, foundContent, acceptedTypes, tid, uuid)
-}
-
-// processContentForEmbeds is used only if we recursively check bodyXML of inner CustomCodeComponents
-// and unroll the embedded content from their bodies as well.
-func processContentForEmbeds(emContentUUIDs []string, foundContent map[string]Content, reader Reader, log *logger.UPPLogger, apiHost string, tid string, uuid string) (contentForEmbeds []Content, uuidsOfContentForEmbeds []string, err error) {
-	localLog := log.WithUUID(uuid).WithTransactionID(tid)
-	var innerEmbeds []Content
-	var newInnerContentUUIDs []string
-	var cycleCCCUUIDs []string
-	// Get the UUIDs, which are not loaded yet. We may have some ImageSet, which was already loaded in parent Content
-	for _, innerUUID := range emContentUUIDs {
-		if foundContent[innerUUID] == nil {
-			newInnerContentUUIDs = append(newInnerContentUUIDs, innerUUID)
-		} else if foundContent[innerUUID].getType() == CustomCodeComponentType {
-			// If we have already loaded this CCC, and it is also in the new components to embed - this is a cycle
-			// This would happen only if we unroll in depth the CustomCodeComponent.
-			localLog.Infof("detected cycle in CCC %s which was already referred in CCC", innerUUID)
-			cycleCCCUUIDs = append(cycleCCCUUIDs, innerUUID)
-		}
-	}
-	if len(newInnerContentUUIDs) > 0 {
-		// Read Inner Content For Unrolling via reader.go->Get for new UUID(s)
-		tempContentMap, err := reader.Get(newInnerContentUUIDs, tid)
-		if err != nil {
-			localLog.WithError(err).Debugf("failed to read CustomCodeComponent inner content %s : %v", newInnerContentUUIDs, err)
-			return nil, nil, err
-		}
-		// And add the new content to already loaded content for unrolling
-		for _, newInnerUUID := range newInnerContentUUIDs {
-			foundContent[newInnerUUID] = tempContentMap[newInnerUUID]
-		}
-	}
-	// Remove cycles CCC for this and for the next iterations. This should not happen as we unroll
-	// only one level depth from the root level
-	emContentCheckedUUIDs := emContentUUIDs
-	if len(cycleCCCUUIDs) > 0 {
-		// Skip CustomCodeComponent, which is already unrolled once at non-root level
-		emContentCheckedUUIDs = removeContainedCycles(emContentUUIDs, cycleCCCUUIDs)
-	}
-	for _, innerUUID := range emContentCheckedUUIDs {
-		innerContentFound, found := resolveContent(innerUUID, foundContent)
-		if found {
-			// Expand members field of the new inner content, which was just loaded before append to embeds node
-			expMembers, err := unrollMembersForImageSetInCCC(innerContentFound, foundContent, reader, log, apiHost, tid)
-			if err != nil {
-				localLog.Debugf("failed to fill inner content members field. Check for ImageSet %s in CCC, which has not published images", innerUUID)
-				innerEmbeds = append(innerEmbeds, innerContentFound)
-				continue
-			}
-			// Replace ImageSet with the same ImageSet with unrolled members. Same element if there are no members.
-			innerEmbeds = append(innerEmbeds, expMembers)
-		} else {
-			localLog.Debugf("failed to find inner for CustomCodeComponent content for unroll: %s", innerUUID)
-			innerEmbeds = append(innerEmbeds, Content{id: createID(apiHost, "content", innerUUID)})
-		}
-	}
-
-	return innerEmbeds, emContentCheckedUUIDs, nil
-}
-
-// removeContainedCycles is required only when we unroll inner CustomCodeComponents
-func removeContainedCycles(embeddedContentUUIDs, cycleCCCUUIDs []string) []string {
-	cycleElements := make(map[string]bool)
-	for _, item := range cycleCCCUUIDs {
-		cycleElements[item] = true
-	}
-
-	var result []string
-	for _, item := range embeddedContentUUIDs {
-		if _, found := cycleElements[item]; !found {
-			result = append(result, item)
-		}
-	}
-
-	return result
 }
 
 func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[string]Content, reader Reader, log *logger.UPPLogger, apiHost string, tid string) (Content, error) {

@@ -1,0 +1,139 @@
+{
+  "attributes": {
+    "key": "value",
+    "key2": "value2"
+  },
+  "attributesLastModified": "2024-04-15T09:44:56.789Z",
+  "bodyXML": "<body><ft-content data-embedded=\"true\" type=\"http://www.ft.com/ontology/content/CustomCodeComponent\" url=\"http://www.ft.com/ontology/content/c8de2401-ef1c-47a9-bcce-b61194b1e6da\"></ft-content> <ft-content data-embedded=\"true\" type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api.ft.com/content/9d114020-f8d5-11ee-a53f-95f056a14e8f\"></ft-content> <p>Fallback text</p> </body>",
+  "canBeDistributed": "no",
+  "canBeSyndicated": "no",
+  "embeds": [
+    {
+      "alternativeImages": {},
+      "alternativeStandfirsts": {},
+      "alternativeTitles": {},
+      "attributes": {
+        "key": "value",
+        "key2": "value2"
+      },
+      "attributesLastModified": "2024-04-15T09:44:56.789Z",
+      "bodyXML": "<body><ft-content type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api-t.ft.com/content/b9f54d10-97c0-4b82-be04-67ce523bf648\" data-embedded=\"true\"></ft-content> <fallback data-asset-type=\"custom-code-component-fallback-text\">    <p>Fallback text</p>      <p>Fallback text2</p>  </fallback>  <p> some other tags follow</p></body>",
+      "brands": [
+        "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+      ],
+      "canBeDistributed": "no",
+      "canBeSyndicated": "no",
+      "firstPublishedDate": "2024-04-15T09:44:56.789Z",
+      "id": "http://www.ft.com/thing/c8de2401-ef1c-47a9-bcce-b61194b1e6da",
+      "identifiers": [
+        {
+          "authority": "http://api.ft.com/system/cct",
+          "identifierValue": "0cfeb9f7-58c2-4e61-bbc2-8c0673d37ceb"
+        }
+      ],
+      "lastModified": "2024-06-12T09:50:13.000Z",
+      "path": "Financial-Times/awesome-project/awesome-component",
+      "publication": [
+        "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+      ],
+      "publishReference": "test_publish_787b5c3a-db8c-4697-91f3-414b39b12f71",
+      "publishedDate": "2024-04-15T09:44:56.789Z",
+      "requestUrl": "https://api-t.ft.com/content/c8de2401-ef1c-47a9-bcce-b61194b1e6da",
+      "type": "http://www.ft.com/ontology/content/CustomCodeComponent",
+      "versionRange": "^0.3.5"
+    },
+    {
+      "alternativeImages": {},
+      "alternativeStandfirsts": {},
+      "alternativeTitles": {},
+      "brands": [
+        "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+      ],
+      "canBeSyndicated": "yes",
+      "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+      "id": "http://www.ft.com/thing/9d114020-f8d5-11ee-a53f-95f056a14e8f",
+      "lastModified": "2024-04-15T10:44:00.000Z",
+      "members": [
+        {
+          "alternativeImages": {},
+          "alternativeStandfirsts": {},
+          "alternativeTitles": {},
+          "binaryUrl": "https://d6c748xw2pzm8.cloudfront.net/prod/9d114020-f8d5-11ee-a53f-95f056a14e8f-standard.png",
+          "brands": [
+            "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+          ],
+          "canBeSyndicated": "yes",
+          "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+          "firstPublishedDate": "2024-04-15T10:44:00.162Z",
+          "id": "http://www.ft.com/thing/ac9c728f-b2d0-4651-bc27-b30fce158af5",
+          "identifiers": [
+            {
+              "authority": "http://api.ft.com/system/cct",
+              "identifierValue": "ac9c728f-b2d0-4651-bc27-b30fce158af5"
+            }
+          ],
+          "lastModified": "2024-04-15T10:44:00.000Z",
+          "publication": [
+            "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+          ],
+          "publishReference": "tid_cct_image_ac9c728f-b2d0-4651-bc27-b30fce158af5_1713177840167",
+          "publishedDate": "2024-04-15T10:44:00.162Z",
+          "requestUrl": "https://api-t.ft.com/content/ac9c728f-b2d0-4651-bc27-b30fce158af5",
+          "title": "",
+          "type": "http://www.ft.com/ontology/content/Graphic"
+        },
+        {
+          "alternativeImages": {},
+          "alternativeStandfirsts": {},
+          "alternativeTitles": {},
+          "binaryUrl": "https://d6c748xw2pzm8.cloudfront.net/prod/9d114020-f8d5-11ee-a53f-95f056a14e8f-mobile.png",
+          "brands": [
+            "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+          ],
+          "canBeSyndicated": "yes",
+          "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+          "firstPublishedDate": "2024-04-15T10:44:00.162Z",
+          "id": "http://www.ft.com/thing/06d72d8d-36b7-4e0c-a7ca-41cd529191e8",
+          "identifiers": [
+            {
+              "authority": "http://api.ft.com/system/cct",
+              "identifierValue": "06d72d8d-36b7-4e0c-a7ca-41cd529191e8"
+            }
+          ],
+          "lastModified": "2024-04-15T10:44:00.000Z",
+          "publication": [
+            "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+          ],
+          "publishReference": "tid_cct_image_06d72d8d-36b7-4e0c-a7ca-41cd529191e8_1713177840170",
+          "publishedDate": "2024-04-15T10:44:00.162Z",
+          "requestUrl": "https://api-t.ft.com/content/06d72d8d-36b7-4e0c-a7ca-41cd529191e8",
+          "title": "",
+          "type": "http://www.ft.com/ontology/content/Graphic"
+        }
+      ],
+      "publication": [
+        "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+      ],
+      "publishReference": "tid_cct_imageSet_9d114020-f8d5-11ee-a53f-95f056a14e8f_1713177840184",
+      "publishedDate": "2024-04-15T10:44:00.162Z",
+      "requestUrl": "https://api-t.ft.com/content/9d114020-f8d5-11ee-a53f-95f056a14e8f",
+      "type": "http://www.ft.com/ontology/content/ImageSet"
+    }
+  ],
+  "firstPublishedDate": "2024-04-15T09:44:56.789Z",
+  "id": "http://www.ft.com/thing/ff056e44-f02d-4295-918f-12f38432c75a",
+  "identifiers": [
+    {
+      "authority": "http://api.ft.com/system/cct",
+      "identifierValue": "0cfeb9f7-58c2-4e61-bbc2-8c0673d37ceb"
+    }
+  ],
+  "path": "Financial-Times/awesome-component",
+  "publication": [
+    "88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+  ],
+  "publishedDate": "2024-04-15T09:44:56.789Z",
+  "type": "http://www.ft.com/ontology/content/CustomCodeComponent",
+  "uuid": "ff056e44-f02d-4295-918f-12f38432c75a",
+  "versionRange": "^0.3.5"
+}

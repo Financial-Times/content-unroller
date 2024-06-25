@@ -1,0 +1,25 @@
+{
+  "id": "http://www.ft.com/thing/9d114020-f8d5-11ee-a53f-95f056a14e8f",
+  "type": "http://www.ft.com/ontology/content/ImageSet",
+  "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+  "publishedDate": "2024-04-15T10:44:00.162Z",
+  "members": [
+    {
+      "id": "https://api-t.ft.com/content/ac9c728f-b2d0-4651-bc27-b30fce158af5",
+      "format": "standardInline"
+    },
+    {
+      "id": "https://api-t.ft.com/content/06d72d8d-36b7-4e0c-a7ca-41cd529191e8",
+      "maxDisplayWidth": "490px",
+      "format": "mobile"
+    }
+  ],
+  "requestUrl": "https://api-t.ft.com/content/9d114020-f8d5-11ee-a53f-95f056a14e8f",
+  "brands": [
+    "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+  ],
+  "publication": [
+    "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+  ],
+  "canBeSyndicated": "yes"
+}

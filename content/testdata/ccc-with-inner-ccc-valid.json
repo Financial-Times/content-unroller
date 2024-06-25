@@ -1,0 +1,21 @@
+{
+  "id": "http://www.ft.com/thing/ff056e44-f02d-4295-918f-12f38432c75a",
+  "uuid": "ff056e44-f02d-4295-918f-12f38432c75a",
+  "firstPublishedDate": "2024-04-15T09:44:56.789Z",
+  "publishedDate": "2024-04-15T09:44:56.789Z",
+  "attributesLastModified": "2024-04-15T09:44:56.789Z",
+  "canBeDistributed": "no",
+  "canBeSyndicated": "no",
+  "type":"http://www.ft.com/ontology/content/CustomCodeComponent",
+  "path": "Financial-Times/awesome-component",
+  "versionRange": "^0.3.5",
+  "attributes":{ "key":"value", "key2":"value2" },
+  "publication":["88fdde6c-2aa4-4f78-af02-9f680097cfd6"],
+  "identifiers": [
+    {
+      "authority": "http://api.ft.com/system/cct",
+      "identifierValue": "0cfeb9f7-58c2-4e61-bbc2-8c0673d37ceb"
+    }
+  ],
+  "bodyXML": "<body><ft-content data-embedded=\"true\" type=\"http://www.ft.com/ontology/content/CustomCodeComponent\" url=\"http://www.ft.com/ontology/content/c8de2401-ef1c-47a9-bcce-b61194b1e6da\"></ft-content> <ft-content data-embedded=\"true\" type=\"http://www.ft.com/ontology/content/ImageSet\" url=\"http://api.ft.com/content/9d114020-f8d5-11ee-a53f-95f056a14e8f\"></ft-content> <p>Fallback text</p> </body>"
+}

@@ -46,8 +46,6 @@ func (u *UniversalUnroller) unrollCustomCodeComponent(event UnrollEvent) (Conten
 
 	// Take Care for ImageSet to enroll members on root level in main bodyXML ft-content tag
 	u.resolveModelsForSetsMembers(emContentUUIDs, contentMap, event.tid, event.uuid)
-	// Take Care for Potential Inner CCC(s) and ImageSet(s) inside the bodyXML
-	u.resolveModelsForInnerBodyXML(emContentUUIDs, contentMap, acceptedTypes, event.tid, event.uuid)
 
 	// Add all unrolled embeds to the CCC only if there are any (a root level CCC)
 	if len(emContentUUIDs) > 0 {
@@ -66,41 +64,6 @@ func validateCustomCodeComponent(c Content) bool {
 	_, ok := c[bodyXMLField]
 
 	return ok && checkType(c, CustomCodeComponentType)
-}
-
-func (u *UniversalUnroller) resolveModelsForInnerBodyXML(
-	embedsElements []string,
-	foundContent map[string]Content,
-	acceptedTypes []string,
-	tid string,
-	uuid string) {
-	// embeddedComponentUUID is expected to be inner CustomCodeComponent up to level2 depth or ImageSet with Image members.
-	// Here we process inner CustomCodeComponent, but we have to process also the ImageSet in inner CCC if present.
-	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
-
-	for _, embeddedComponentUUID := range embedsElements {
-		// We do not expect elements, which are not already loaded. If not loaded - they are 'Not Found'
-		embedFoundMember, found := resolveContent(embeddedComponentUUID, foundContent)
-		if !found {
-			localLog.Debugf("cannot match to any found content UUID: %v", embeddedComponentUUID)
-			foundContent[embeddedComponentUUID] = Content{id: createID(u.apiHost, "content", embeddedComponentUUID)}
-			continue
-		}
-
-		// Custom Code Component does not have members field, but it has bodyXML,
-		// however we do not unroll inner CustomCodeComponents
-		rawBody, foundBody := embedFoundMember[bodyXMLField]
-		if !foundBody {
-			continue
-		}
-
-		bodyXML := rawBody.(string)
-		_, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
-		if err != nil {
-			localLog.WithError(err).Errorf("Cannot parse bodyXML for CCC content %s", err.Error())
-			continue
-		}
-	}
 }
 
 func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[string]Content, reader Reader, log *logger.UPPLogger, apiHost string, tid string) (Content, error) {
@@ -155,9 +118,9 @@ func unrollMembersForImageSetInCCC(innerContent Content, loadedContent map[strin
 		newImage, ok := loadedContent[imageUUID]
 		if !ok || newImage == nil {
 			log.Debugf("Not Found Member: %s for ImageSet", imageUUID)
-			// replace nil values - back to content/thing like:
-			// {"id": "https://api.ft.com/thing/c52947ee-3fe1-4aee-9f41-344a73c2b605"}
-			unrolledImages = append(unrolledImages, Content{id: createID(apiHost, "thing", imageUUID)})
+			// replace nil values - back to content (even if it was /thing/) like:
+			// {"id": "https://api.ft.com/content/c52947ee-3fe1-4aee-9f41-344a73c2b605"}
+			unrolledImages = append(unrolledImages, Content{id: createID(apiHost, "content", imageUUID)})
 			continue
 		}
 		unrolledImages = append(unrolledImages, newImage)

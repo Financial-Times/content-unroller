@@ -24,10 +24,18 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 		memberMap := m.(map[string]interface{})
 		memberID, ok := memberMap["id"].(string)
 		if !ok {
+			u.log.
+				WithUUID(event.uuid).
+				WithTransactionID(event.tid).
+				Debugf("there is no id in the membres of ClipSet %v", memberMap)
 			return nil, ErrConverting
 		}
 		uuid, err := extractUUIDFromString(memberID)
 		if err != nil {
+			u.log.
+				WithUUID(event.uuid).
+				WithTransactionID(event.tid).
+				Debugf("there is no valid UUID in the id field value %s", memberID)
 			return nil, err
 		}
 		clipUUIDs = append(clipUUIDs, uuid)
@@ -39,6 +47,7 @@ func (u *UniversalUnroller) unrollClipSet(event UnrollEvent) (Content, error) {
 
 	clips, err := u.reader.Get(clipUUIDs, event.tid)
 	if err != nil {
+		// Cannot get ClipSet members from content-public-read service downstream
 		return nil, err
 	}
 

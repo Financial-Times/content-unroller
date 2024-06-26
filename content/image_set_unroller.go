@@ -26,6 +26,8 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 		imageUUIDs = append(imageUUIDs, uuid)
 	}
 
+	// Endpoint for multiple UUIDs skip values if not found, but it returns 200 OK
+	// If none of the requested UUIDs is found it would return empty result: []
 	images, err := u.reader.Get(imageUUIDs, event.tid)
 	if err != nil {
 		return nil, err
@@ -33,8 +35,13 @@ func (u *UniversalUnroller) unrollImageSet(event UnrollEvent) (Content, error) {
 
 	unrolledImages := []Content{}
 	for _, imageUUID := range imageUUIDs {
-		// TODO what if any of the images in the ImageSet is not found/loaded?
-		unrolledImages = append(unrolledImages, images[imageUUID])
+		unrolledMember := images[imageUUID]
+		// Check if the member was found, before add it into members, and replace with an empty if not found
+		// Even if it was: http://www.ft.com/thing/{{uuid}} - we replace it with /content/{{uuid}} when not found
+		if unrolledMember == nil {
+			unrolledMember = Content{id: createID(u.apiHost, "content", imageUUID)}
+		}
+		unrolledImages = append(unrolledImages, unrolledMember)
 	}
 
 	returnContent := event.c.clone()

@@ -41,7 +41,6 @@ func (u *DefaultUnroller) Unroll(req UnrollEvent) (Content, error) {
 	}
 
 	u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.uuid)
-	u.resolveModelsForInnerBodyXML(schema.getAll(embeds), contentMap, acceptedTypes, req.tid, req.uuid)
 
 	// Add unrolled mainImage
 	mainImageUUID := schema.get(mainImageField)
@@ -194,39 +193,6 @@ func (u *DefaultUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 	}
 	u.resolveImageSet(pUUID, posterContent, tid, uuid)
 	return posterContent[pUUID], nil
-}
-
-func (u *DefaultUnroller) resolveModelsForInnerBodyXML(
-	embedsElements []string,
-	foundContent map[string]Content,
-	acceptedTypes []string,
-	tid string,
-	uuid string) {
-	// Process CustomCodeComponent(s), but we process also the inner ImageSet or inner CCC if present.
-	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
-
-	for _, embeddedComponentUUID := range embedsElements {
-		embedFoundMember, found := resolveContent(embeddedComponentUUID, foundContent)
-		if !found {
-			localLog.Debugf("cannot match to any found content UUID: %v", embeddedComponentUUID)
-			foundContent[embeddedComponentUUID] = Content{id: createID(u.apiHost, "content", embeddedComponentUUID)}
-			continue
-		}
-
-		// Custom Code Component does not have members field, but it has bodyXML,
-		// but we do not unroll the inner bodyXML and stop on root level. Just validate it.
-		rawBody, foundBody := embedFoundMember[bodyXMLField]
-		if !foundBody {
-			continue
-		}
-
-		bodyXML := rawBody.(string)
-		_, err := getEmbedded(u.log, bodyXML, acceptedTypes, tid, uuid)
-		if err != nil {
-			localLog.WithError(err).Errorf("Cannot parse bodyXML for CCC content %s", err.Error())
-			continue
-		}
-	}
 }
 
 func validateDefaultContent(content Content) bool {

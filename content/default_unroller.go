@@ -28,31 +28,37 @@ func (u *DefaultUnroller) Unroll(req UnrollEvent) (Content, error) {
 
 	cc := req.c.clone()
 
-	schema := u.createContentSchema(cc, []string{ImageSetType, DynamicContentType, ClipSetType}, req.tid, req.uuid)
+	acceptedTypes := []string{ImageSetType, DynamicContentType, ClipSetType, CustomCodeComponentType}
+	schema := u.createContentSchema(cc, acceptedTypes, req.tid, req.uuid)
 	if schema == nil {
 		return cc, nil
 	}
 
+	// Read content for unrolling
 	contentMap, err := u.reader.Get(schema.toArray(), req.tid)
 	if err != nil {
 		return req.c, errors.Join(err, fmt.Errorf("error while getting expanded content for uuid: %v", req.uuid))
 	}
-	u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.tid)
 
+	u.resolveModelsForSetsMembers(schema, contentMap, req.tid, req.uuid)
+
+	// Add unrolled mainImage
 	mainImageUUID := schema.get(mainImageField)
 	if mainImageUUID != "" {
 		cc[mainImageField] = contentMap[mainImageUUID]
 	}
 
+	// Add all unrolled embeds
 	embeddedContentUUIDs := schema.getAll(embeds)
 	if len(embeddedContentUUIDs) > 0 {
-		embedded := []Content{}
+		var embedded []Content
 		for _, emb := range embeddedContentUUIDs {
 			embedded = append(embedded, contentMap[emb])
 		}
 		cc[embeds] = embedded
 	}
 
+	// Add unrolled promotionalImage as alternativeImages.promotionalImage
 	promImgUUID := schema.get(promotionalImage)
 	if promImgUUID != "" {
 		pi, found := contentMap[promImgUUID]
@@ -69,19 +75,19 @@ func (u *DefaultUnroller) createContentSchema(cc Content, acceptedTypes []string
 
 	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
 
-	//mainImageField
+	//mainImage as mainImage
 	mainImageUUID, foundMainImg := extractMainImageContentByType(cc, u.log, tid, uuid)
 	if foundMainImg {
 		schema.put(mainImageField, mainImageUUID)
 	}
 
-	//embedded - images and dynamic content
+	//embedded - image set(s), clip set(s), dynamic content(s) and custom code component(s) as embeds
 	emContentUUIDs, foundEmbedded := extractEmbeddedContentByType(cc, u.log, acceptedTypes, tid, uuid)
 	if foundEmbedded {
 		schema.putAll(embeds, emContentUUIDs)
 	}
 
-	//promotional image
+	//promotional image from alternativeImages->promotionalImage as promotionalImage
 	var foundPromImg bool
 	altImg, found := cc[altImagesField].(map[string]interface{})
 	if found {
@@ -113,27 +119,31 @@ func (u *DefaultUnroller) createContentSchema(cc Content, acceptedTypes []string
 	return schema
 }
 
-func (u *DefaultUnroller) resolveModelsForSetsMembers(b Schema, imgMap map[string]Content, tid string, uuid string) {
-	mainImageUUID := b.get(mainImageField)
+func (u *DefaultUnroller) resolveModelsForSetsMembers(s Schema, imgMap map[string]Content, tid string, uuid string) {
+	mainImageUUID := s.get(mainImageField)
 	u.resolveImageSet(mainImageUUID, imgMap, tid, uuid)
-	for _, embeddedImgSet := range b.getAll(embeds) {
+	// In embeds values we can have ImageSet, ClipSet, CustomCodeComponent or Dynamic Content.
+	for _, embeddedImgSet := range s.getAll(embeds) {
 		u.resolveImageSet(embeddedImgSet, imgMap, tid, uuid)
 	}
 }
 
 func (u *DefaultUnroller) resolveImageSet(imageSetUUID string, imgMap map[string]Content, tid string, uuid string) {
-	imageSet, found := resolveContent(imageSetUUID, imgMap)
+	embedsFoundMember, found := resolveContent(imageSetUUID, imgMap)
 	if !found {
+		u.log.WithUUID(uuid).WithTransactionID(tid).Debugf("Cannot match to any found content UUID: %v", imageSetUUID)
 		imgMap[imageSetUUID] = Content{id: createID(u.apiHost, "content", imageSetUUID)}
 		return
 	}
 
 	localLog := u.log.WithUUID(uuid).WithTransactionID(tid)
 
-	rawMembers, found := imageSet[membersField]
+	// ImageSet and ClipSet have members, and only they are processed in the following code
+	rawMembers, found := embedsFoundMember[membersField]
 	if found {
 		membList, ok := rawMembers.([]interface{})
 		if !ok {
+			// u.log.Debugf("members field is present, but value is not a valid JSON in %v", uuid)
 			return
 		}
 
@@ -162,7 +172,7 @@ func (u *DefaultUnroller) resolveImageSet(imageSetUUID string, imgMap map[string
 			mData.merge(mContent)
 			expMembers = append(expMembers, mData)
 		}
-		imageSet[membersField] = expMembers
+		embedsFoundMember[membersField] = expMembers
 	}
 }
 
@@ -172,6 +182,7 @@ func (u *DefaultUnroller) resolvePoster(poster interface{}, tid, uuid string) (C
 		return Content{}, errors.New("problem in poster field")
 	}
 	papiurl := posterData[apiURLField].(string)
+	// Check: check if apiUrl is not found (!ok) in poster
 	pUUID, err := extractUUIDFromString(papiurl)
 	if err != nil {
 		return Content{}, err

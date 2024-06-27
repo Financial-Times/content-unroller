@@ -1,0 +1,58 @@
+[
+  {
+    "id": "http://www.ft.com/thing/ac9c728f-b2d0-4651-bc27-b30fce158af5",
+    "type": "http://www.ft.com/ontology/content/Graphic",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+    "firstPublishedDate": "2024-04-15T10:44:00.162Z",
+    "publishedDate": "2024-04-15T10:44:00.162Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/cct",
+        "identifierValue": "ac9c728f-b2d0-4651-bc27-b30fce158af5"
+      }
+    ],
+    "requestUrl": "https://api-t.ft.com/content/ac9c728f-b2d0-4651-bc27-b30fce158af5",
+    "binaryUrl": "https://d6c748xw2pzm8.cloudfront.net/prod/9d114020-f8d5-11ee-a53f-95f056a14e8f-standard.png",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "publishReference": "tid_cct_image_ac9c728f-b2d0-4651-bc27-b30fce158af5_1713177840167",
+    "lastModified": "2024-04-15T10:44:00.000Z",
+    "publication": [
+      "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+    ],
+    "canBeSyndicated": "yes"
+  },
+  {
+    "id": "http://www.ft.com/thing/06d72d8d-36b7-4e0c-a7ca-41cd529191e8",
+    "type": "http://www.ft.com/ontology/content/Graphic",
+    "title": "",
+    "alternativeTitles": {},
+    "alternativeStandfirsts": {},
+    "description": "Line chart of Share prices rebased in € terms showing LVMH shares are among luxury's best performers",
+    "firstPublishedDate": "2024-04-15T10:44:00.162Z",
+    "publishedDate": "2024-04-15T10:44:00.162Z",
+    "identifiers": [
+      {
+        "authority": "http://api.ft.com/system/cct",
+        "identifierValue": "06d72d8d-36b7-4e0c-a7ca-41cd529191e8"
+      }
+    ],
+    "requestUrl": "https://api-t.ft.com/content/06d72d8d-36b7-4e0c-a7ca-41cd529191e8",
+    "binaryUrl": "https://d6c748xw2pzm8.cloudfront.net/prod/9d114020-f8d5-11ee-a53f-95f056a14e8f-mobile.png",
+    "brands": [
+      "http://www.ft.com/thing/dbb0bdae-1f0c-11e4-b0cb-b2227cce2b54"
+    ],
+    "alternativeImages": {},
+    "publishReference": "tid_cct_image_06d72d8d-36b7-4e0c-a7ca-41cd529191e8_1713177840170",
+    "lastModified": "2024-04-15T10:44:00.000Z",
+    "publication": [
+      "http://www.ft.com/thing/88fdde6c-2aa4-4f78-af02-9f680097cfd6"
+    ],
+    "canBeSyndicated": "yes"
+  }
+]
